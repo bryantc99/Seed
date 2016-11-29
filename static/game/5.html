@@ -1,0 +1,10 @@
+<form name="form_intro1" id="form_intro1" onsubmit="finish()">
+	<div class="welcome_parts" data-part="1" style="display: block;" ">
+		<h1>Results</h1>
+		<p>You offered {{game.getWage()}} dollars per hour.</p>
+		<p>Employee {{game.getAccept()}}ed the offer.</p>
+		<p ng-if="game.getAcceptVal()">Employee exerted <b>{{game.getEffort()}}</b> effort.</p>
+		<p>You decided to {{game.getAction()}} the employee.</p>
+		<p><input name="submit" type="button" value="OK" ng-click="game.newPage('finish')" class="button"></p>
+	</div>
+</form>

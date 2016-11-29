@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html ng-app="mainApp" ng-controller="MainController">
+<head>
+<title>Oxford Experiments</title>
+<meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no">
+
+<link rel="stylesheet" href="{{ static_url("css/main.css") }}" type="text/css">
+<link rel="stylesheet" href="{{ static_url("css/register.css") }}" type="text/css">
+
+<script src="{{ static_url("js/angular/angular.js") }}" type="text/javascript"></script>
+<script src="{{ static_url("js/angular/angular-resource.js") }}" type="text/javascript"></script>
+
+<script src="{{ static_url("js/main.js") }}" type="text/javascript"></script>
+
+</head>
+<body>
+
+
+<div id="screenarea_outer">
+<div id="screenarea_middle">
+
+<div class="screen" data-role="content">
+
+<h2>About this study</h2>
+<p>Thank you for your interest!</p>
+
+<p>This is a study by the University of Oxford on choices people make. 
+We will present you with a situation and ask you to make choices.</p>
+<p>Your choices and the choices of the other participants will determine how much you earn.
+We will explain how this works during the session.</p>
+
+<p>&nbsp;</p>
+
+<p>
+There are a couple of things that are good to know:</p>
+
+<ul>
+<li>  The session lasts 10-15 minutes.
+<li>  Your earnings are <b>kept private</b> and are paid through Prolific Academic.
+<li>   You will earn at least 0.85 pounds for your participation, provided you complete the study and participate actively. The average earnings are around 2.00 pounds.
+<li>  We will not reveal who you are to other participants.
+<li>  <b>We never deceive participants.</b> For example, if we inform you that another participant is making a choice on which you can react, this is indeed the case. We keep our promises made to participants. For example, if we promise a certain payment, participants will indeed receive it.
+<li>  The data collected in this session will be used for the research study and might be published, both online or offline. No data that allows people to identify you will be published without your permission.
+<li>  Participation is <b>voluntary</b> and you can withdraw at any time. If anything makes you feel uncomfortable, let us know.
+Our study has been reviewed and approved by the Ethics Committee in Oxford. You can find the details at the bottom of this page.
+</ul>
+
+<p>In case you want to get in touch with us, you can message us through the internal messaging system of Prolific Academic.</p>
+
+<p>&nbsp;</p>
+
+<p>Please read the following statement:</p>
+
+<p><b>I have read the description of the study and agree to take part in this study. I understand that I can withdraw from the study at any time. I understand that the project has been reviewed and approved by the University of Oxford Central University Research Ethics Committee. I understand that the collected data might be used in dissertations and other publications, both on line as well as printed, and that only data that cannot be used to identify me personally will be published. I am aware how to raise a concern and make a complaint.
+</b></p>
+
+
+      <p>Please select <b>I agree</b> to participate in this study.</p><p></p><p> Your ID is {{name}}</p>
+
+      <form action="/welcome" method="post">
+      <input name="consent" type="hidden" value="1">
+      <input type="submit" value="I agree" class="button">
+      </form>
+<hr>
+<p>Background information: The principal researcher in this project is Elwyn Davies (elwyn.davies@economics.ox.ac.uk), doctoral student at the University of Oxford. If you agree to participate in this project, the research will be written up as a thesis. This thesis, as well as other publications resulting from this project, might be published online as well as in print.
+</p>
+
+<p>Complaints: The University of Oxford has set up a central committee (the Central University Research Ethics Committee, CUREC) to review studies like these on their ethical aspects. This study has been approved by this committee. If you have a concern about any aspect of this project, please speak to the researcher concerned who will do his best to answer your query. If you remain unhappy and wish to make a formal complaint, please contact the Research Ethics Committee at the University of Oxford (ethics@socsci.ox.ac.uk; +44 (0)1865 614871; Social Sciences & Humanities Inter-Divisional Research Ethics Committee, Oxford University, Hayes House, 75 George Street, Oxford, OX1 2BQ, United Kingdom).
+</p>
+</div>
+</div>
+</div>
+
+
+</body>
+</html>

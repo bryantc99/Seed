@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html ng-app="mainApp" ng-controller="MainController">
+<head>
+<title>Oxford Experiments</title>
+<meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no">
+<link rel="stylesheet" href="{{ static_url("css/main.css") }}" type="text/css">
+<link rel="stylesheet" href="{{ static_url("css/register.css") }}" type="text/css">
+
+<script src="{{ static_url("js/angular/angular.js") }}" type="text/javascript"></script>
+<script src="{{ static_url("js/angular/angular-resource.js") }}" type="text/javascript"></script>
+
+<script src="{{ static_url("js/main.js") }}" type="text/javascript"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="https://d1fxtkz8shb9d2.cloudfront.net/sockjs-0.3.min.js"></script>
+
+<script src="{{ static_url("js/waiting-room.js") }}" type="text/javascript"></script>
+
+</head>
+<body>
+
+
+<div id="screenarea_outer">
+<div id="screenarea_middle">
+
+<div class="screen" data-role="content">
+
+<p>Welcome. Please press the button to proceed when it appears.</p>
+<form action="/game" method="post">
+	<input type="submit" value="Proceed" id="proceed" style="display:none" oncontextmenu="return false;" class="button">
+</form>
+<!--
+<form action="/game" method="post">
+<input type="submit" value="Click here to proceed" class="button">
+</form>
+-->
+
+<p>&nbsp;</p><h3>Good to know</h3><p></p><ul><li>If you accidentally close the experimental window, you can re-open it by coming back to this page. You can then resume where you have left.</li><li>You can save this page as a bookmark.</li><li>If you have any questions, you can get in touch with us through the Prolific Academic messaging system.</li></ul></div>
+</div>
+</div>
+
+
+</body>
+</html>

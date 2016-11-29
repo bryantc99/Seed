@@ -1,0 +1,38 @@
+<form name="form_intro1" id="form_intro1" onsubmit="finish()">
+	<div class="welcome_parts" data-part="1" style="display: block;" ">
+		<h1>You have been offered {{game.getWage()}} dollars per hour.</h1>
+		<p>Pick your <b>effort level</b>.</p>
+		<table class="offertable" style="width: 100%" cellspacing="0">
+			<tbody>
+				<tr class="topline">
+					<td colspan="4">
+						<input name="submit" type="button" value="Accept" ng-click="game.setAccept(true)" class="button">
+					</td>
+					<td colspan="4">
+						<input name="submit" type="button" value="Reject" ng-click="game.setAccept(false)" class="button">
+					</td>
+					<td></td>
+					<td colspan="4">
+						<p>You will <br><br> <span class="offernum">{{game.getAccept()}}</span> the offer</p>
+					</td>
+				</tr>
+				<tr class="bottomline" ng-if="game.getAcceptVal()">
+					<td colspan="4">
+						<input name="submit" type="button" value="Low" ng-click="game.setEffort('Low')" class="button">
+					</td>
+					<td colspan="4">
+						<input name="submit" type="button" value="Medium" ng-click="game.setEffort('Medium')" class="button">
+					</td>
+					<td colspan="4">
+						<input name="submit" type="button" value="High" ng-click="game.setEffort('High')" class="button">
+					</td>
+					<td colspan="4">
+						<p>You will work using <br><br> <span class="offernum">{{game.getEffort()}}</span> effort</p>
+					</td>
+				</tr>
+
+			</tbody>
+		</table>
+		<p><input name="submit" type="button" value="OK" ng-click="game.sendEffortLevel()" class="button"></p>
+	</div>
+</form>

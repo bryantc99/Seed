@@ -1,0 +1,16 @@
+body
+{
+	background-color: white;
+}
+
+.screen
+{
+	display: block;
+}
+
+p, li
+{
+	margin-bottom: 18px;
+	font-size: 13pt;
+	line-height: 1.4;
+}

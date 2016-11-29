@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html ng-app="mainApp" ng-controller="MainController">
+<head>
+<title>Oxford Experiments</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="{{ static_url("css/main.css") }}" type="text/css">
+<link rel="stylesheet" href="{{ static_url("css/register.css") }}" type="text/css">
+
+<script src="{{ static_url("js/angular/angular.js") }}" type="text/javascript"></script>
+<script src="{{ static_url("js/angular/angular-resource.js") }}" type="text/javascript"></script>
+
+<script src="{{ static_url("js/main.js") }}" type="text/javascript"></script>
+
+</head>
+<body>
+
+
+<div id="screenarea_outer">
+<div id="screenarea_middle">
+
+<div class="screen" data-role="content">
+
+<p>Welcome to this study conducted by the University of Oxford.</p><p>This is a <b>timed study</b>, which means that you can only participate at a fixed time. <b>The session has now opened.</b> Please fill in your details to check if you can still participate.</p><p>Please enter your Participant ID:</p>
+
+
+
+<form action="/about" method="post" id="messageform">
+  <table>
+    <tr>
+      <td><input type="text" name="body" id="playerName" ng-Model = "main.user.name" size="30"></td>
+      <td>
+        <input type="submit"  value="{{ _("OK") }}" class="button" ng-click = "main.register()" >
+        <input type="hidden" name="next" value="{{ request.path }}">
+      </td>
+    </tr>
+  </table>
+</form>
+
+
+<p><b>Please note that you will need a recent version of Firefox, Safari, Chrome or Internet Explorer/Edge in order to participate. This study will not work on a smartphone.</b></p></div>
+</div>
+</div>
+
+
+</body>
+</html>

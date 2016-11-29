@@ -1,0 +1,42 @@
+<html ng-app="gameApp" ><head>
+<title>Oxford Experiment</title>
+<meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no">
+
+<link rel="stylesheet" href="{{ static_url("css/main.css") }}" type="text/css">
+<link rel="stylesheet" href="{{ static_url("css/game.css") }}" type="text/css">
+
+<script src="{{ static_url("js/angular/angular.js") }}" type="text/javascript"></script>
+<script src="{{ static_url("js/angular/angular-route.js") }}" type="text/javascript"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="https://d1fxtkz8shb9d2.cloudfront.net/sockjs-0.3.min.js"></script>
+
+
+<script src="{{ static_url("js/game.js") }}" type="text/javascript"></script>
+
+
+</head>
+<body>
+
+	<div class="headerwarning" id="headerbar">
+		<div id="periodcounter"></div>
+		<div id="timecounter" style="display: block;">Time is up. Please finish.</div>
+		<div id="balance">
+			<a href="" onclick="reloadpage()" id="reloadlink" style="display: none;">R</a> &nbsp; &nbsp; 
+			<span style="font-weight: normal;">LabBox</span> &nbsp; &nbsp; 
+			<span id="clientid">s1o2swq</span> &nbsp;
+		</div>
+	</div>
+
+	<div class="bar" id="headerwaitbar" style="width: 100%">
+		<div class="barcontents" style="width: 0px; display: none;" id="countdownbar"></div>
+	</div>
+
+	<div id="screenarea_outer">
+		<div id="screenarea_middle">
+			<div id="screen_custom" class="screen" data-role="content" style="display: block;">
+				<div ng-view></div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>	
