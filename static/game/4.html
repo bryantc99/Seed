@@ -1,20 +1,23 @@
 <form name="form_intro1" id="form_intro1" onsubmit="finish()">
 	<div class="welcome_parts" data-part="1" style="display: block;" ">
-		<h1>You offered {{game.getWage()}} dollars per hour.</h1>
+		<h1>You offered {{game.getWage()}} dollars per hour  <span ng-if="game.getVarWage()"> with {{game.getBonus()}} dollar <span ng-if="game.getLowBase()">bonus for high effort</span> <span ng-if="!game.getLowBase()">deduction for low effort</span>
+		  </span></h1>
 		<p>Employee {{game.getAccept()}}ed the offer.</p>
 		<p ng-if="game.getAcceptVal()">Employee exerted <b>{{game.getEffort()}}</b> effort.</p>
 		<table class="offertable" style="width: 100%" cellspacing="0">
 			<tbody>
 				<tr class="topline">
 					<td colspan="4">
-						<input name="submit" type="button" value="Excuse" ng-click="game.setAction('excuse')" class="button">
+						<input ng-if="!game.getLowBase()" name="submit" type="button" value="Excuse" ng-click="game.setAction('excuse')" class="button">
+						<input ng-if="game.getLowBase()" name="submit" type="button" value="Ignore" ng-click="game.setAction('ignore')" class="button">
+
 					</td>
 					<td colspan="4">
-						<input name="submit" type="button" value="Discipline" ng-click="game.setAction('discipline')" class="button">
+						<input ng-if="!game.getLowBase()" name="submit" type="button" value="Penalize" ng-click="game.setAction('penalize')" class="button">
+						<input ng-if="game.getLowBase()" name="submit" type="button" value="Reward" ng-click="game.setAction('reward')" class="button">
+
 					</td>
-					<td colspan="4">
-						<input name="submit" type="button" value="Fire" ng-click="game.setAction('fire')" class="button">
-					</td>
+					<td colspan="4"></td>
 					<td colspan="4">
 						<p>You will <br><br> <span class="offernum">{{game.getAction()}}</span> the employee.</p>
 					</td>

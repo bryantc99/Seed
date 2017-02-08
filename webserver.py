@@ -9,6 +9,7 @@ import os.path
 from os import environ
 from collections import defaultdict
 from sys import stdout
+import random
 
 try:
     import cStringIO as sio
@@ -23,7 +24,10 @@ import tornado.gen
 import tornado.options
 
 from pymongo import MongoClient
+
 import json
+from bson import ObjectId
+
 
 # for redis
 from toredis import Client
@@ -89,6 +93,8 @@ class Application(tornado.web.Application):
             (r'/api/player/(.*)', PlayerHandler),
             (r'/api/credential', CredentialHandler),
             (r'/experimenter/config/sync/activate/([a-zA-Z0-9]+$)', SyncExperimentLaunchHandler),
+            (r'/admin', AdminHandler),
+
         ] + self.WaitRouter.urls + self.GameRouter.urls
         settings = {
             "debug": True,
@@ -132,6 +138,8 @@ class RegisterHandler(BaseHandler):
         self.render("about.html", title="Oxford Experiments", name = name)
 
 class WelcomeHandler(BaseHandler):
+    def get(self):
+        self.render("welcome.html", title="Oxford Experiments")
     def post(self):
         self.render("welcome.html", title="Oxford Experiments")
 
@@ -150,7 +158,10 @@ class PlayerCreateHandler(BaseHandler):
         self.set_status(201)
 
     def get(self):
-        self.write({"subject" : tornado.escape.xhtml_escape(self.current_user)})
+        user = db.players.find_one({"_id": tornado.escape.xhtml_escape(self.current_user)})
+        logger.info('[PlayerCreateHandler] Subject: %s | Subject: %s | Admitted: %s | Conn: %s', self.current_user)
+
+        self.write({"subject" : tornado.escape.xhtml_escape(self.current_user), "user_obj" : user })
 
 class PlayerHandler(BaseHandler):
     def get(self):
@@ -239,45 +250,10 @@ class SyncExperimentLaunchHandler(tornado.web.RequestHandler):
     #@tornado.web.authenticated
     def get(self, game):
         # activate the game;
-        print "hello " + game
+        print "Hello " + game
         logger.info('[SyncExperimentLaunchHandler] Inside SyncExperiement')
         try:
             WaitingRoomConnection.room_types[game] = WaitingRoomConnection.CONTINUOUS_ADMISSION
-
-            # update the db
-           
-                #self.application.sql.execute('UPDATE SyncExperiment SET Activated=? WHERE ID=?', (1, game))
-
-                # get pre-game settings
-               # pre_game_configs = self.application.sql.execute('SELECT NumOfBackups, BackupMode, AdmissionMode, Instruction, Tour, Chat, Quiz, Trial FROM PreExperiment WHERE Experiment=?', (game, )).fetchone()
-                #logger.info('[SyncExperimentLaunchHandler] Pre-game configs: %s', pre_game_configs)
-
-                # get settings for sync game server
-                #game_configs = self.application.sql.execute('SELECT SetupType, ActionType, ProgramType, DataLogType, PayoffType, Size, PlayGraph, Directed, MinLength, MaxLength, EndChance, NextUrl, CustomParams, Project FROM SyncExperiment WHERE ID=?', (game, )).fetchone()
-                #logger.info('[SyncExperimentLaunchHandler] Game configs: %s', game_configs)
-
-#                latest = self.application.sql.execute('SELECT MAX(meta), MAX(Session) FROM SyncSession WHERE Experiment=?', (game, )).fetchone()
-#
- #               participants = self.application.sql.execute('SELECT Subject, IP FROM Participation WHERE Project IN (%s)' % ','.join('?' * len(projects_to_check)), projects_to_check).fetchall()
-#
- #               latest_meta = latest[0] if latest[0] else 0
-  #             latest_session = latest[1] if latest[1] else 0
-
-  #               new_waiting_sessions = range(latest_session + 1, latest_session + 1 + num_of_sessions)
-  #               if pre_game_configs[1] == 1:
-  #                   new_game_sessions = range(latest_session + 1, latest_session + 1 + num_of_sessions * (game_configs[5] + pre_game_configs[0]) / game_configs[5])
-  #                   if pre_game_configs[2] == 'BLOCK':
-  #                       WaitingRoomConnection.room_types[game] = WaitingRoomConnection.BLOCK_ADMISSION
-  #                   else:
-  #                       WaitingRoomConnection.room_types[game] = WaitingRoomConnection.CONTINUOUS_ADMISSION
-  #               else:
-  #                   # exact correspondance between waiting sessions and game sessions, e.g. admit 3 sessions and play 3 sessions; if you are in session 2 when admitted, you will have to play in session 2 for the game
-  #                   new_game_sessions = new_waiting_sessions
-  #                   # it does not make sense to use continuous admission for block waiting rooms
-                  #  WaitingRoomConnection.room_types[game] = WaitingRoomConnection.BLOCK_ADMISSION
-                #session_insert = ''.join(['INSERT INTO SyncSession(Experiment, Session, Finished, Success)'].extend([' SELECT ?, ?, ?, ? UNION ALL' for session in new_game_sessions]))[:-10]
-                #session_records = tuple(chain.from_iterable([(game, session, 0, 0) for session in new_game_sessions]))
-                #self.application.sql.execute(session_insert, session_records)
 
             # set up the waiting room
             WaitingRoomConnection.admission_sizes[game] = 2
@@ -290,17 +266,6 @@ class SyncExperimentLaunchHandler(tornado.web.RequestHandler):
             game_config_msg = json.dumps({'id': game, 'size': 2})
             #yield tornado.gen.Task(self.application.redis_pub.publish, 'config:sync', game_config_msg)
 
-            # set up the redis config space
-            # pipe = self.application.redis_cmd.pipeline()
-            # pipe.hmset(':'.join(('content', game, 'setting')), {'desc': pre_game_configs[3], 'tour': pre_game_configs[4], 'chat': pre_game_configs[5], 'quiz': pre_game_configs[6], 'trial': pre_game_configs[7], 'project': game_configs[13], 'meta': (latest_meta + 1)})
-
-            # pipe.sadd('live:game:sync', *map(lambda s: ':'.join((game, str(s))), new_game_sessions)).hincrby('live:session:count', game, amount=len(new_game_sessions))
-
-            # if participants:
-            #     pipe.sadd(':'.join(('pool', game, 'id')), *(p[0] for p in participants)).sadd(':'.join(('pool', game, 'ip')), *(p[1] for p in participants))
-
-            # pipe.execute()
-
             self.finish('Game ' + game + ' successfully activated')
         except TypeError as e:
             logger.exception('[SyncExperimentLaunchHandler] When launching game %s: %s', game, e.args[0])
@@ -309,6 +274,18 @@ class SyncExperimentLaunchHandler(tornado.web.RequestHandler):
             logger.exception('[SyncExperimentLaunchHandler] When launching game %s: %s', game, e.args[0])
             self.finish('error')
 
+class JSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, ObjectId):
+            return str(o)
+        return json.JSONEncoder.default(self, o)
+
+class AdminHandler(tornado.web.RequestHandler):
+
+    def get(self):
+        for stats in db.game_results.find():
+           self.write(JSONEncoder().encode(stats))
+           self.write("<br>")
 
 class WaitingRoomConnection(SockJSConnection):
 
@@ -365,6 +342,16 @@ class WaitingRoomConnection(SockJSConnection):
     heartbeat_interval = 5000
     HEARTBEAT = 'h'
 
+    # constants
+    TOT_PLAYERS = 2
+    NUM_ROUNDS = 3
+    MATRIX = [[1,5,3],
+              [0,2,4],
+              [3,1,5],
+              [2,4,0],
+              [5,3,1],
+              [4,0,2]]
+
     # if the subject has already been admitted or has already done this experiment
     
     def _duplicate(self):
@@ -382,7 +369,7 @@ class WaitingRoomConnection(SockJSConnection):
     def _register(self, subject, game):
         self.subject_id = subject
         self.game_id = game
-        self.admission_sizes[game] = 2;
+        self.admission_sizes[game] = WaitingRoomConnection.TOT_PLAYERS
         logger.info('[WaitingRoomConnection] WAIT_MSG from subject: %s of game: %s', self.subject_id, self.game_id)
         try:
             # first check if the waiting room has been configured
@@ -390,7 +377,8 @@ class WaitingRoomConnection(SockJSConnection):
             if self.game_id in WaitingRoomConnection.admission_sizes:
 
                 # then check if the subject is already present in the waiting room
-                if self._duplicate():
+                #if self._duplicate():
+                if False:
                     logger.info('[WaitingRoomConnection] Multiple participation by subject: %s', self.subject_id)
                     self.send(json.dumps({'type': WaitingRoomConnection.ACTIVATE_MSG}))
                 else:
@@ -403,7 +391,12 @@ class WaitingRoomConnection(SockJSConnection):
                         present_subjects = WaitingRoomConnection.available_subjects[self.game_id]
                         self.admission_size = WaitingRoomConnection.admission_sizes[self.game_id]
                         present_subjects.add(self)
-                        logger.info('[WaitingRoomConnection] Number of waiting subjects: %d/%d', len(present_subjects), self.admission_size)
+                        self.subject_no = len(present_subjects)
+                        db.players.insert_one({
+                            "_id": self.subject_id,
+                            "subject_no": self.subject_no
+                            })
+                        logger.info('[WaitingRoomConnection] Number of waiting subjects: %d/%d %s ', self.subject_no, self.admission_size, self.subject_id)
 
                         if room_status == WaitingRoomConnection.ENTRY_OPEN:
                             self.send(json.dumps({'type': WaitingRoomConnection.ACTIVATE_MSG}))
@@ -423,34 +416,7 @@ class WaitingRoomConnection(SockJSConnection):
     def _entry(self):
         logger.info('[WaitingRoomConnection] ENTRY_MSG from subject: %s of game: %s', self.subject_id, self.game_id)
         try:
-            print "entry"
-            # room_status = WaitingRoomConnection.room_statuses[self.game_id]
-            # #if room_status == WaitingRoomConnection.ENTRY_FULL:
-            # #if len(WaitingRoomConnection.available_sessions[self.game_id]) == 0:
-            #     #self.send(json.dumps({'type': WaitingRoomConnection.FULL_MSG}))
-            # if room_status == WaitingRoomConnection.ENTRY_OPEN:
-            #     #session_id = WaitingRoomConnection.available_sessions[self.game_id][0]
-            #     #if self.subject_id not in WaitingRoomConnection.admitted_subjects[self.game_id][session_id]
-            #     #admitted_subjects = WaitingRoomConnection.admitted_subjects[self.game_id][session_id]
-            #     #admitted_subjects.add(self.subject_id)
-            #     #present_subjects = WaitingRoomConnection.available_subjects[self.game_id]
-            #     #present_subjects.remove(self)
-
-            #     self.send(json.dumps({'type': WaitingRoomConnection.SESSION_MSG, 'session_id': session_id, 'url': 'http://127.0.0.1:8080/game/admit'}))
-            #     logger.info('[WaitingRoomConnection] ENTRY GRANTED for subject: %s of session %s of game: %s', self.subject_id, session_id, self.game_id)
-            #     # when this session is full
-            #     if len(admitted_subjects) == self.admission_size:
-            #         WaitingRoomConnection.available_sessions[self.game_id].pop(0)
-            #         if len(WaitingRoomConnection.available_sessions[self.game_id]) == 0:
-            #             #logger.info('[WaitingRoomConnection] All session(s) fulfilled for game %s', self.game_id)
-            #             WaitingRoomConnection.room_statuses[self.game_id] = WaitingRoomConnection.ENTRY_FULL
-            #             # clean up the waiting room for this game (async style)
-            #             tornado.ioloop.IOLoop.current().add_timeout(timedelta(seconds=20), callback=partial(WaitingRoomConnection.clear_up, self.game_id))
-            #             self.broadcast(present_subjects, json.dumps({'type': WaitingRoomConnection.FULL_MSG}))
-            #         elif WaitingRoomConnection.room_types[self.game_id] == WaitingRoomConnection.BLOCK_ADMISSION and len(present_subjects) < self.admission_size:
-            #             #logger.info('[WaitingRoomConnection] Insufficient subjects waiting, ENTRY CLOSED for game: %s', self.game_id)
-            #             WaitingRoomConnection.room_statuses[self.game_id] = WaitingRoomConnection.ENTRY_CLOSE
-            #             self.broadcast(present_subjects, json.dumps({'type': WaitingRoomConnection.DEACTIVATE_MSG}))
+            print "Entry" 
         except Exception as e:
             print "exception"
             logger.exception('[WaitingRoomConnection] When entering: %s', e.args[0])
@@ -562,6 +528,7 @@ class GameConnection(SockJSConnection):
     CONTRACT_MSG = 114
     EFFORT_MSG = 115
     ACTION_MSG = 116
+    FINISH_MSG = 117
 
     ENTRY_OPEN = 110
     ENTRY_CLOSE = 111
@@ -586,7 +553,9 @@ class GameConnection(SockJSConnection):
             present_subjects = GameConnection.participants
             print len(present_subjects)
             if GameConnection.ready >= GameConnection.size:
-                self.broadcast(present_subjects, json.dumps({'type': GameConnection.READY_MSG}))
+                self.broadcast(present_subjects, json.dumps({'type': GameConnection.READY_MSG, 
+                                                             'lowBase': bool(random.getrandbits(1)),
+                                                             'varWage': bool(random.getrandbits(1))}))
             
         except Exception as e:
             logger.exception('[GameConnection] When waiting: %s', e.args[0])
@@ -635,9 +604,21 @@ class GameConnection(SockJSConnection):
 
             if msg_type == GameConnection.INIT_MSG:
                 logger.info("[GameConnection] Player at Game Screen")
+
                 self._init()
             elif msg_type == GameConnection.CONTRACT_MSG or msg_type == GameConnection.EFFORT_MSG or msg_type == GameConnection.ACTION_MSG:
                 self.broadcast(GameConnection.participants, message)
+            elif msg_type == GameConnection.FINISH_MSG:
+                result = db.game_results.insert_one({
+                    "status": "finished",
+                    "game_id": msg['game_id'],
+                    "role": msg['role'],
+                    "payment": msg['payment'],
+                    "wage": msg['wage'],
+                    "accept": msg['accept'],
+                    "effortLevel": msg['effortLevel'],
+                    "action": msg['action'] 
+                    })
 
     def on_close(self):
         GameConnection.participants = [];
@@ -646,6 +627,7 @@ class GameConnection(SockJSConnection):
         # stop heartbeat if enabled
         if tornado.options.options.heartbeat:
             self._stop_heartbeat()
+        client.close()
 
 def main():
     http_server = tornado.httpserver.HTTPServer(Application(),  xheaders=True)

@@ -1,28 +1,23 @@
 <form name="form_intro1" id="form_intro1" onsubmit="finish()">
 	<div class="welcome_parts" data-part="1" style="display: block;">
-		<h1>What is the wage you will offer the employee?</h1>
-		<p>Please select the <b>wage</b> which you will offer the employee:</p>
+		<h1>Choose a contract to offer the employee.</h1>
+		<p> Option A: Fixed wage of <b>{{game.getWage()}}</b> dollars </p>
+		<p ng-if="!game.getVarWage()"> Option B: No contract </p>
+		<p ng-if="game.getVarWage()"> Option B: Base wage of <b>{{game.getWage()}}</b> dollars with <b>{{game.getBonus()}}</b> dollar <span ng-if="game.getLowBase()">bonus for high effort</span> <span ng-if="!game.getLowBase()">deduction for low effort</span>
+		  </p>
+
 		<table class="offertable" style="width: 100%" cellspacing="0">
 			<tbody>
 				<tr class="topline">
-					<td colspan="2">
-						<div id="practiceslider" class="hslider" data-form="form_minimum_offer" data-fieldname="minimum_offer" data-perspective="neutral">
-							<div class="maxnum">40</div>
-							<div class="minnum">0</div>
-							<div class="topline"></div>
-							<div class="bottomline"></div>
-							<div class="sliderblock"></div>
-							<div class="sliderpoint buttonyellowsmall" style="left: {{6.95 * game.getWage()}}px;">&nbsp;</div>
-							<div class="slidernum" style="display: block; left: {{6.95 * game.getWage() - 10.4}}px;">{{game.getWage()}}</div>
-						</div>
-						<input type="hidden" name="minimum_offer" value="{{game.sliderVal}}" onchange="update_numberfields()">
+					<td colspan="4">
+						<input name="submit" type="button" value="Option A" ng-click="game.setContract(true)" class="button">
 					</td>
-					<td colspan="2">
-						<div class="offerbox" data-form="form_minimum_offer" data-fieldname="minimum_offer" data-setup="welcome" data-valuetxt="You will <b>accept</b> all offers of <br><br>" data-postvaluetxt=" points and higher" data-novaluetxt="Select a value">
-							<p>You will offer <br><br> <span class="offernum">{{game.getWage()}}</span> dollars</p>
-							<input type="button" class="buttonyellowmedium" ng-click="game.adjustSlider(-1);" value="–">
-							<input type="button" class="buttonyellowmedium" ng-click="game.adjustSlider(1)" value="+">
-						</div>
+					<td colspan="4">
+						<input name="submit" type="button" value="Option B" ng-click="game.setContract(false)" class="button">
+					</td>
+					<td></td>
+					<td colspan="4">
+						<p>You will <br><br> offer option <span class="offernum">{{game.getContract()}}</span></p>
 					</td>
 				</tr>
 			</tbody>

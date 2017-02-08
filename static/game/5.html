@@ -1,10 +1,15 @@
 <form name="form_intro1" id="form_intro1" onsubmit="finish()">
 	<div class="welcome_parts" data-part="1" style="display: block;" ">
 		<h1>Results</h1>
-		<p>You offered {{game.getWage()}} dollars per hour.</p>
+		<span ng-if="game.getOfferMade()">
+		<p>Employer offered <b>{{game.getWage()}}</b> dollars per hour <span ng-if="game.getVarWage()"> with <b>{{game.getBonus()}}</b> dollar <span ng-if="game.getLowBase()">bonus for high effort</span> <span ng-if="!game.getLowBase()">deduction for low effort</span>
+		  </span></p>
 		<p>Employee {{game.getAccept()}}ed the offer.</p>
 		<p ng-if="game.getAcceptVal()">Employee exerted <b>{{game.getEffort()}}</b> effort.</p>
-		<p>You decided to {{game.getAction()}} the employee.</p>
-		<p><input name="submit" type="button" value="OK" ng-click="game.newPage('finish')" class="button"></p>
+		<p ng-if="game.getReactionVal()">Employer decided to {{game.getAction()}} the employee.</p>
+		<p> Employee earned <b>{{game.getFinalWage()}}</b> dollars</p>
+		</span>
+		<p ng-if="!game.getOfferMade()"> No offer made</p>
+		<p><input name="submit" type="button" value="OK" ng-click="game.finishGame()" class="button"></p>
 	</div>
 </form>
