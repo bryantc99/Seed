@@ -21,7 +21,6 @@ import tornado.httpserver
 import tornado.ioloop
 import tornado.web
 import tornado.gen
-import tornado.options
 
 from pymongo import MongoClient
 
@@ -39,10 +38,12 @@ from bson.objectid import ObjectId
 MONGODB_DB_URL = 'mongodb://localhost:27017/'
 MONGODB_DB_NAME = 'gameData'
 
-tornado.options.define('port', default=8080, help='run on the given port', type=int)
-tornado.options.define('debug', default=False, help='run in debug mode', metavar='True|False', type=bool)
-tornado.options.define('heartbeat', default=False, help='check client-side heartbeats', metavar='True|False', type=bool)
-tornado.options.define('production', default=False, help='run in Production or Testing mode', metavar='True|False', type=bool)
+from tornado.options import define, options
+
+define('port', default=8080, help='run on the given port', type=int)
+define('debug', default=False, help='run in debug mode', metavar='True|False', type=bool)
+define('heartbeat', default=False, help='check client-side heartbeats', metavar='True|False', type=bool)
+define('production', default=False, help='run in Production or Testing mode', metavar='True|False', type=bool)
 
 environ['CONFIG'] = './page.conf'
 
@@ -121,7 +122,7 @@ class Application(tornado.web.Application):
             if status == 'OK':
                 logger.info('[Application] Redis db 1 selected')
 
-class BaseHandler(tornado.web.StaticFileHandler):
+class BaseHandler(tornado.web.RequestHandler):
     def db(self):
         return self.application.db
 
@@ -629,8 +630,9 @@ class GameConnection(SockJSConnection):
 
 def main():
     http_server = tornado.httpserver.HTTPServer(Application(),  xheaders=True)
-    tornado.options.port = int(os.environ.get("PORT", 33507))
-    http_server.listen(tornado.options.port)
+    if options.production:
+        options.port = int(os.environ.get("PORT", 33507))
+    http_server.listen(options.port)
     tornado.ioloop.IOLoop.current().start()
 
 if __name__ == "__main__":
