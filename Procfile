@@ -1,1 +1,1 @@
-web: python webserver.py
+web: python webserver.py --port=$PORT
