@@ -629,7 +629,8 @@ class GameConnection(SockJSConnection):
 
 def main():
     http_server = tornado.httpserver.HTTPServer(Application(),  xheaders=True)
-    http_server.listen(options.port)
+    tornado.options.port = int(os.environ.get("PORT", 33507))
+    http_server.listen(tornado.options.port)
     tornado.ioloop.IOLoop.current().start()
 
 if __name__ == "__main__":
