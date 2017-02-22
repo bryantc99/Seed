@@ -35,7 +35,7 @@ import redis
 from bson import json_util
 from bson.objectid import ObjectId
 
-MONGODB_DB_URL = 'mongodb://localhost:27017/'
+MONGODB_DB_URL = 'mongodb://heroku_qzkzsqmj:bejucbi1s53qb9ldqobd166od5@ds157529.mlab.com:57529/heroku_qzkzsqmj'
 MONGODB_DB_NAME = 'gameData'
 
 from tornado.options import define, options
