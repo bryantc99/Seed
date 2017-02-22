@@ -93,7 +93,7 @@ class Application(tornado.web.Application):
             (r'/api/player/(.*)', PlayerHandler),
             (r'/api/credential', CredentialHandler),
             (r'/experimenter/config/sync/activate/([a-zA-Z0-9]+$)', SyncExperimentLaunchHandler),
-            (r'/admin', AdminHandler),
+            (r'/admin/user', UserHandler)
 
         ] + self.WaitRouter.urls + self.GameRouter.urls
         settings = {
@@ -159,7 +159,7 @@ class PlayerCreateHandler(BaseHandler):
 
     def get(self):
         user = db.players.find_one({"_id": tornado.escape.xhtml_escape(self.current_user)})
-        logger.info('[PlayerCreateHandler] Subject: %s | Subject: %s | Admitted: %s | Conn: %s', self.current_user)
+        logger.info('[PlayerCreateHandler] Subject: %s ', self.current_user)
 
         self.write({"subject" : tornado.escape.xhtml_escape(self.current_user), "user_obj" : user })
 
@@ -280,11 +280,11 @@ class JSONEncoder(json.JSONEncoder):
             return str(o)
         return json.JSONEncoder.default(self, o)
 
-class AdminHandler(tornado.web.RequestHandler):
+class UserHandler(tornado.web.RequestHandler):
 
     def get(self):
-        for stats in db.game_results.find():
-           self.write(JSONEncoder().encode(stats))
+        for users in db.players.find():
+           self.write(JSONEncoder().encode(users))
            self.write("<br>")
 
 class WaitingRoomConnection(SockJSConnection):
@@ -392,10 +392,8 @@ class WaitingRoomConnection(SockJSConnection):
                         self.admission_size = WaitingRoomConnection.admission_sizes[self.game_id]
                         present_subjects.add(self)
                         self.subject_no = len(present_subjects)
-                        db.players.insert_one({
-                            "_id": self.subject_id,
-                            "subject_no": self.subject_no
-                            })
+                        db.players.update({ '_id': ObjectId(self.subject_id)},{'$set': {'subject_no': self.subject_no}}, True)
+
                         logger.info('[WaitingRoomConnection] Number of waiting subjects: %d/%d %s ', self.subject_no, self.admission_size, self.subject_id)
 
                         if room_status == WaitingRoomConnection.ENTRY_OPEN:
@@ -609,7 +607,7 @@ class GameConnection(SockJSConnection):
             elif msg_type == GameConnection.CONTRACT_MSG or msg_type == GameConnection.EFFORT_MSG or msg_type == GameConnection.ACTION_MSG:
                 self.broadcast(GameConnection.participants, message)
             elif msg_type == GameConnection.FINISH_MSG:
-                result = db.game_results.insert_one({
+                result = db.players.insert_one({
                     "status": "finished",
                     "game_id": msg['game_id'],
                     "role": msg['role'],
