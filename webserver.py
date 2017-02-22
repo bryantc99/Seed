@@ -36,7 +36,7 @@ from bson import json_util
 from bson.objectid import ObjectId
 
 MONGODB_DB_URL = 'mongodb://heroku_qzkzsqmj:bejucbi1s53qb9ldqobd166od5@ds157529.mlab.com:57529/heroku_qzkzsqmj'
-MONGODB_DB_NAME = 'gameData'
+MONGODB_DB_NAME = 'heroku_qzkzsqmj'
 
 from tornado.options import define, options
 
