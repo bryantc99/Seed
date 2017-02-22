@@ -121,7 +121,7 @@ class Application(tornado.web.Application):
             if status == 'OK':
                 logger.info('[Application] Redis db 1 selected')
 
-class BaseHandler(tornado.web.RequestHandler):
+class BaseHandler(tornado.web.StaticFileHandler):
     def db(self):
         return self.application.db
 
