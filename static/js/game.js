@@ -21,7 +21,7 @@ var WAIT_MSG = 99,
 
 var protocols = ["websocket", "xdr-streaming", "xhr-streaming", "xdr-polling", "xhr-polling", "iframe-eventsource"];
 var options = {protocols_whitelist: protocols, debug: true, jsessionid: false};
-var conn = new SockJS("http://localhost:5000/sockjs/game", null, options);
+var conn = new SockJS("https://intense-sands-23697.herokuapp.com/sockjs/game", null, options);
 console.log("Client - connecting to game...");
 
 var url = window.location.href;
