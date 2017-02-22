@@ -17,11 +17,11 @@ mainApp.controller('MainController', ['$scope', '$resource', 'userInfo',
         $scope.main.getName = function() {
             return userInfo.name;
         }
-        $scope.main.register = function() {
-            userInfo.name = $scope.main.user.name
-            var Register = $resource('/api/player/register');
-            Register.save(userInfo);
-        }
+        //$scope.main.register = function() {
+          //  userInfo.name = $scope.main.user.name
+            //var Register = $resource('/api/player/register');
+           // Register.save(userInfo);
+        //}
 
     }]);
 

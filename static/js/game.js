@@ -21,59 +21,52 @@ var WAIT_MSG = 99,
 
 var protocols = ["websocket", "xdr-streaming", "xhr-streaming", "xdr-polling", "xhr-polling", "iframe-eventsource"];
 var options = {protocols_whitelist: protocols, debug: true, jsessionid: false};
-var conn = new SockJS("http://localhost:8080/sockjs/game", null, options);
+var conn = new SockJS("http://localhost:5000/sockjs/game", null, options);
 console.log("Client - connecting to game...");
+
+var url = window.location.href;
+var oid = url.substring(url.length - 24, url.length);
+
 
 conn.onopen = function() {
     console.log("Client - connected");
     console.log("Client - protocol used: " + conn.protocol);
     // send INIT_MSG
-    $.ajax({
-        url: 'http://localhost:8080/api/player/register',
-        type: "GET",
-        success: function(response, textStatus, jqXHR) {
-            var subject = response["subject"];
-            var number = response["user_obj"]["subject_no"];
-            console.log("Client: " + subject);
-            console.log("Client No: " + number);
-            var init_msg = JSON.stringify({"type": INIT_MSG, "subject_id": subject});
-            conn.send(init_msg);
-            console.log("Client - INIT_MSG sent");
-               
-        },
-        error: function(jqXHR, textStatus, errorThrown) {console.log("ERROR")}
-    });
+    var init_msg = JSON.stringify({"type": INIT_MSG, "subject_id": oid});
+    conn.send(init_msg);
+    console.log("Client - INIT_MSG sent");
+
 };
 
 gameApp.config(['$routeProvider',
     function ($routeProvider) {
         $routeProvider.
         when('/', {
-            templateUrl: 'static/game/start.html',
+            templateUrl: '/static/game/start.html',
             controller: 'GameController'
         }).
         when('/2', {
-            templateUrl: 'static/game/2.html',
+            templateUrl: '../../static/game/2.html',
             controller: 'GameController'
         }).
         when('/3', {
-            templateUrl: 'static/game/3.html',
+            templateUrl: '../../static/game/3.html',
             controller: 'GameController'
         }).
         when('/4', {
-            templateUrl: 'static/game/4.html',
+            templateUrl: '../../static/game/4.html',
             controller: 'GameController'
         }).
         when('/5', {
-            templateUrl: 'static/game/5.html',
+            templateUrl: '../../static/game/5.html',
             controller: 'GameController'
         }).
         when('/wait', {
-            templateUrl: 'static/game/wait.html',
+            templateUrl: '../../static/game/wait.html',
             controller: 'GameController'
         }).
         when('/finish', {
-            templateUrl: 'static/game/finish.html',
+            templateUrl: '../../static/game/finish.html',
             controller: 'GameController'
         }).
         otherwise({
@@ -95,19 +88,27 @@ gameApp.service("dataModel", function() {
     this.accept = true;
     this.effortLevel = 'Low';
     this.action = '';
+    this.oid = url.substring(url.length - 26, url.length - 2);
 })
 
-gameApp.controller('GameController', ['$scope', '$window', 'dataModel', 
-    function ($scope, $window, dataModel) {
+gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$location', '$rootScope',
+    function ($scope, $window, dataModel, $location, $rootScope) {
         $scope.game = {};
         $scope.game.continue = false;
 
+
         $scope.game.newPage = function(page){
-            $window.location.assign("/game#/" + page);
+            //$rootScope.$apply(function() {
+                $window.location.assign("/game/user/" + oid + "#/" + page);
+                //console.log($location.path());
+            //});
+            //$location.path();
+            //$location.hash(page);
+            //$window.location.assign("/game/user/" + $scope.oid +"#/" + page);
         }
 
         $scope.game.finishGame = function(){
-            $window.location.assign("/welcome");
+            $window.location.assign("/welcome?oid=" + oid);
         }
 
         $scope.game.setContract = function(offer) {
@@ -193,7 +194,9 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel',
                 dataModel.stage = "contract";
             }
             else if (dataModel.stage === "contract" && dataModel.offerMade) {
+                console.log("effort Stage");
                 page = employer ? 'wait' : '3';
+                console.log(page);
                 dataModel.stage = "effort";
             }
             else if (dataModel.stage === "effort" && dataModel.varWage && dataModel.offerMade && dataModel.accept && ((dataModel.lowBase && dataModel.effortLevel === 'High') || (!dataModel.lowBase && dataModel.effortLevel === 'Low'))) {
@@ -222,6 +225,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel',
         $scope.game.sendContract = function() {
             if(dataModel.contract) {dataModel.varWage = false;}
             else if (!dataModel.varWage) {dataModel.offerMade = false;}
+            console.log(JSON.stringify({"type": CONTRACT_MSG, "contract": dataModel.contract, "varWage": dataModel.varWage, "offerMade": dataModel.offerMade}));
             conn.send(JSON.stringify({"type": CONTRACT_MSG, "contract": dataModel.contract, "varWage": dataModel.varWage, "offerMade": dataModel.offerMade}))
         }
 
@@ -251,7 +255,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel',
                 });
             }
             else if (type == CONTRACT_MSG) {
-                console.log("Contract Offered with wage " + msg.wage);
+                console.log("Contract Offered");
                 dataModel.contract = msg.contract;
                 dataModel.varWage = msg.varWage;
                 dataModel.offerMade = msg.offerMade;

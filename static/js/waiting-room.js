@@ -1,16 +1,10 @@
 'use strict';
 
-var waitingRoomApp = angular.module('waitingRoomApp', ['ngRoute']);
-
-waitingRoomApp.service("data", function() {
-    this.subject_no = 0;
-});
-
     // variables
 var countdown = null,
 	heartbeat = null,
 	countdownOpen = false,
-	game = "gm234",
+	game = "",
 	subject = null;
 
 
@@ -57,20 +51,20 @@ function stopHeartbeat() {
     }
 }
 
+function getUrlVars() {
+    var vars = {}; 
+    window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) { vars[key] = value; }); 
+    return vars;
+}
+
+
 function connect() {
     disconnect();
-    $.ajax({
-        url: 'http://localhost:8080/api/player/register',
-        type: "GET",
-        success: function(response, textStatus, jqXHR) {
-            subject = response["subject"];               
-        },
-        error: function(jqXHR, textStatus, errorThrown) {console.log("ERROR")}
-    });
+    var params = getUrlVars();
 
     var protocols = ["websocket", "xdr-streaming", "xhr-streaming", "xdr-polling", "xhr-polling", "iframe-eventsource"];
     var options = {protocols_whitelist: protocols, debug: true, jsessionid: false};
-    conn = new SockJS("http://localhost:8080/sockjs/wait", null, options);
+    conn = new SockJS("http://localhost:5000/sockjs/wait", null, options);
     console.log("Client - connecting...");
 
     
@@ -78,7 +72,7 @@ function connect() {
         console.log("Client - connected");
         console.log("Client - protocol used: " + conn.protocol);
         // send WAIT_MSG
-        var wait_msg = JSON.stringify({"type": WAIT_MSG, "game_id": game, "subject_id": subject});
+        var wait_msg = JSON.stringify({"type": WAIT_MSG, "game_id": game, "subject_id": params['oid']});
         conn.send(wait_msg);
         console.log("Client - WAIT_MSG sent");
     };
@@ -106,72 +100,7 @@ function connect() {
             console.log("Connection Problem");
         }
     };
-}
 
-function disconnect() {
-    if (conn !== null) {
-        console.log("Client - disconnecting...");
-        conn.close();
-        conn = null;
-        console.log("Client - disconnected");
-    }
-}
-
-function credential() {
-
-    $.ajax({
-        url: 'http://localhost:8080/api/player/register',
-        type: "GET",
-        // callback handler that will be called on success
-        success: function(response, textStatus, jqXHR) {
-            alert("Success");
-            window.console && console.log(response["ps"]);
-            if (response["ps"] === true) {
-                game = response["gm"];
-                subject = response["sb"];
-                connect();
-            }
-            else if (response["ps"] === false) {
-                error = true;
-                stopHeartbeat();
-                disconnect();
-                window.location.replace("https://localhost:8080/game/denied");
-            }
-        },
-        // callback handler that will be called on error
-        error: function(jqXHR, textStatus, errorThrown) {
-            alert("Fail");
-            if (textStatus === "timeout" || textStatus === "error" || textStatus === "parsererror") {
-                this.tryCount++;
-                if (this.tryCount < this.retryLimit) {
-                    //try again
-                    if (timeout !== null) {
-                        window.clearTimeout(timeout);
-                        timeout = null;
-                    }
-                    var reqOptions = this;
-                    timeout = window.setTimeout(function() {
-                        $.ajax(reqOptions);
-                    }, 3000);
-                } else {
-                    console.log("Connection Problem");
-                }
-            }
-        },
-        // callback handler that will be called on completion
-        // which means, either on success or error
-        complete: function() {
-            
-        }
-    });
-}
-
-connect();
-
-
-waitingRoomApp.controller('GameController', ['$scope', '$window', 'data', 
-function ($scope, $window, data) {
-    
     conn.onmessage = function(e) {
         var msg = JSON.parse(e.data);
         var type = parseInt(msg.type);
@@ -179,7 +108,9 @@ function ($scope, $window, data) {
 
         if (type === ACTIVATE_MSG) {
             console.log("Client - activated");
-            proceed.css("display", "block");
+            //document.getElementById("oid").value = params['oid'];
+            document.getElementById("gameEntry").action = "game/user/" + params['oid'];
+            document.getElementById("proceed").style.display = "block";
         }
         else if (type === DEACTIVATE_MSG) {
             console.log("Client - deactivated");
@@ -278,6 +209,64 @@ function ($scope, $window, data) {
             console.log("Client - wtf just happened?!");
         }
     };
+}
 
+function disconnect() {
+    if (conn !== null) {
+        console.log("Client - disconnecting...");
+        conn.close();
+        conn = null;
+        console.log("Client - disconnected");
+    }
+}
 
-}]);
+function credential() {
+
+    $.ajax({
+        url: 'http://localhost:5000/api/player/register',
+        type: "GET",
+        // callback handler that will be called on success
+        success: function(response, textStatus, jqXHR) {
+            alert("Success");
+            window.console && console.log(response["ps"]);
+            if (response["ps"] === true) {
+                game = response["gm"];
+                subject = response["sb"];
+                connect();
+            }
+            else if (response["ps"] === false) {
+                error = true;
+                stopHeartbeat();
+                disconnect();
+                window.location.replace("https://localhost:5000/game/denied");
+            }
+        },
+        // callback handler that will be called on error
+        error: function(jqXHR, textStatus, errorThrown) {
+            alert("Fail");
+            if (textStatus === "timeout" || textStatus === "error" || textStatus === "parsererror") {
+                this.tryCount++;
+                if (this.tryCount < this.retryLimit) {
+                    //try again
+                    if (timeout !== null) {
+                        window.clearTimeout(timeout);
+                        timeout = null;
+                    }
+                    var reqOptions = this;
+                    timeout = window.setTimeout(function() {
+                        $.ajax(reqOptions);
+                    }, 3000);
+                } else {
+                    console.log("Connection Problem");
+                }
+            }
+        },
+        // callback handler that will be called on completion
+        // which means, either on success or error
+        complete: function() {
+            
+        }
+    });
+}
+
+connect();

@@ -28,9 +28,9 @@
 <form action="/about" method="post" id="messageform">
   <table>
     <tr>
-      <td><input type="text" name="body" id="playerName" ng-Model = "main.user.name" size="30"></td>
+      <td><input type="text" name="name" id="playerName" ng-Model = "main.user.name" size="30"></td>
       <td>
-        <input type="submit"  value="{{ _("OK") }}" class="button" ng-click = "main.register()" >
+        <input type="submit"  value="{{ _("OK") }}" class="button" >
         <input type="hidden" name="next" value="{{ request.path }}">
       </td>
     </tr>

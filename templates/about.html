@@ -55,11 +55,11 @@ Our study has been reviewed and approved by the Ethics Committee in Oxford. You 
 </b></p>
 
 
-      <p>Please select <b>I agree</b> to participate in this study.</p><p></p><p> Your ID is {{name}}</p>
+      <p>Please select <b>I agree</b> to participate in this study.</p><p></p><p> Your ID is {{oid}}</p>
 
-      <form action="/welcome" method="post">
-      <input name="consent" type="hidden" value="1">
+      <form action="/welcome" method="get">
       <input type="submit" value="I agree" class="button">
+      <input name="oid" type="hidden" value={{oid}}>
       </form>
 <hr>
 <p>Background information: The principal researcher in this project is Elwyn Davies (elwyn.davies@economics.ox.ac.uk), doctoral student at the University of Oxford. If you agree to participate in this project, the research will be written up as a thesis. This thesis, as well as other publications resulting from this project, might be published online as well as in print.
