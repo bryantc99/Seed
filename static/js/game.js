@@ -32,7 +32,7 @@ conn.onopen = function() {
     console.log("Client - connected");
     console.log("Client - protocol used: " + conn.protocol);
     // send INIT_MSG
-    var init_msg = JSON.stringify({"type": INIT_MSG, "subject_id": oid});
+    var init_msg = JSON.stringify({"type": INIT_MSG, "oid": oid});
     conn.send(init_msg);
     console.log("Client - INIT_MSG sent");
 
@@ -86,7 +86,7 @@ gameApp.service("dataModel", function() {
     this.finalWage = 12;
     this.bonus = 4;
     this.accept = true;
-    this.effortLevel = 'Low';
+    this.effortLevel = '';
     this.action = '';
     this.oid = url.substring(url.length - 26, url.length - 2);
 })
@@ -201,6 +201,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
             }
             else if (dataModel.stage === "effort" && dataModel.varWage && dataModel.offerMade && dataModel.accept && ((dataModel.lowBase && dataModel.effortLevel === 'High') || (!dataModel.lowBase && dataModel.effortLevel === 'Low'))) {
                 dataModel.reaction = true;
+                console.log("reaction");
                 page = employer ? '4' : 'wait';
                 dataModel.stage = "action";
             }
@@ -248,6 +249,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
             }
             else if (type === READY_MSG) {
                 console.log("Participants ready");
+                console.log(msg.treatment)
                 dataModel.lowBase = msg.lowBase;
                 dataModel.varWage = msg.varWage;
                 $scope.$apply(function() {
