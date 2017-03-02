@@ -144,7 +144,10 @@ class RegisterHandler(BaseHandler):
 
 class WelcomeHandler(BaseHandler):
     def get(self, oid):
-        self.render("welcome.html", title="Oxford Experiments", oid = oid)
+        #if(city != "Paris"):
+         #   self.render("about.html", title="Oxford Experiments", oid = oid)
+        #else:
+            self.render("welcome.html", title="Oxford Experiments", oid = oid)
     def post(self):
         oid = self.get_argument('oid')
         self.render("welcome.html", title="Oxford Experiments", oid = oid)

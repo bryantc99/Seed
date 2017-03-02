@@ -81,11 +81,13 @@ gameApp.service("dataModel", function() {
     this.varWage = true;
     this.offerMade = true;
     this.reaction = false;
-    this.contract = true;
+    
     this.wage = 12;
     this.finalWage = 12;
     this.bonus = 4;
-    this.accept = true;
+
+    this.contract = null;
+    this.accept = null;
     this.effortLevel = '';
     this.action = '';
     this.oid = url.substring(url.length - 26, url.length - 2);
@@ -148,14 +150,18 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
         }
 
         $scope.game.getContract = function() {
-            if(dataModel.contract)
+            if(dataModel.contract == null)
+                return ''
+            else if (dataModel.contract)
                 return 'A';
             else
                 return 'B';
         }
 
         $scope.game.getAccept = function() {
-            if(dataModel.accept)
+            if(dataModel.accept == null)
+                return '';
+            else if (dataModel.accept)    
                 return 'accept';
             else
                 return 'reject';
