@@ -519,6 +519,18 @@ class GameConnection(SockJSConnection):
 
     ROLES = ["employer", "employee"]
 
+    TREATMENTS = {'fl': {'lowBase': 1, 'varWage': 0},
+                  'fh': {'lowBase': 0, 'varWage': 0},
+                  'vl': {'lowBase': 1, 'varWage': 1},
+                  'vh': {'lowBase': 0, 'varWage': 1}}
+
+    GAMES = {'gm12': 'fl',
+             'gm34': 'fh',
+             'gm14': 'vl',
+             'gm24': 'vh',
+             'gm13': 'fh',
+             'gm24': 'vl'}
+
     # heartbeat interval
     heartbeat_interval = 5000
     HEARTBEAT = 'h'
@@ -527,13 +539,18 @@ class GameConnection(SockJSConnection):
         logger.info('[WaitingRoomConnection] INIT_MSG')
         try:
             role = GameConnection.ROLES[GameConnection.ready % 2]
+           # user = db.players.find_one({"_id": self.get_argument('oid')})
+           # game_id = 'gm12'
+           # logger.info('[WaitingRoomConnection] INIT_MSG game id %s', game_id)
+            #treatment = TREATMENTS[GAMES[game_id]];
             self.send(json.dumps({'type': GameConnection.ROLE_MSG, 'role': role}))
             GameConnection.ready += 1
             GameConnection.participants.append(self)
             present_subjects = GameConnection.participants
             print len(present_subjects)
             if GameConnection.ready >= GameConnection.size:
-                self.broadcast(present_subjects, json.dumps({'type': GameConnection.READY_MSG, 
+                self.broadcast(present_subjects, json.dumps({'type': GameConnection.READY_MSG,
+                                                 #            'treatment': TREATMENTS['fl'],   
                                                              'lowBase': bool(random.getrandbits(1)),
                                                              'varWage': bool(random.getrandbits(1))}))
             

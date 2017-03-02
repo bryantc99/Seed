@@ -64,7 +64,7 @@ function connect() {
 
     var protocols = ["websocket", "xdr-streaming", "xhr-streaming", "xdr-polling", "xhr-polling", "iframe-eventsource"];
     var options = {protocols_whitelist: protocols, debug: true, jsessionid: false};
-    conn = new SockJS("http://localhost:5000/sockjs/wait", null, options);
+    conn = new SockJS("https://intense-sands-23697.herokuapp.com/sockjs/wait", null, options);
     console.log("Client - connecting...");
 
     
