@@ -75,6 +75,8 @@ logging.getLogger().setLevel(level)
 
 from sockjs.tornado import SockJSConnection, SockJSRouter
 
+import handlers
+
 
 class Application(tornado.web.Application):
     def __init__(self):
@@ -86,16 +88,16 @@ class Application(tornado.web.Application):
         GameConnection.size = 2
         GameConnection.participants = list();
 
-        handlers = [
-            (r'/', MainHandler),
-            (r'/about', RegisterHandler),
-            (r'/welcome([^/]*)', WelcomeHandler),
-            (r'/game/user/([a-zA-Z0-9])*', GameHandler),
-            (r'/api/player/register([^/]*)', PlayerCreateHandler),
-            (r'/api/player/(.*)', PlayerHandler),
-            (r'/api/credential', CredentialHandler),
-            (r'/experimenter/config/sync/activate/([a-zA-Z0-9]+$)', SyncExperimentLaunchHandler),
-            (r'/admin/user', UserHandler)
+        urls = [
+            (r'/', handlers.MainHandler),
+            (r'/about', handlers.RegisterHandler),
+            (r'/welcome([^/]*)', handlers.WelcomeHandler),
+            (r'/game/user/([a-zA-Z0-9])*', handlers.GameHandler),
+            (r'/api/player/register([^/]*)', handlers.PlayerCreateHandler),
+            (r'/api/player/(.*)', handlers.PlayerHandler),
+            (r'/api/credential', handlers.CredentialHandler),
+            (r'/experimenter/config/sync/activate/([a-zA-Z0-9]+$)', handlers.SyncExperimentLaunchHandler),
+            (r'/admin/user', handlers.UserHandler)
 
         ] + self.WaitRouter.urls + self.GameRouter.urls
         settings = {
@@ -112,7 +114,7 @@ class Application(tornado.web.Application):
         self.redis_pub = Client()
         self.redis_pub.connect_usocket('/tmp/redis.sock', callback=self.auth)
 
-        tornado.web.Application.__init__(self, handlers, **settings)
+        tornado.web.Application.__init__(self, urls, **settings)
 
     @tornado.gen.coroutine
     def auth(self):
@@ -258,7 +260,7 @@ class SyncExperimentLaunchHandler(tornado.web.RequestHandler):
             WaitingRoomConnection.room_types[game] = WaitingRoomConnection.CONTINUOUS_ADMISSION
 
             # set up the waiting room
-            WaitingRoomConnection.admission_sizes = 2
+            WaitingRoomConnection.admission_sizes = 1
             WaitingRoomConnection.room_statuses = None
             GameConnection.ready = 0
 
@@ -294,7 +296,7 @@ class WaitingRoomConnection(SockJSConnection):
     # game_id:subjects
     # game_id: string
     # subjects: set(connection)
-    available_subjects = set()
+    available_subjects = defaultdict(lambda: set())
 
     # game_id:session_id:subjects
     # game_id: string
@@ -310,8 +312,7 @@ class WaitingRoomConnection(SockJSConnection):
     # game_id:size
     # game_id: string
     # size: int
-    admission_sizes = 2
-
+    admission_sizes = 1
     # game_id:status
     # game_id: string
     # status: int
@@ -345,7 +346,7 @@ class WaitingRoomConnection(SockJSConnection):
     HEARTBEAT = 'h'
 
     # constants
-    TOT_PLAYERS = 2
+    TOT_PLAYERS = 1
     NUM_ROUNDS = 3
     MATRIX = [[1,5,3],
               [0,2,4],
@@ -608,7 +609,10 @@ class GameConnection(SockJSConnection):
 
                 self._init()
             elif msg_type == GameConnection.CONTRACT_MSG or msg_type == GameConnection.EFFORT_MSG or msg_type == GameConnection.ACTION_MSG:
-                self.broadcast(GameConnection.participants, message)
+                if(False):
+                    self.broadcast(GameConnection.participants, message)
+                else:
+                    self.broadcast(GameConnection.participants, message)
             elif msg_type == GameConnection.FINISH_MSG:
                 result = db.players.insert_one({
                     "status": "finished",
