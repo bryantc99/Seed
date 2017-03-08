@@ -51,14 +51,14 @@ tutorialApp.service("dataModel", function() {
     this.stage = "init";
     this.lowBase = Math.random() >= 0.5;
     this.varWage = Math.random() >= 0.5;
-    this.offerMade = Math.random() >= 0.5;
+    this.offerMade = true;
     this.reaction = false;
     
     this.wage = 12;
     this.finalWage = 12;
     this.bonus = 4;
 
-    this.contract = Math.random() >= 0.5;
+    this.contract = null;
     this.accept = true;
     this.effortLevel = Math.random() >= 0.5 ? 'Low' : 'High';
     this.action = '';
@@ -159,29 +159,46 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
 
         $scope.game.sendContract = function() {
             console.log(dataModel.stage);
-            dataModel.stage = "contract";
-            $scope.game.nextPage();
+            console.log("Contract: " + dataModel.contract);
+
+            console.log("Var Wage: " + dataModel.varWage);
 
             if (dataModel.contract) {dataModel.varWage = false;}
             else if (!dataModel.varWage) {dataModel.offerMade = false;}
+
+            console.log("Post Contract: " + dataModel.contract);
+
+            console.log("Post Var Wage: " + dataModel.varWage);
+
+            console.log("Post Offer: " + dataModel.offerMade);
+
+            $scope.game.nextPage();
+
+
         }
 
         $scope.game.sendAction = function() {
+            if (dataModel.action === "reward")
+                dataModel.finalWage += dataModel.bonus;
+            if (dataModel.action === "penalize")
+                dataModel.finalWage -= dataModel.bonus;
+            
             $scope.game.nextPage();
         }
 
         $scope.game.nextPage = function() {
             var employer = dataModel.role == "employer";
             console.log(dataModel.stage)
+            console.log("nextPage offer: " + dataModel.offerMade);
             var page = "";            
 
             if (dataModel.stage === "init") {
                 dataModel.wage = dataModel.lowBase ? 12 : 16;
                 dataModel.finalWage = dataModel.wage;
                 page = employer ? '2' : 'wait';
-                dataModel.stage = "contract";
+                dataModel.stage = "effort";
             }
-            else if (dataModel.stage === "contract") {
+            else if (dataModel.stage === "contract" && dataModel.offerMade) {
                 console.log("effort Stage");
                 page = employer ? '4' : '3';
                 console.log(page);
@@ -189,7 +206,7 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
             }
             else if (dataModel.stage === "effort" && dataModel.varWage && dataModel.offerMade && dataModel.accept && ((dataModel.lowBase && dataModel.effortLevel === 'High') || (!dataModel.lowBase && dataModel.effortLevel === 'Low'))) {
                 dataModel.reaction = true;
-                //console.log("reaction");
+                console.log("reaction");
                 page = employer ? '4' : 'wait';
                 dataModel.stage = "action";
             }

@@ -60,7 +60,7 @@ tutorialApp.service("dataModel", function() {
 
     this.contract = Math.random() >= 0.5;
     this.accept = '';
-    this.effortLevel = Math.random() >= 0.5 ? 'Low' : 'High';
+    this.effortLevel = '';
     this.action = '';
     this.oid = url.substring(url.length - 26, url.length - 2);
 });
@@ -188,7 +188,7 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
                 page = employer ? '2' : '3';
                 dataModel.stage = "effort";
             }
-            else if (dataModel.stage === "contract") {
+            else if (dataModel.stage === "contract" && dataModel.offerMade) {
                 console.log("effort Stage");
                 page = employer ? '4' : '3';
                 console.log(page);
