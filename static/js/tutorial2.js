@@ -51,7 +51,7 @@ tutorialApp.service("dataModel", function() {
     this.stage = "init";
     this.lowBase = Math.random() >= 0.5;
     this.varWage = Math.random() >= 0.5;
-    this.offerMade = Math.random() >= 0.5;
+    this.offerMade = true;
     this.reaction = false;
     
     this.wage = 12;
@@ -59,7 +59,7 @@ tutorialApp.service("dataModel", function() {
     this.bonus = 4;
 
     this.contract = Math.random() >= 0.5;
-    this.accept = '';
+    this.accept = null;
     this.effortLevel = '';
     this.action = '';
     this.oid = url.substring(url.length - 26, url.length - 2);
@@ -167,7 +167,26 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
         }
 
         $scope.game.sendEffortLevel = function() {
+             if (!dataModel.accept)
+                    dataModel.finalWage = 0;
+
+            else if (dataModel.varWage) {
+                if (dataModel.lowBase && dataModel.effortLevel === 'High') {
+                    dataModel.action = Math.random() >= 0.5 ? "ignore" : "reward";
+                }
+                else if (!dataModel.lowBase && dataModel.effortLevel === 'Low') {
+                    dataModel.action = Math.random() >= 0.5 ? "excuse" : "penalize";
+                }
+
+            }
+
+            if (dataModel.action === "reward")
+                dataModel.finalWage += dataModel.bonus;
+            if (dataModel.action === "penalize")
+                dataModel.finalWage -= dataModel.bonus;
+        
             $scope.game.nextPage();
+
         }
 
 
