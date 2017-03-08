@@ -115,7 +115,6 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
         }
 
         $scope.game.getContract = function() {
-            console.log("hit");
             if(dataModel.contract == null)
                 return ''
             else if (dataModel.contract)
@@ -153,12 +152,7 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
             return dataModel.finalWage;
         }
 
-        $scope.game.print = function() {
-            console.log("got it");
-        }
-
         $scope.game.sendContract = function() {
-            console.log(dataModel.stage);
             dataModel.stage = "contract";
             $scope.game.nextPage();
 
@@ -198,7 +192,6 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
 
         $scope.game.nextPage = function() {
             var employer = dataModel.role == "employer";
-            console.log(dataModel.stage)
             var page = "";            
 
             if (dataModel.stage === "init") {
@@ -208,14 +201,11 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
                 dataModel.stage = "effort";
             }
             else if (dataModel.stage === "contract" && dataModel.offerMade) {
-                console.log("effort Stage");
                 page = employer ? '4' : '3';
-                console.log(page);
                 dataModel.stage = "effort";
             }
             else if (dataModel.stage === "effort" && dataModel.varWage && dataModel.offerMade && dataModel.accept && ((dataModel.lowBase && dataModel.effortLevel === 'High') || (!dataModel.lowBase && dataModel.effortLevel === 'Low'))) {
                 dataModel.reaction = true;
-                //console.log("reaction");
                 page = employer ? '4' : '5';
                 dataModel.stage = "action";
             }

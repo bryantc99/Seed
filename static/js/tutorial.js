@@ -115,7 +115,6 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
         }
 
         $scope.game.getContract = function() {
-            console.log("hit");
             if(dataModel.contract == null)
                 return ''
             else if (dataModel.contract)
@@ -153,24 +152,10 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
             return dataModel.finalWage;
         }
 
-        $scope.game.print = function() {
-            console.log("got it");
-        }
-
         $scope.game.sendContract = function() {
-            console.log(dataModel.stage);
-            console.log("Contract: " + dataModel.contract);
-
-            console.log("Var Wage: " + dataModel.varWage);
 
             if (dataModel.contract) {dataModel.varWage = false;}
             else if (!dataModel.varWage) {dataModel.offerMade = false;}
-
-            console.log("Post Contract: " + dataModel.contract);
-
-            console.log("Post Var Wage: " + dataModel.varWage);
-
-            console.log("Post Offer: " + dataModel.offerMade);
 
             $scope.game.nextPage();
 
@@ -182,14 +167,12 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
                 dataModel.finalWage += dataModel.bonus;
             if (dataModel.action === "penalize")
                 dataModel.finalWage -= dataModel.bonus;
-            
+
             $scope.game.nextPage();
         }
 
         $scope.game.nextPage = function() {
             var employer = dataModel.role == "employer";
-            console.log(dataModel.stage)
-            console.log("nextPage offer: " + dataModel.offerMade);
             var page = "";            
 
             if (dataModel.stage === "init") {
@@ -199,14 +182,11 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
                 dataModel.stage = "effort";
             }
             else if (dataModel.stage === "contract" && dataModel.offerMade) {
-                console.log("effort Stage");
                 page = employer ? '4' : '3';
-                console.log(page);
                 dataModel.stage = "effort";
             }
             else if (dataModel.stage === "effort" && dataModel.varWage && dataModel.offerMade && dataModel.accept && ((dataModel.lowBase && dataModel.effortLevel === 'High') || (!dataModel.lowBase && dataModel.effortLevel === 'Low'))) {
                 dataModel.reaction = true;
-                console.log("reaction");
                 page = employer ? '4' : 'wait';
                 dataModel.stage = "action";
             }

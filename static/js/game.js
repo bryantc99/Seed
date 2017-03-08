@@ -100,13 +100,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
 
 
         $scope.game.newPage = function(page){
-            //$rootScope.$apply(function() {
                 $window.location.assign("/game/user/" + oid + "#/" + page);
-                //console.log($location.path());
-            //});
-            //$location.path();
-            //$location.hash(page);
-            //$window.location.assign("/game/user/" + $scope.oid +"#/" + page);
         }
 
         $scope.game.finishGame = function(){
@@ -263,7 +257,6 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
                 });
             }
             else if (type == CONTRACT_MSG) {
-                console.log("Contract Offered");
                 dataModel.contract = msg.contract;
                 dataModel.varWage = msg.varWage;
                 dataModel.offerMade = msg.offerMade;
@@ -273,9 +266,6 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
             }
             else if (type == EFFORT_MSG) {
                 var acceptStr = msg.accept ? "accept" : "reject";
-                console.log("Contract " + acceptStr + "ed");
-                if (msg.accept === true)
-                    console.log("Effort level: " + msg.effortLevel);
                 dataModel.accept = msg.accept;
                 if (!dataModel.accept)
                     dataModel.finalWage = 0;
@@ -283,7 +273,6 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
                 $scope.game.nextPage();
             }
             else if (type == ACTION_MSG) {
-                console.log("Action: " + msg.action);
                 dataModel.action = msg.action;
                 if (dataModel.action === "reward")
                     dataModel.finalWage += dataModel.bonus;
