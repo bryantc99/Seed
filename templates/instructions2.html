@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html ng-app="mainApp" ng-controller="MainController">
+<head>
+<title>Oxford Experiments</title>
+<meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no">
+
+<link rel="stylesheet" href="{{ static_url("css/main.css") }}" type="text/css">
+<link rel="stylesheet" href="{{ static_url("css/register.css") }}" type="text/css">
+
+<script src="{{ static_url("js/angular/angular.js") }}" type="text/javascript"></script>
+<script src="{{ static_url("js/angular/angular-resource.js") }}" type="text/javascript"></script>
+
+
+</head>
+<body>
+
+
+<div id="screenarea_outer">
+<div id="screenarea_middle">
+
+<div class="screen" data-role="content">
+
+<h2>Tutorial</h2>
+
+<p>You will now play a sample game as an employee.. </p>
+
+<p>&nbsp;</p> 
+ 
+
+      <p>Please select <b>OK</b> to begin.</p><p></p>
+
+      <form action="/tutorial2" id="tutorial2Entry" method="post">
+      <input type="submit" value="OK" class="button">
+      </form>
+<hr>
+
+</div>
+</div>
+</div>
+
+<script src="{{ static_url("js/main.js") }}" type="text/javascript"></script>
+
+</body>
+</html>

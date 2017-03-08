@@ -51,11 +51,28 @@ class MainHandler(BaseHandler):
 
 class RegisterHandler(BaseHandler):
     def post(self):
-        name = self.get_argument('name');
+        name = self.get_argument('name')
         result = db.players.insert_one({
             "name" : name
             })
         self.render("about.html", title="Oxford Experiments", oid = result.inserted_id)
+
+class InstructionsHandler(BaseHandler):
+    def get(self, oid):
+        self.render("instructions.html", title="Oxford Experiments", oid = oid)
+
+class Instructions2Handler(BaseHandler):
+    def get(self, oid):
+        self.render("instructions2.html", title="Oxford Experiments", oid = oid)
+
+class TutorialHandler(BaseHandler):
+    def post(self, oid):
+    	self.render("tutorial.html", title="Oxford Experiments", oid = oid)
+
+
+class Tutorial2Handler(BaseHandler):
+    def post(self, oid):
+        self.render("tutorial2.html", title="Oxford Experiments", oid = oid)
 
 class WelcomeHandler(BaseHandler):
     def get(self, oid):

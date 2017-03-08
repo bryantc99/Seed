@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-__author__ = "Bryant Chen"
+__author__ = "Bryant Chen, based on Chang Yang's work on UbiquityLab"
 __email__ = "bachen@stanford.edu"
 
 #from Python
@@ -21,12 +21,12 @@ import tornado.httpserver
 import tornado.ioloop
 import tornado.web
 import tornado.gen
+from tornado.options import define, options
 
 from pymongo import MongoClient
 
 import json
 from bson import ObjectId
-
 
 # for redis
 from toredis import Client
@@ -37,8 +37,6 @@ from bson.objectid import ObjectId
 
 MONGODB_DB_URL = 'mongodb://heroku_qzkzsqmj:bejucbi1s53qb9ldqobd166od5@ds157529.mlab.com:57529/heroku_qzkzsqmj'
 MONGODB_DB_NAME = 'heroku_qzkzsqmj'
-
-from tornado.options import define, options
 
 define('port', default=5000, help='run on the given port', type=int)
 define('debug', default=False, help='run in debug mode', metavar='True|False', type=bool)
@@ -55,7 +53,7 @@ tornado.options.parse_config_file(environ.get('CONFIG'))
 level = getattr(logging, tornado.options.options.logging.upper())
 # set up app level logger
 logger = logging.getLogger('content')
-logger.setLevel(level)
+logger.setLevel(logging.DEBUG)
 app_handler = logging.StreamHandler(stdout)
 app_formatter = logging.Formatter('[%(levelname)1.1s A %(asctime)s] %(message)s | %(module)s:%(lineno)d', '%y%dm%d %H:%M:%S')
 app_handler.setFormatter(app_formatter)
@@ -74,7 +72,6 @@ logging.getLogger().addHandler(frame_handler)
 logging.getLogger().setLevel(level)
 
 from sockjs.tornado import SockJSConnection, SockJSRouter
-
 import handlers
 
 
@@ -85,12 +82,16 @@ class Application(tornado.web.Application):
         self.GameRouter = SockJSRouter(GameConnection, '/sockjs/game', options)
 
         GameConnection.ready = 0
-        GameConnection.size = 2
+        GameConnection.size = 4
         GameConnection.participants = list();
 
         urls = [
             (r'/', handlers.MainHandler),
             (r'/about', handlers.RegisterHandler),
+            (r'/instructionsemployer([^/]*)', handlers.InstructionsHandler),
+            (r'/instructionsemployee([^/]*)', handlers.Instructions2Handler),
+            (r'/tutorial1/user/([a-zA-Z0-9])*', handlers.TutorialHandler),
+            (r'/tutorial2/user/([a-zA-Z0-9])*', handlers.Tutorial2Handler),
             (r'/welcome([^/]*)', handlers.WelcomeHandler),
             (r'/game/user/([a-zA-Z0-9])*', handlers.GameHandler),
             (r'/api/player/register([^/]*)', handlers.PlayerCreateHandler),
@@ -147,7 +148,7 @@ class WaitingRoomConnection(SockJSConnection):
     # game_id:size
     # game_id: string
     # size: int
-    admission_sizes = 1
+    admission_sizes = 4
     # game_id:status
     # game_id: string
     # status: int
@@ -181,7 +182,7 @@ class WaitingRoomConnection(SockJSConnection):
     HEARTBEAT = 'h'
 
     # constants
-    TOT_PLAYERS = 1
+    TOT_PLAYERS = 4
     NUM_ROUNDS = 3
     MATRIX = [[1,5,3],
               [0,2,4],
@@ -216,9 +217,10 @@ class WaitingRoomConnection(SockJSConnection):
             present_subjects.add(self)
             self.subject_no = len(present_subjects)
             self.game_id = "gm" + str(self.subject_no - 1) + str(self.subject_no) if self.subject_no % 2 == 0 else "gm" + str(self.subject_no)+ str(self.subject_no + 1)
+            print "[WaitingRoomConnection] Subject " + self.subject_id + "assigned to game " + self.game_id
             db.players.update_one({'_id': ObjectId(self.subject_id)},{'$set': {'subject_no': self.subject_no, 'game_id': self.game_id}})
             logger.info('[WaitingRoomConnection] WAIT_MSG from subject: %s of game: %s', self.subject_id, self.game_id)
-            logger.info('[WaitingRoomConnection] Number of waiting subjects: %d/%d ', self.subject_no, self.admission_size)
+            print "[WaitingRoomConnection] Number of waiting subjects:" + self.subject_no + "/" + self.admission_size
 
             if len(present_subjects) >= self.admission_size:
                 WaitingRoomConnection.room_statuses[self.game_id] = WaitingRoomConnection.ENTRY_OPEN
