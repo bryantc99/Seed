@@ -113,7 +113,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
         }
 
         $scope.game.finishGame = function(){
-            $window.location.assign("/welcome?oid=" + oid);
+            $window.location.assign("/payment?oid=" + oid);
         }
 
         $scope.game.setContinue = function(access) {

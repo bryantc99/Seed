@@ -94,6 +94,7 @@ class Application(tornado.web.Application):
             (r'/tutorial1/user/([a-zA-Z0-9])*', handlers.TutorialHandler),
             (r'/tutorial2/user/([a-zA-Z0-9])*', handlers.Tutorial2Handler),
             (r'/welcome([^/]*)', handlers.WelcomeHandler),
+            (r'/payment([^/]*)', handlers.PaymentHandler),
             (r'/game/user/([a-zA-Z0-9])*', handlers.GameHandler),
             (r'/api/player/register([^/]*)', handlers.PlayerCreateHandler),
             (r'/api/player/(.*)', handlers.PlayerHandler),
@@ -452,7 +453,7 @@ class GameConnection(SockJSConnection):
                 else:
                     self.broadcast(GameConnection.participants, message)
             elif msg_type == GameConnection.FINISH_MSG:
-                result = db.players.insert_one({
+                db.players.update_one({'_id': ObjectId(self.subject_id)},{'$set': {
                     "status": "finished",
                     "game_id": msg['game_id'],
                     "role": msg['role'],
@@ -461,7 +462,7 @@ class GameConnection(SockJSConnection):
                     "accept": msg['accept'],
                     "effortLevel": msg['effortLevel'],
                     "action": msg['action'] 
-                    })
+                    }})
 
     def on_close(self):
         GameConnection.participants = [];

@@ -88,6 +88,10 @@ class WelcomeHandler(BaseHandler):
         oid = self.get_argument('oid')
         self.render("welcome.html", title="Oxford Experiments", oid = oid)
 
+class PaymentHandler(BaseHandler):
+    def get(self, oid):
+        self.render("payment.html", title="Oxford Experiments", oid = oid)
+
 class GameHandler(BaseHandler):
     def post(self, oid):
         #oid = self.get_argument('oid')
