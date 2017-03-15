@@ -14,7 +14,20 @@
 
 </head>
 <body>
+	<div class="headerwarning" id="headerbar">
+		<div id="periodcounter"></div>
+		<div ng-if="!main.timeUp" id="timecounter" style="display: block;">You have {{!main.counter}} seconds left.</div>
+		<div ng-if="main.timeUp" id="timecounter" style="display: block;">Time is up! Please finish.</div>
 
+		<div id="balance">
+			<a href="" onclick="reloadpage()" id="reloadlink" style="display: none;">R</a> &nbsp; &nbsp; 
+			<span style="font-weight: normal;">LabBox</span> &nbsp; &nbsp; 
+		</div>
+	</div>
+
+	<div class="bar" id="headerwaitbar" style="width: 100%">
+		<div class="barcontents" style="width: 0px; display: none;" id="countdownbar"></div>
+	</div>
 
 <div id="screenarea_outer">
 <div id="screenarea_middle">
@@ -34,14 +47,9 @@ We will explain how this works during the session.</p>
 
       <p>Please select <b>I agree</b> to participate in this study.</p><p></p>
       <p> Your ID is {{oid}}</p>
-      <p> What is the capital of France?</p>
 
-      <form action="/instructionsemployer" method="get">
-        <input type="radio" name="city" value="London" checked> London<br>
-  		<input type="radio" name="city" value="Paris"> Paris<br>
-  		<input type="radio" name="city" value="Berlin"> Berlin<br><br>
+      <form action="/quiz/user/{{oid}}" method="post">
       <input type="submit" value="I agree" class="button">
-      <input name="oid" type="hidden" value={{oid}}>
       </form>
 <hr>
 <p>Background information: The principal researcher in this project is Elwyn Davies (elwyn.davies@economics.ox.ac.uk), doctoral student at the University of Oxford. If you agree to participate in this project, the research will be written up as a thesis. This thesis, as well as other publications resulting from this project, might be published online as well as in print.

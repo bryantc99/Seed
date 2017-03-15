@@ -1,0 +1,10 @@
+  What is the capital of Germany?
+<br>
+<div ng-show="quiz.mistake" style= "color: red">Incorrect. Please Try again</div>
+<br>
+<div>
+  <input type="radio" ng-model="quiz.inputs[1]" value="London" ng-click="quiz.continue = true"> London<br>
+  <input type="radio" ng-model="quiz.inputs[1]" value="Paris" ng-click="quiz.continue = true"> Paris<br>
+  <input type="radio" ng-model="quiz.inputs[1]" value="Berlin" ng-click="quiz.continue = true"> Berlin<br><br>
+</div>
+  <input ng-show="quiz.continue" type="submit" value="Ok" class="button" ng-click="quiz.validate(1)">

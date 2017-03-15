@@ -5,20 +5,21 @@
 		<p>Pick your <b>effort level</b>.</p>
 		<table class="offertable" style="width: 100%" cellspacing="0">
 			<tbody>
-				<tr class="topline">
+				<tr class="bottomline" ng-if="game.getAcceptVal()">
 					<td colspan="4">
-						<input name="submit" type="button" value="Accept" ng-click="game.setAccept(true); game.continue = true;" class="button">
+						<input name="submit" type="button" value="Low" ng-click="game.setEffort('Low'); game.continue = true;" class="button">
 					</td>
 					<td colspan="4">
-						<input name="submit" type="button" value="Reject" ng-click="game.setAccept(false); game.continue = true;" class="button">
+						<input name="submit" type="button" value="High" ng-click="game.setEffort('High'); game.continue = true;" class="button">
 					</td>
 					<td></td>
 					<td colspan="4">
-						<p>You will <br><br> <span class="offernum">{{game.getAccept()}}</span> the offer</p>
+						<p>You will work using <br><br> <span class="offernum">{{game.getEffort()}}</span> effort</p>
 					</td>
 				</tr>
+
 			</tbody>
 		</table>
-		<p><input name="submit" type="button" value="OK" ng-click="game.sendAccept()" ng-show="game.continue" class="button"></p>
+		<p><input name="submit" type="button" value="OK" ng-click="game.sendEffortLevel()" ng-show="game.continue" class="button"></p>
 	</div>
 </form>

@@ -8,13 +8,13 @@
 			<tbody>
 				<tr class="topline">
 					<td colspan="4">
-						<input ng-if="!game.getLowBase()" name="submit" type="button" value="Excuse" ng-click="game.setAction('excuse')" class="button">
-						<input ng-if="game.getLowBase()" name="submit" type="button" value="Ignore" ng-click="game.setAction('ignore')" class="button">
+						<input ng-if="!game.getLowBase()" name="submit" type="button" value="Excuse" ng-click="game.setAction('excuse'); game.continue = true;" class="button">
+						<input ng-if="game.getLowBase()" name="submit" type="button" value="Ignore" ng-click="game.setAction('ignore'); game.continue = true;" class="button">
 
 					</td>
 					<td colspan="4">
-						<input ng-if="!game.getLowBase()" name="submit" type="button" value="Penalize" ng-click="game.setAction('penalize')" class="button">
-						<input ng-if="game.getLowBase()" name="submit" type="button" value="Reward" ng-click="game.setAction('reward')" class="button">
+						<input ng-if="!game.getLowBase()" name="submit" type="button" value="Penalize" ng-click="game.setAction('penalize'); game.continue = true;" class="button">
+						<input ng-if="game.getLowBase()" name="submit" type="button" value="Reward" ng-click="game.setAction('reward'); game.continue = true;" class="button">
 
 					</td>
 					<td colspan="4"></td>
@@ -24,6 +24,6 @@
 				</tr>
 			</tbody>
 		</table>
-		<p><input name="submit" type="button" value="OK" ng-click="game.sendAction()" class="button"></p>
+		<p><input name="submit" type="button" value="OK" ng-click="game.sendAction()" ng-show="game.continue" class="button"></p>
 	</div>
 </form>

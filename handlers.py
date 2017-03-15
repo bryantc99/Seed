@@ -57,6 +57,10 @@ class RegisterHandler(BaseHandler):
             })
         self.render("about.html", title="Oxford Experiments", oid = result.inserted_id)
 
+class QuizHandler(BaseHandler):
+    def post(self, submit):
+        self.render("quiz.html", title="Oxford Experiments")
+
 class InstructionsHandler(BaseHandler):
     def get(self, oid):
         self.render("instructions.html", title="Oxford Experiments", oid = oid)

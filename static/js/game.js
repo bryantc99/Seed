@@ -53,6 +53,10 @@ gameApp.config(['$routeProvider',
             templateUrl: '../../static/game/3.html',
             controller: 'GameController'
         }).
+        when('/3b', {
+            templateUrl: '../../static/game/3.html',
+            controller: 'GameController'
+        }).
         when('/4', {
             templateUrl: '../../static/game/4.html',
             controller: 'GameController'
@@ -90,7 +94,6 @@ gameApp.service("dataModel", function() {
     this.accept = null;
     this.effortLevel = '';
     this.action = '';
-    this.oid = url.substring(url.length - 26, url.length - 2);
 })
 
 gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$location', '$rootScope',
@@ -181,8 +184,6 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
             return dataModel.finalWage;
         }
 
-
-
         $scope.game.nextPage = function() {
             var employer = dataModel.role == "employer";
 
@@ -194,14 +195,11 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
                 dataModel.stage = "contract";
             }
             else if (dataModel.stage === "contract" && dataModel.offerMade) {
-                console.log("effort Stage");
                 page = employer ? 'wait' : '3';
-                console.log(page);
                 dataModel.stage = "effort";
             }
             else if (dataModel.stage === "effort" && dataModel.varWage && dataModel.offerMade && dataModel.accept && ((dataModel.lowBase && dataModel.effortLevel === 'High') || (!dataModel.lowBase && dataModel.effortLevel === 'Low'))) {
                 dataModel.reaction = true;
-                //console.log("reaction");
                 page = employer ? '4' : 'wait';
                 dataModel.stage = "action";
             }

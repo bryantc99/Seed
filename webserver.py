@@ -82,12 +82,13 @@ class Application(tornado.web.Application):
         self.GameRouter = SockJSRouter(GameConnection, '/sockjs/game', options)
 
         GameConnection.ready = 0
-        GameConnection.size = 4
+        GameConnection.size = 2
         GameConnection.participants = list();
 
         urls = [
             (r'/', handlers.MainHandler),
             (r'/about', handlers.RegisterHandler),
+            (r'/quiz/user/([a-zA-Z0-9])*', handlers.QuizHandler),
             (r'/instructionsemployer([^/]*)', handlers.InstructionsHandler),
             (r'/instructionsemployee([^/]*)', handlers.Instructions2Handler),
             (r'/tutorial1/user/([a-zA-Z0-9])*', handlers.TutorialHandler),
@@ -132,7 +133,7 @@ class WaitingRoomConnection(SockJSConnection):
     # game_id:subjects
     # game_id: string
     # subjects: set(connection)
-    available_subjects = defaultdict(lambda: set())
+    available_subjects = set()
 
     # game_id:session_id:subjects
     # game_id: string
@@ -148,7 +149,7 @@ class WaitingRoomConnection(SockJSConnection):
     # game_id:size
     # game_id: string
     # size: int
-    admission_sizes = 4
+    admission_sizes = 2
     # game_id:status
     # game_id: string
     # status: int
@@ -182,7 +183,7 @@ class WaitingRoomConnection(SockJSConnection):
     HEARTBEAT = 'h'
 
     # constants
-    TOT_PLAYERS = 4
+    TOT_PLAYERS = 2
     NUM_ROUNDS = 3
     MATRIX = [[1,5,3],
               [0,2,4],
@@ -210,7 +211,7 @@ class WaitingRoomConnection(SockJSConnection):
         self.admission_sizes = WaitingRoomConnection.TOT_PLAYERS
         try:
             # first check if the waiting room has been configured
-            logger.info('[WaitingRoomConnection] admission_sizes: %s', WaitingRoomConnection.admission_sizes )
+            logger.info('[WaitingRoomConnection] admission_sizes: %s', WaitingRoomConnection.admission_sizes)
 
             present_subjects = WaitingRoomConnection.available_subjects
             self.admission_size = WaitingRoomConnection.admission_sizes

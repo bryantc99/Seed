@@ -1,0 +1,6 @@
+<p>You got {{quiz.numCorrect()}}/3 correct.</p>
+
+<p ng-if="quiz.pass()"> You may continue with the experiment.</p>
+<input ng-show="quiz.pass()" type="submit" value="Ok" class="button" ng-click="quiz.finish()">
+<p ng-if="!quiz.pass()"> You did not answer enough questions correctly to continue with the experiment. Thank you for your participation.</p>
+

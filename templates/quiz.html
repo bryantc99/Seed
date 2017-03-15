@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html ng-app="quizApp" ng-controller="QuizController">
+<head>
+<title>Oxford Experiments</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="{{ static_url("css/main.css") }}" type="text/css">
+<link rel="stylesheet" href="{{ static_url("css/register.css") }}" type="text/css">
+
+<script src="{{ static_url("js/angular/angular.js") }}" type="text/javascript"></script>
+<script src="{{ static_url("js/angular/angular-resource.js") }}" type="text/javascript"></script>
+<script src="{{ static_url("js/angular/angular-route.js") }}" type="text/javascript"></script>
+
+
+<script src="{{ static_url("js/quiz.js") }}" type="text/javascript"></script>
+
+</head>
+<body ng-cloak>
+
+	<div class="headerwarning" id="headerbar">
+		<div id="periodcounter"></div>
+		<div ng-if="!quiz.timeUp" id="timecounter" style="display: block;">You have {{!quiz.counter}} seconds left.</div>
+		<div ng-if="quiz.timeUp" id="timecounter" style="display: block;">Time is up! Please finish.</div>
+
+		<div id="balance">
+			<a href="" onclick="reloadpage()" id="reloadlink" style="display: none;">R</a> &nbsp; &nbsp; 
+			<span style="font-weight: normal;">LabBox</span> &nbsp; &nbsp; 
+		</div>
+	</div>
+
+	<div class="bar" id="headerwaitbar" style="width: 100%">
+		<div class="barcontents" style="width: 0px; display: none;" id="countdownbar"></div>
+	</div>
+
+<div id="screenarea_outer">
+<div id="screenarea_middle">
+
+<div class="screen" data-role="content">
+<h2>Check for Understanding</h2>
+
+
+<div ng-view></div>
+			
+
+
+
+</div>
+</div>
+</div>
+
+
+</body>
+</html>

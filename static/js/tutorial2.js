@@ -25,6 +25,10 @@ tutorialApp.config(['$routeProvider',
             templateUrl: '../../static/game/3.html',
             controller: 'TutorialController'
         }).
+        when('/3b', {
+            templateUrl: '../../static/game/3b.html',
+            controller: 'TutorialController'
+        }).
         when('/4', {
             templateUrl: '../../static/game/4.html',
             controller: 'TutorialController'
@@ -160,6 +164,13 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
             else if (!dataModel.varWage) {dataModel.offerMade = false;}
         }
 
+        $scope.game.sendAccept = function() {
+            dataModel.stage = "accept";
+            if (!dataModel.accept)
+                dataModel.finalWage = 0;
+            $scope.game.nextPage();
+        }
+
         $scope.game.sendEffortLevel = function() {
              if (!dataModel.accept)
                     dataModel.finalWage = 0;
@@ -204,6 +215,10 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
                 page = employer ? '4' : '3';
                 dataModel.stage = "effort";
             }
+            else if (dataModel.stage === "accept" && dataModel.accept) {
+                page = employer ? 'wait' : '3b';
+                dataModel.stage = "effort";
+            }
             else if (dataModel.stage === "effort" && dataModel.varWage && dataModel.offerMade && dataModel.accept && ((dataModel.lowBase && dataModel.effortLevel === 'High') || (!dataModel.lowBase && dataModel.effortLevel === 'Low'))) {
                 dataModel.reaction = true;
                 page = employer ? '4' : '5';
@@ -212,7 +227,7 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
             else {
                 page = '5';
                 dataModel.stage = "finish";
-                var payment = employer ? 40 - dataModel.wage : dataModel.wage;
+                var payment = employer ? 40 - dataModel.finalWage : dataModel.finalWage;
 
             }
 
