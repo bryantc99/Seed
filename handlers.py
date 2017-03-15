@@ -90,7 +90,7 @@ class WelcomeHandler(BaseHandler):
 
 class PaymentHandler(BaseHandler):
     def get(self, oid):
-        self.render("payment.html", title="Oxford Experiments", oid = oid)
+        self.render("payment.html", title="Oxford Experiments", oid = self.get_argument("oid"))
 
 class GameHandler(BaseHandler):
     def post(self, oid):
