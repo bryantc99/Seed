@@ -160,6 +160,7 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
             if (dataModel.contract) {dataModel.varWage = false;}
             else if (!dataModel.varWage) {dataModel.offerMade = false;}
 
+             
             $scope.game.nextPage();
 
 
@@ -178,6 +179,9 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
             var employer = dataModel.role == "employer";
             var page = "";
             $scope.game.continue = false;
+
+            dataModel.counter = 11;
+
           
 
             if (dataModel.stage === "init") {
@@ -223,7 +227,8 @@ tutorialApp.controller('TimerController', ['$scope', '$window', 'dataModel', '$i
             stop = $interval(function() {
                 if ($scope.game.counter > 0) {
                     console.log($scope.game.counter);
-                    $scope.game.counter--;
+                    dataModel.counter--;
+                    $scope.game.counter = dataModel.counter;
                 } else {
                     $scope.game.timerStop();
                 }

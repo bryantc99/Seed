@@ -67,6 +67,9 @@ tutorialApp.service("dataModel", function() {
     this.effortLevel = '';
     this.action = '';
     this.oid = url.substring(url.length - 26, url.length - 2);
+
+    this.counting = false;
+    this.counter = 10;
 });
 
 tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', '$location', '$rootScope',
@@ -203,7 +206,9 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
 
         $scope.game.nextPage = function() {
             var employer = dataModel.role == "employer";
-            var page = "";            
+            var page = "";     
+
+            dataModel.counter = 11;       
 
             if (dataModel.stage === "init") {
                 dataModel.wage = dataModel.lowBase ? 12 : 16;
@@ -236,5 +241,49 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
 
         
     }]);
+
+tutorialApp.controller('TimerController', ['$scope', '$window', 'dataModel', '$interval', '$rootScope',
+    function ($scope, $window, dataModel, $interval, $rootScope) {
+        $scope.game = {};
+
+        $scope.game.counter = 10;
+
+        $scope.game.timeUp = false;
+
+        var stop;
+        $scope.game.countdown = function(){
+            dataModel.counting = true;
+            if (angular.isDefined(stop) ) return;
+
+            stop = $interval(function() {
+                if ($scope.game.counter > 0) {
+                    console.log($scope.game.counter);
+                    dataModel.counter--;
+                    $scope.game.counter = dataModel.counter;
+                } else {
+                    $scope.game.timerStop();
+                }
+            }, 1000); 
+        };
+
+        if (!dataModel.counting)
+            $scope.game.countdown();
+
+        $scope.game.timerStop = function() {
+            $scope.game.timeUp = true;
+            if (angular.isDefined(stop)) {
+                $interval.cancel(stop);
+                stop = undefined;
+            }
+        };
+
+        $scope.$on('$destroy', function() {
+          // Make sure that the interval is destroyed too
+          $scope.game.timerStop();
+        });
+
+        
+    }]);
+
 
 
