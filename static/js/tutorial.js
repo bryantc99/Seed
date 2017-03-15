@@ -177,7 +177,8 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
         $scope.game.nextPage = function() {
             var employer = dataModel.role == "employer";
             var page = "";
-            $scope.game.counter = 10;            
+            $scope.game.continue = false;
+          
 
             if (dataModel.stage === "init") {
                 dataModel.wage = dataModel.lowBase ? 12 : 16;
@@ -209,7 +210,6 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
 tutorialApp.controller('TimerController', ['$scope', '$window', 'dataModel', '$interval', '$rootScope',
     function ($scope, $window, dataModel, $interval, $rootScope) {
         $scope.game = {};
-        $scope.game.continue = true;
 
         $scope.game.counter = 10;
 

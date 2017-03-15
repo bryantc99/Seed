@@ -1,4 +1,4 @@
-<html ng-app="tutorialApp"><head>
+<html ng-app="tutorialApp" ng-controller="TimerController"><head>
 <title>Oxford Experiment</title>
 <meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no">
 
@@ -18,7 +18,7 @@
 <body>
 	<div class="headerwarning" id="headerbar">
 		<div id="periodcounter"></div>
-		<div ng-if="!game.timeUp" id="timecounter" style="display: block;">You have {{!game.getCounter()}} seconds left.</div>
+		<div ng-if="!game.timeUp" id="timecounter" style="display: block;">You have {{!game.counter}} seconds left.</div>
 		<div ng-if="game.timeUp" id="timecounter" style="display: block;">Time is up! Please finish.</div>
 	</div>
 
