@@ -455,7 +455,6 @@ class GameConnection(SockJSConnection):
             elif msg_type == GameConnection.FINISH_MSG:
                 db.players.update_one({'_id': ObjectId(self.subject_id)},{'$set': {
                     "status": "finished",
-                    "game_id": msg['game_id'],
                     "role": msg['role'],
                     "payment": msg['payment'],
                     "wage": msg['wage'],
