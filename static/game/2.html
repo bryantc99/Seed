@@ -10,10 +10,10 @@
 			<tbody>
 				<tr class="topline">
 					<td colspan="4">
-						<input name="submit" type="button" value="Option A" ng-click="game.setContract(true); game.continue = true;"" class="button">
+						<input name="submit" type="button" value="Option A" ng-click="game.setContract(true);"" class="button">
 					</td>
 					<td colspan="4">
-						<input name="submit" type="button" value="Option B" ng-click="game.setContract(false); game.continue = true;" class="button">
+						<input name="submit" type="button" value="Option B" ng-click="game.setContract(false);" class="button">
 					</td>
 					<td></td>
 					<td colspan="4">
@@ -22,6 +22,6 @@
 				</tr>
 			</tbody>
 		</table>
-		<p><input name="submit" type="button" value="OK" ng-click="game.sendContract()" ng-show="game.continue" class="button"></p>
+		<p><input name="submit" type="button" value="OK" ng-click="game.sendContract()" ng-if="game.continue" class="button"></p>
 	</div>
 </form>

@@ -70,12 +70,13 @@ tutorialApp.service("dataModel", function() {
 
     this.counting = false;
     this.counter = 10;
+    this.continue = true;
 });
 
 tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', '$location', '$rootScope',
     function ($scope, $window, dataModel, $location, $rootScope) {
         $scope.game = {};
-        $scope.game.continue = true;
+        $scope.game.continue = dataModel.continue;
 
         $scope.game.newPage = function(page){
             $window.location.assign("/tutorial2/user/" + oid + "#/" + page);
@@ -91,10 +92,14 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
         }
 
         $scope.game.setAccept = function(response) {
+            dataModel.continue = true;
+
             dataModel.accept = response;
         }
 
         $scope.game.setEffort = function(level) {
+            dataModel.continue = true;
+
             dataModel.effortLevel = level;
         }
 
@@ -207,6 +212,8 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
         $scope.game.nextPage = function() {
             var employer = dataModel.role == "employer";
             var page = "";     
+            dataModel.continue = false;
+
 
             dataModel.counter = 11;       
 

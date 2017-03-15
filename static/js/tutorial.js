@@ -65,13 +65,15 @@ tutorialApp.service("dataModel", function() {
     this.oid = url.substring(url.length - 26, url.length - 2);
     this.counting = false;
     this.counter = 10;
+    this.continue = true;
 
 });
 
 tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', '$interval', '$rootScope',
     function ($scope, $window, dataModel, $interval, $rootScope) {
         $scope.game = {};
-        $scope.game.continue = true;
+
+        $scope.game.continue = dataModel.continue;
 
         $scope.game.newPage = function(page){
             $window.location.assign("/tutorial1/user/" + oid + "#/" + page);
@@ -83,6 +85,9 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
 
         $scope.game.setContract = function(offer) {
             //true = A, false = B
+
+            $scope.game.continue = true;
+            console.log("continue:" + $scope.game.continue)
             dataModel.contract = offer;
         }
 
@@ -95,6 +100,7 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
         }
 
         $scope.game.setAction = function(act) {
+            dataModel.continue = true;
             dataModel.action = act;
         }
 
@@ -178,7 +184,7 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
         $scope.game.nextPage = function() {
             var employer = dataModel.role == "employer";
             var page = "";
-            $scope.game.continue = false;
+            dataModel.continue = false;
 
             dataModel.counter = 11;
 
