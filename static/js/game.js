@@ -248,6 +248,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
                 dataModel.stage = "finish";
                 var payment = employer ? 40 - dataModel.wage : dataModel.wage;
                 conn.send(JSON.stringify({"type": FINISH_MSG,
+                                        "oid": oid,
                                         "role": dataModel.role, 
                                         "wage": dataModel.wage,
                                         "contract": dataModel.contract, 
