@@ -62,7 +62,7 @@ tutorialApp.service("dataModel", function() {
     this.accept = true;
     this.effortLevel = Math.random() >= 0.5 ? 'Low' : 'High';
     this.action = '';
-    this.oid = url.substring(url.length - 26, url.length - 2);
+
     this.counting = false;
     this.counter = 10;
     this.continue = true;
@@ -87,7 +87,6 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
             //true = A, false = B
 
             $scope.game.continue = true;
-            console.log("continue:" + $scope.game.continue)
             dataModel.contract = offer;
         }
 

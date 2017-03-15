@@ -54,7 +54,7 @@ gameApp.config(['$routeProvider',
             controller: 'GameController'
         }).
         when('/3b', {
-            templateUrl: '../../static/game/3.html',
+            templateUrl: '../../static/game/3b.html',
             controller: 'GameController'
         }).
         when('/4', {
@@ -94,12 +94,17 @@ gameApp.service("dataModel", function() {
     this.accept = null;
     this.effortLevel = '';
     this.action = '';
+
+    this.counting = false;
+    this.counter = 10;
+    this.continue = false;
 })
 
 gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$location', '$rootScope',
     function ($scope, $window, dataModel, $location, $rootScope) {
         $scope.game = {};
-        $scope.game.continue = false;
+        $scope.game.continue = dataModel.continue;
+        console.log($scope.game.continue);
 
 
         $scope.game.newPage = function(page){
@@ -110,20 +115,33 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
             $window.location.assign("/welcome?oid=" + oid);
         }
 
+        $scope.game.setContinue = function(access) {
+            //true = A, false = B
+            $scope.game.continue = access;
+        }
+
         $scope.game.setContract = function(offer) {
             //true = A, false = B
+            $scope.game.continue = true;
+
             dataModel.contract = offer;
         }
 
         $scope.game.setAccept = function(response) {
+            $scope.game.continue = true;
+
             dataModel.accept = response;
         }
 
         $scope.game.setEffort = function(level) {
+            $scope.game.continue = true;
+
             dataModel.effortLevel = level;
         }
 
         $scope.game.setAction = function(act) {
+            $scope.game.continue = true;
+
             dataModel.action = act;
         }
 
@@ -187,6 +205,8 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
         $scope.game.nextPage = function() {
             var employer = dataModel.role == "employer";
 
+            $scope.game.continue = false;
+
             var page = "";
             if (dataModel.stage === "init") {
                 dataModel.wage = dataModel.lowBase ? 12 : 16;
@@ -196,6 +216,10 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
             }
             else if (dataModel.stage === "contract" && dataModel.offerMade) {
                 page = employer ? 'wait' : '3';
+                dataModel.stage = "effort";
+            }
+            else if (dataModel.stage === "accept" && dataModel.accept) {
+                page = employer ? 'wait' : '3b';
                 dataModel.stage = "effort";
             }
             else if (dataModel.stage === "effort" && dataModel.varWage && dataModel.offerMade && dataModel.accept && ((dataModel.lowBase && dataModel.effortLevel === 'High') || (!dataModel.lowBase && dataModel.effortLevel === 'Low'))) {
@@ -228,6 +252,13 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
             conn.send(JSON.stringify({"type": CONTRACT_MSG, "contract": dataModel.contract, "varWage": dataModel.varWage, "offerMade": dataModel.offerMade}))
         }
 
+        $scope.game.sendAccept = function() {
+            dataModel.stage = "accept";
+            if (!dataModel.accept)
+                dataModel.finalWage = 0;
+            $scope.game.nextPage();
+        }
+
         $scope.game.sendEffortLevel = function() {
             conn.send(JSON.stringify({"type": EFFORT_MSG, "accept": dataModel.accept,"effortLevel": dataModel.effortLevel}))
         }
@@ -250,9 +281,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
                // console.log(msg.treatment)
                 dataModel.lowBase = msg.lowBase;
                 dataModel.varWage = msg.varWage;
-                $scope.$apply(function() {
-                    $scope.game.continue = true;
-                });
+                $scope.game.setContinue(true);
             }
             else if (type == CONTRACT_MSG) {
                 dataModel.contract = msg.contract;
@@ -279,5 +308,48 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
                 $scope.game.nextPage();
             }              
         };
+    }]);
+
+gameApp.controller('TimerController', ['$scope', '$window', 'dataModel', '$interval', '$rootScope',
+    function ($scope, $window, dataModel, $interval, $rootScope) {
+        $scope.game = {};
+
+        $scope.game.counter = 10;
+
+        $scope.game.timeUp = false;
+
+        var stop;
+        $scope.game.countdown = function(){
+            dataModel.counting = true;
+            if (angular.isDefined(stop) ) return;
+
+            stop = $interval(function() {
+                if ($scope.game.counter > 0) {
+                    console.log($scope.game.counter);
+                    dataModel.counter--;
+                    $scope.game.counter = dataModel.counter;
+                } else {
+                    $scope.game.timerStop();
+                }
+            }, 1000); 
+        };
+
+        if (!dataModel.counting)
+            $scope.game.countdown();
+
+        $scope.game.timerStop = function() {
+            $scope.game.timeUp = true;
+            if (angular.isDefined(stop)) {
+                $interval.cancel(stop);
+                stop = undefined;
+            }
+        };
+
+        $scope.$on('$destroy', function() {
+          // Make sure that the interval is destroyed too
+          $scope.game.timerStop();
+        });
+
+        
     }]);
 

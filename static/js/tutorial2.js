@@ -66,7 +66,6 @@ tutorialApp.service("dataModel", function() {
     this.accept = null;
     this.effortLevel = '';
     this.action = '';
-    this.oid = url.substring(url.length - 26, url.length - 2);
 
     this.counting = false;
     this.counter = 10;
