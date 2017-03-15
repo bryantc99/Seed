@@ -221,7 +221,7 @@ class WaitingRoomConnection(SockJSConnection):
             print "[WaitingRoomConnection] Subject " + self.subject_id + "assigned to game " + self.game_id
             db.players.update_one({'_id': ObjectId(self.subject_id)},{'$set': {'subject_no': self.subject_no, 'game_id': self.game_id}})
             logger.info('[WaitingRoomConnection] WAIT_MSG from subject: %s of game: %s', self.subject_id, self.game_id)
-            print "[WaitingRoomConnection] Number of waiting subjects:" + self.subject_no + "/" + self.admission_size
+            print "[WaitingRoomConnection] Number of waiting subjects:" + str(self.subject_no) + "/" + str(self.admission_size)
 
             if len(present_subjects) >= self.admission_size:
                 WaitingRoomConnection.room_statuses[self.game_id] = WaitingRoomConnection.ENTRY_OPEN
