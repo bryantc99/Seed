@@ -206,6 +206,8 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
             var employer = dataModel.role == "employer";
 
             $scope.game.continue = false;
+            dataModel.counter = 11;
+
 
             var page = "";
             if (dataModel.stage === "init") {
@@ -254,8 +256,10 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
 
         $scope.game.sendAccept = function() {
             dataModel.stage = "accept";
-            if (!dataModel.accept)
+            if (!dataModel.accept) {
                 dataModel.finalWage = 0;
+                conn.send(JSON.stringify({"type": EFFORT_MSG, "accept": dataModel.accept,"effortLevel": dataModel.effortLevel}))
+            }
             $scope.game.nextPage();
         }
 
