@@ -213,7 +213,7 @@ class WaitingRoomConnection(SockJSConnection):
             self.admission_size = WaitingRoomConnection.admission_sizes
             present_subjects.add(self)
             self.subject_no = len(present_subjects)
-            self.partner = PAIRS[self.subject_no]
+            self.partner = PAIRS[self.subject_no - 1]
             self.game_id = "gm" + str(self.partner) + str(self.subject_no) if self.partner < self.subject_no else "gm" + str(self.subject_no)+ str(self.partner)
             print "[WaitingRoomConnection] Subject " + self.subject_id + "assigned to game " + self.game_id
             db.players.update_one({'_id': ObjectId(self.subject_id)},{'$set': {'subject_no': self.subject_no, 'game_id': self.game_id}})
