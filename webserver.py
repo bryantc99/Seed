@@ -82,7 +82,7 @@ class Application(tornado.web.Application):
         self.GameRouter = SockJSRouter(GameConnection, '/sockjs/game', options)
 
         GameConnection.ready = 0
-        GameConnection.size = 4
+        GameConnection.size = 2
         GameConnection.participants = list();
 
         urls = [
@@ -186,12 +186,7 @@ class WaitingRoomConnection(SockJSConnection):
     # constants
     TOT_PLAYERS = 4
     NUM_ROUNDS = 3
-    MATRIX = [[1,5,3],
-              [0,2,4],
-              [3,1,5],
-              [2,4,0],
-              [5,3,1],
-              [4,0,2]]
+    PAIRS = [4, 3, 2, 1]
 
     # if the subject has already been admitted or has already done this experiment
     
@@ -218,7 +213,8 @@ class WaitingRoomConnection(SockJSConnection):
             self.admission_size = WaitingRoomConnection.admission_sizes
             present_subjects.add(self)
             self.subject_no = len(present_subjects)
-            self.game_id = "gm" + str(self.subject_no - 1) + str(self.subject_no) if self.subject_no % 2 == 0 else "gm" + str(self.subject_no)+ str(self.subject_no + 1)
+            self.partner = PAIRS[self.subject_no]
+            self.game_id = "gm" + str(self.partner) + str(self.subject_no) if self.partner < self.subject_no else "gm" + str(self.subject_no)+ str(self.partner)
             print "[WaitingRoomConnection] Subject " + self.subject_id + "assigned to game " + self.game_id
             db.players.update_one({'_id': ObjectId(self.subject_id)},{'$set': {'subject_no': self.subject_no, 'game_id': self.game_id}})
             logger.info('[WaitingRoomConnection] WAIT_MSG from subject: %s of game: %s', self.subject_id, self.game_id)
