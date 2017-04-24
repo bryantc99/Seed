@@ -4,8 +4,10 @@
 		<p> Option A: Fixed wage of <b>{{game.getWage()}}</b> dollars </p>
 		<p ng-if="!game.getVarWage()"> Option B: No contract </p>
 		<p ng-if="game.getVarWage()"> Option B: Base wage of <b>{{game.getWage()}}</b> dollars with <b>{{game.getBonus()}}</b> dollar <span ng-if="game.getLowBase()">bonus for high effort</span> <span ng-if="!game.getLowBase()">deduction for low effort</span>
-		  </p>
-
+		</p>
+		<p ng-if="game.getVarWage()"> Option C: No Contract
+		</p>
+		  <br>
 		<table class="offertable" style="width: 100%" cellspacing="0">
 			<tbody>
 				<tr class="topline">
@@ -15,13 +17,16 @@
 					<td colspan="4">
 						<input name="submit" type="button" value="Option B" ng-click="game.setContract(false);" class="button">
 					</td>
-					<td></td>
-					<td colspan="4">
+					<td colspan="4" ng-if="game.getVarWage()">
+						<input name="submit" type="button" value="Option C" ng-click="game.setContract('none');" class="button">
+					</td>
+					<td colspan="4" ng-show="game.getContract().length > 0">
 						<p>You will <br><br> offer option <span class="offernum">{{game.getContract()}}</span></p>
 					</td>
 				</tr>
 			</tbody>
 		</table>
-		<p><input name="submit" type="button" value="OK" ng-click="game.sendContract()" ng-if="game.continue" class="button"></p>
+		<br>
+		<p><input name="submit" type="button" value="OK" ng-click="game.sendContract()" ng-show="game.continue" class="button"></p>
 	</div>
 </form>

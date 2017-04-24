@@ -83,14 +83,15 @@ class WelcomeHandler(BaseHandler):
         #if(city != "Paris"):
          #   self.render("about.html", title="Oxford Experiments", oid = oid)
         #else:
-            self.render("welcome.html", title="Oxford Experiments", oid = oid)
+            self.render("welcome.html", title="Oxford Experiments", oid = oid, round = 1)
     def post(self):
         oid = self.get_argument('oid')
-        self.render("welcome.html", title="Oxford Experiments", oid = oid)
+        self.render("welcome.html", title="Oxford Experiments", oid = oid, round = 1)
 
 class PaymentHandler(BaseHandler):
     def get(self, oid):
-        self.render("payment.html", title="Oxford Experiments", oid = self.get_argument("oid"))
+        user = db.players.find_one({"_id": ObjectId(self.get_argument("oid"))})
+        self.render("payment.html", title="Oxford Experiments", oid = self.get_argument("oid"), payment = 5, user = user)
 
 class GameHandler(BaseHandler):
     def post(self, oid):

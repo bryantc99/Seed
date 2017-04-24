@@ -84,7 +84,7 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
         }
 
         $scope.game.setContract = function(offer) {
-            //true = A, false = B
+            //true = A, false = B, 'none' = C
 
             $scope.game.continue = true;
             dataModel.contract = offer;
@@ -125,6 +125,8 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
         $scope.game.getContract = function() {
             if(dataModel.contract == null)
                 return ''
+            else if (dataModel.contract === 'none')
+                return 'C';
             else if (dataModel.contract)
                 return 'A';
             else
@@ -162,7 +164,8 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
 
         $scope.game.sendContract = function() {
 
-            if (dataModel.contract) {dataModel.varWage = false;}
+            if (dataModel.contract === 'none') {dataModel.offerMade = false;}
+            else if (dataModel.contract) {dataModel.varWage = false;}
             else if (!dataModel.varWage) {dataModel.offerMade = false;}
 
              
@@ -231,7 +234,6 @@ tutorialApp.controller('TimerController', ['$scope', '$window', 'dataModel', '$i
 
             stop = $interval(function() {
                 if ($scope.game.counter > 0) {
-                    console.log($scope.game.counter);
                     dataModel.counter--;
                     $scope.game.counter = dataModel.counter;
                 } else {

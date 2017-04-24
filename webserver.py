@@ -82,7 +82,7 @@ class Application(tornado.web.Application):
         self.GameRouter = SockJSRouter(GameConnection, '/sockjs/game', options)
 
         GameConnection.ready = 0
-        GameConnection.size = 2
+        GameConnection.size = 4
         GameConnection.participants = list();
 
         urls = [
@@ -150,7 +150,7 @@ class WaitingRoomConnection(SockJSConnection):
     # game_id:size
     # game_id: string
     # size: int
-    admission_sizes = 2
+    admission_sizes = 4
     # game_id:status
     # game_id: string
     # status: int
@@ -184,7 +184,7 @@ class WaitingRoomConnection(SockJSConnection):
     HEARTBEAT = 'h'
 
     # constants
-    TOT_PLAYERS = 2
+    TOT_PLAYERS = 4
     NUM_ROUNDS = 3
     MATRIX = [[1,5,3],
               [0,2,4],

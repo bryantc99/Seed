@@ -263,7 +263,6 @@ tutorialApp.controller('TimerController', ['$scope', '$window', 'dataModel', '$i
 
             stop = $interval(function() {
                 if ($scope.game.counter > 0) {
-                    console.log($scope.game.counter);
                     dataModel.counter--;
                     $scope.game.counter = dataModel.counter;
                 } else {

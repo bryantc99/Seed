@@ -173,6 +173,8 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
         $scope.game.getContract = function() {
             if(dataModel.contract == null)
                 return ''
+            else if (dataModel.contract === 'none')
+                return 'C';
             else if (dataModel.contract)
                 return 'A';
             else
@@ -263,8 +265,10 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
         }
 
         $scope.game.sendContract = function() {
-            if(dataModel.contract) {dataModel.varWage = false;}
+            if (dataModel.contract === 'none') {dataModel.offerMade = false;}
+            else if (dataModel.contract) {dataModel.varWage = false;}
             else if (!dataModel.varWage) {dataModel.offerMade = false;}
+
             console.log(JSON.stringify({"type": CONTRACT_MSG, "contract": dataModel.contract, "varWage": dataModel.varWage, "offerMade": dataModel.offerMade}));
             conn.send(JSON.stringify({"type": CONTRACT_MSG, "contract": dataModel.contract, "varWage": dataModel.varWage, "offerMade": dataModel.offerMade}))
         }
