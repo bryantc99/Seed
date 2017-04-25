@@ -56,7 +56,7 @@ class RegisterHandler(BaseHandler):
             "name" : name
             })
         #self.render("about.html", title="Oxford Experiments", oid = result.inserted_id)
-        self.render("welcome.html", title="Oxford Experiments", oid = result.inserted_id)
+        self.render("welcome.html", title="Oxford Experiments", oid = result.inserted_id, round = 1)
 
 class QuizHandler(BaseHandler):
     def post(self, submit):
