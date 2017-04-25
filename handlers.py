@@ -55,7 +55,8 @@ class RegisterHandler(BaseHandler):
         result = db.players.insert_one({
             "name" : name
             })
-        self.render("about.html", title="Oxford Experiments", oid = result.inserted_id)
+        #self.render("about.html", title="Oxford Experiments", oid = result.inserted_id)
+        self.render("welcome.html", title="Oxford Experiments", oid = result.inserted_id)
 
 class QuizHandler(BaseHandler):
     def post(self, submit):
