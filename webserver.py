@@ -83,7 +83,7 @@ class Application(tornado.web.Application):
 
         GameConnection.ready = 0
         GameConnection.size = 2
-        GameConnection.participants = list();
+        #GameConnection.participants = list();
 
         urls = [
             (r'/', handlers.MainHandler),
@@ -398,7 +398,8 @@ class GameConnection(SockJSConnection):
             print GameConnection.PARTICIPANTS[game_id]
             if len(present_subjects) >= GameConnection.size:
                 self.broadcast(present_subjects, json.dumps({'type': GameConnection.READY_MSG,
-                                                           #  'treatment': TREATMENTS['fl'],   
+                                                           #  'treatment': TREATMENTS['fl'],  
+                                                             'game_id': game_id,
                                                              'lowBase': bool(random.getrandbits(1)),
                                                              'varWage': bool(random.getrandbits(1))}))
             
@@ -446,6 +447,7 @@ class GameConnection(SockJSConnection):
         else:
             msg = json.loads(message)
             msg_type = msg['type']
+            game_id = msg['game_id']
 
             if msg_type == GameConnection.INIT_MSG:
                 logger.info("[GameConnection] Player at Game Screen")
@@ -453,9 +455,9 @@ class GameConnection(SockJSConnection):
                 self._init(msg['subject_id'])
             elif msg_type == GameConnection.CONTRACT_MSG or msg_type == GameConnection.EFFORT_MSG or msg_type == GameConnection.ACTION_MSG:
                 if(False):
-                    self.broadcast(GameConnection.participants, message)
+                    self.broadcast(GameConnection.PARTICIPANTS[game_id], message)
                 else:
-                    self.broadcast(GameConnection.participants, message)
+                    self.broadcast(GameConnection.PARTICIPANTS[game_id], message)
             elif msg_type == GameConnection.FINISH_MSG:
                 logger.debug('[GameConnection] Entering info for subject %s into db',  msg['oid'])
 

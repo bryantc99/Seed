@@ -79,6 +79,7 @@ gameApp.config(['$routeProvider',
     }]);
 
 gameApp.service("dataModel", function() {
+    this.game_id = "gm";
     this.role = "none";
     this.stage = "init";
     this.lowBase = false;
@@ -269,25 +270,24 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
             else if (dataModel.contract) {dataModel.varWage = false;}
             else if (!dataModel.varWage) {dataModel.offerMade = false;}
 
-            console.log(JSON.stringify({"type": CONTRACT_MSG, "contract": dataModel.contract, "varWage": dataModel.varWage, "offerMade": dataModel.offerMade}));
-            conn.send(JSON.stringify({"type": CONTRACT_MSG, "contract": dataModel.contract, "varWage": dataModel.varWage, "offerMade": dataModel.offerMade}))
+            conn.send(JSON.stringify({"type": CONTRACT_MSG, "game_id": dataModel.game_id, "contract": dataModel.contract, "varWage": dataModel.varWage, "offerMade": dataModel.offerMade}))
         }
 
         $scope.game.sendAccept = function() {
             dataModel.stage = "accept";
             if (!dataModel.accept) {
                 dataModel.finalWage = 0;
-                conn.send(JSON.stringify({"type": EFFORT_MSG, "accept": dataModel.accept,"effortLevel": dataModel.effortLevel}))
+                conn.send(JSON.stringify({"type": EFFORT_MSG, "game_id": dataModel.game_id, "accept": dataModel.accept,"effortLevel": dataModel.effortLevel}))
             }
             $scope.game.nextPage();
         }
 
         $scope.game.sendEffortLevel = function() {
-            conn.send(JSON.stringify({"type": EFFORT_MSG, "accept": dataModel.accept,"effortLevel": dataModel.effortLevel}))
+            conn.send(JSON.stringify({"type": EFFORT_MSG, "game_id": dataModel.game_id, "accept": dataModel.accept,"effortLevel": dataModel.effortLevel}))
         }
 
         $scope.game.sendAction = function() {
-            conn.send(JSON.stringify({"type": ACTION_MSG, "action": dataModel.action}))
+            conn.send(JSON.stringify({"type": ACTION_MSG, "game_id": dataModel.game_id, "action": dataModel.action}))
         }
  
         conn.onmessage = function(e) {
@@ -304,6 +304,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
                // console.log(msg.treatment)
                 dataModel.lowBase = msg.lowBase;
                 dataModel.varWage = msg.varWage;
+                dataModel.game_id = msg.game_id;
                 $scope.game.setContinue(true);
                 $scope.game.setWait(false);
             }
