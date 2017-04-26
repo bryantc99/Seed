@@ -209,7 +209,7 @@ class WaitingRoomConnection(SockJSConnection):
     def _register(self, subject, game, rd):
         self.subject_id = subject
         self.admission_sizes = WaitingRoomConnection.TOT_PLAYERS
-        self.rd = rd
+        self.rd = int(rd)
         try:
             # first check if the waiting room has been configured
             logger.info('[WaitingRoomConnection] admission_sizes: %s', WaitingRoomConnection.admission_sizes)
