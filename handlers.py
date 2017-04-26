@@ -80,12 +80,13 @@ class Tutorial2Handler(BaseHandler):
         self.render("tutorial2.html", title="Oxford Experiments", oid = oid)
 
 class WelcomeHandler(BaseHandler):
-    def get(self, oid):
+    def get(self, args):
         #if(city != "Paris"):
          #   self.render("about.html", title="Oxford Experiments", oid = oid)
         #else:
-        print "oid: " + self.get_argument("oid")
-        self.render("welcome.html", title="Oxford Experiments", oid = oid)
+        oid = self.get_argument("oid")
+        rd = self.get_argument("rd")
+        self.render("welcome.html", title="Oxford Experiments", oid = oid, rd = rd)
     def post(self, oid):
         #oid = self.get_argument('oid')
         self.render("welcome.html", title="Oxford Experiments", oid = oid, round = 1)
