@@ -188,6 +188,8 @@ class WaitingRoomConnection(SockJSConnection):
     NUM_ROUNDS = 3
     PAIRS = [4, 3, 2, 1]
 
+    EMPLOYER_FIRST = random.sample(range(TOT_PLAYERS) + 1, 2)
+
     # if the subject has already been admitted or has already done this experiment
     
     def _duplicate(self):
@@ -208,6 +210,7 @@ class WaitingRoomConnection(SockJSConnection):
         try:
             # first check if the waiting room has been configured
             logger.info('[WaitingRoomConnection] admission_sizes: %s', WaitingRoomConnection.admission_sizes)
+            logger.info('[WaitingRoomConnection] employer first: %s', str(WaitingRoomConnection.EMPLOYER_FIRST))
 
             present_subjects = WaitingRoomConnection.available_subjects
             self.admission_size = WaitingRoomConnection.admission_sizes
