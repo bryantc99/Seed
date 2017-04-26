@@ -213,7 +213,6 @@ class WaitingRoomConnection(SockJSConnection):
         try:
             # first check if the waiting room has been configured
             logger.info('[WaitingRoomConnection] admission_sizes: %s', WaitingRoomConnection.admission_sizes)
-            logger.info('[WaitingRoomConnection] employer first: %s', str(WaitingRoomConnection.EMPLOYER_FIRST))
 
             present_subjects = WaitingRoomConnection.available_subjects
             self.admission_size = WaitingRoomConnection.admission_sizes
@@ -243,6 +242,7 @@ class WaitingRoomConnection(SockJSConnection):
                     WaitingRoomConnection.MATCHED.append(partner)
                     WaitingRoomConnection.MATCHED.append(self.subject_no)
 
+            logger.info('[WaitingRoomConnection] employer first: %s', str(WaitingRoomConnection.EMPLOYER_FIRST))
             logger.info('[WaitingRoomConnection] employee first: %s', str(WaitingRoomConnection.EMPLOYEE_FIRST))
 
             print "[WaitingRoomConnection] Pairs: " + str(WaitingRoomConnection.PAIRS[0]);
