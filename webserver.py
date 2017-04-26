@@ -220,8 +220,8 @@ class WaitingRoomConnection(SockJSConnection):
 
 
             if len(present_subjects) == 0:
-                WaitingRoomConnection.EMPLOYER_FIRST = random.sample(xrange(1, TOT_PLAYERS+1), 2)
-                for i in xrange(1, TOT_PLAYERS+1):
+                WaitingRoomConnection.EMPLOYER_FIRST = random.sample(xrange(1, WaitingRoomConnection.TOT_PLAYERS+1), 2)
+                for i in xrange(1, WaitingRoomConnection.TOT_PLAYERS+1):
                     if not i in WaitingRoomConnection.EMPLOYER_FIRST:
                         WaitingRoomConnection.EMPLOYEE_FIRST.append(i)
                 for j in WaitingRoomConnection.EMPLOYER_FIRST:
