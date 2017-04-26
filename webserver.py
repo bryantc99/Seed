@@ -252,7 +252,7 @@ class WaitingRoomConnection(SockJSConnection):
             logger.info('[WaitingRoomConnection] employer first: %s', str(WaitingRoomConnection.EMPLOYER_FIRST))
             logger.info('[WaitingRoomConnection] employee first: %s', str(WaitingRoomConnection.EMPLOYEE_FIRST))
 
-            print "[WaitingRoomConnection] Pairs: " + str(WaitingRoomConnection.PAIRS[0]);
+            print "[WaitingRoomConnection] Pairs: " + str(WaitingRoomConnection.PAIRS[self.rd-1]);
             WaitingRoomConnection.MATCHED = [];
 
 
