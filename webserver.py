@@ -185,7 +185,7 @@ class WaitingRoomConnection(SockJSConnection):
 
     # constants
     TOT_PLAYERS = 4
-    NUM_ROUNDS = 3
+    NUM_ROUNDS = 2
     PAIRS = [4, 3, 2, 1]
 
     EMPLOYER_FIRST = random.sample(xrange(1, TOT_PLAYERS+1), 2)
@@ -204,9 +204,10 @@ class WaitingRoomConnection(SockJSConnection):
 
     # register in the waiting room  
         
-    def _register(self, subject, game):
+    def _register(self, subject, game, rd):
         self.subject_id = subject
         self.admission_sizes = WaitingRoomConnection.TOT_PLAYERS
+        self.rd = rd
         try:
             # first check if the waiting room has been configured
             logger.info('[WaitingRoomConnection] admission_sizes: %s', WaitingRoomConnection.admission_sizes)
@@ -221,6 +222,7 @@ class WaitingRoomConnection(SockJSConnection):
             GameConnection.PAIRS[self.game_id].add(self.subject_id)
             GameConnection.GAMES[str(self.subject_id)] = self.game_id
             GameConnection.PAST_PARTNERS[str(self.subject_id)].append(self.partner)
+            GameConnection.PLAYER_ROLES[str(self.subject_id)] = "employer" if self.subject_no in WaitingRoomConnection.EMPLOYER_FIRST and self.rd < 2 else "employee"
             print "[WaitingRoomConnection] Subject " + self.subject_id + "assigned to game " + self.game_id
             db.players.update_one({'_id': ObjectId(self.subject_id)},{'$set': {'subject_no': self.subject_no, 'game_id': self.game_id}})
             logger.info('[WaitingRoomConnection] WAIT_MSG from subject: %s of game: %s', self.subject_id, self.game_id)
@@ -290,13 +292,15 @@ class WaitingRoomConnection(SockJSConnection):
 
             if msg_type == WaitingRoomConnection.WAIT_MSG:
                 logger.info("[WaitingRoomConnection] gameid %s", msg['game_id'])
-                self._register(msg['subject_id'], msg['game_id'])
+                self._register(msg['subject_id'], msg['game_id'], msg['rd'])
             elif msg_type == WaitingRoomConnection.ENTRY_MSG:
                 self._entry()
 
     def on_close(self):
         #logger.info('[WaitingRoomConnection] DISCONNECTION of subject: %s from game: %s', self.subject_id, self.game_id)
         # stop heartbeat if enabled
+
+
         if tornado.options.options.heartbeat:
             self._stop_heartbeat()
 
@@ -368,6 +372,7 @@ class GameConnection(SockJSConnection):
     PARTICIPANTS = defaultdict(lambda: set())
     GAMES = {}
     PAST_PARTNERS = defaultdict(lambda: list())
+    PLAYER_ROLES = {}
 
 
    # TREATMENTS = {'fl': {'lowBase': 1, 'varWage': 0},
@@ -398,7 +403,7 @@ class GameConnection(SockJSConnection):
            
             GameConnection.PARTICIPANTS[game_id].add(self)
             present_subjects = GameConnection.PARTICIPANTS[game_id]
-            role = GameConnection.ROLES[len(present_subjects) % 2]
+            role = GameConnection.PLAYER_ROLES[str(oid)]
             self.send(json.dumps({'type': GameConnection.ROLE_MSG, 'role': role, 'round': len(GameConnection.PAST_PARTNERS[str(oid)])}))
             print len(present_subjects)
             if len(present_subjects) >= GameConnection.size:
