@@ -216,7 +216,7 @@ class WaitingRoomConnection(SockJSConnection):
             self.partner = WaitingRoomConnection.PAIRS[self.subject_no - 1]
             self.game_id = "gm" + str(self.partner) + str(self.subject_no) if self.partner < self.subject_no else "gm" + str(self.subject_no)+ str(self.partner)
             GameConnection.PAIRS[self.game_id].add(self.subject_id)
-            GameConnection.GAMES[self.subject_id] = self.game_id
+            GameConnection.GAMES[str(self.subject_id)] = self.game_id
             print "[WaitingRoomConnection] Subject " + self.subject_id + "assigned to game " + self.game_id
             db.players.update_one({'_id': ObjectId(self.subject_id)},{'$set': {'subject_no': self.subject_no, 'game_id': self.game_id}})
             logger.info('[WaitingRoomConnection] WAIT_MSG from subject: %s of game: %s', self.subject_id, self.game_id)
@@ -382,9 +382,9 @@ class GameConnection(SockJSConnection):
     HEARTBEAT = 'h'
 
     def _init(self, oid):
-        logger.info('[GameConnection] INIT_MSG update ' + GameConnection.GAMES[oid])
+        logger.info('[GameConnection] INIT_MSG update ' + GameConnection.GAMES[str(oid)])
         try:
-            game_id = GameConnection.GAMES[oid]
+            game_id = GameConnection.GAMES[str(oid)]
            # user = db.players.find_one({"_id": self.get_argument('oid')})
            # game_id = 'gm12'
             #logger.info('[WaitingRoomConnection] INIT_MSG game id %s', game_id)
@@ -395,7 +395,6 @@ class GameConnection(SockJSConnection):
             role = GameConnection.ROLES[len(present_subjects) % 2]
             self.send(json.dumps({'type': GameConnection.ROLE_MSG, 'role': role}))
             print len(present_subjects)
-            print GameConnection.PARTICIPANTS[game_id]
             if len(present_subjects) >= GameConnection.size:
                 logger.info('[GameConnection] READY_MSG for game %s' + game_id)
                 self.broadcast(present_subjects, json.dumps({'type': GameConnection.READY_MSG,
