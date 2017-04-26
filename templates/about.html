@@ -47,7 +47,8 @@ We will explain how this works during the session.</p>
 
       <p>Please select <b>I agree</b> to participate in this study.</p><p></p>
       <p> Your ID is {{oid}}</p>
-
+		
+		<!--form action="/quiz/oid/{{oid}}" method="post"-->
       <form action="/welcome" method="get">
       <input type="hidden" name ="oid" value="{{oid}}">
       <input type="submit" value="I agree" class="button">
