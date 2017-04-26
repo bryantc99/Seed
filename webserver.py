@@ -473,7 +473,6 @@ class GameConnection(SockJSConnection):
 
     def on_close(self):
         GameConnection.PARTICIPANTS = defaultdict(lambda: set());
-        GameConnection.GAMES = {}
         #logger.info('[WaitingRoomConnection] DISCONNECTION of subject: %s from game: %s', self.subject_id, self.game_id)
         # stop heartbeat if enabled
         if tornado.options.options.heartbeat:
