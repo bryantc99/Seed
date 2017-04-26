@@ -323,11 +323,12 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
                 dataModel.wage = dataModel.lowBase ? 12 : 16;
                 dataModel.stage = "contract";
                 console.log("contract made");
-                if (!$scope.game.fastemployer) {
+                var employer = dataModel.role == "employer";
+
+                if (employer || !$scope.game.fastemployer) {
                     $scope.game.nextPage();
                 }
                 else {
-                    var employer = dataModel.role == "employer";
                     dataModel.oid = oid;
                     dataModel.wage = dataModel.lowBase ? 12 : 16;
                     dataModel.finalWage = dataModel.wage;
