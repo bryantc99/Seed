@@ -361,6 +361,7 @@ class GameConnection(SockJSConnection):
     ROLES = ["employer", "employee"]
 
     PAIRS = defaultdict(lambda: set())
+    PARTICIPANTS = defaultdict(lambda: set())
     GAMES = {}
 
    # TREATMENTS = {'fl': {'lowBase': 1, 'varWage': 0},
@@ -384,16 +385,16 @@ class GameConnection(SockJSConnection):
         logger.info('[GameConnection] INIT_MSG update ' + GameConnection.GAMES[oid] + repr(GameConnection.PAIRS['gm23']))
         try:
             role = GameConnection.ROLES[GameConnection.ready % 2]
+            game_id = GameConnection.GAMES[oid]
            # user = db.players.find_one({"_id": self.get_argument('oid')})
            # game_id = 'gm12'
             #logger.info('[WaitingRoomConnection] INIT_MSG game id %s', game_id)
             #treatment = TREATMENTS[GAMES[game_id]];
             self.send(json.dumps({'type': GameConnection.ROLE_MSG, 'role': role}))
             GameConnection.ready += 1
-            GameConnection.participants.append(self)
-            present_subjects = GameConnection.participants
-            print len(present_subjects)
-            if GameConnection.ready >= GameConnection.size:
+            GameConnection.PARTICIPANTS[game_id].add(self)
+            present_subjects = GameConnection.PARTICIPANTS[game_id]
+            if len(present_subjects) >= GameConnection.size:
                 self.broadcast(present_subjects, json.dumps({'type': GameConnection.READY_MSG,
                                                            #  'treatment': TREATMENTS['fl'],   
                                                              'lowBase': bool(random.getrandbits(1)),
