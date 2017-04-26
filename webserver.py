@@ -391,7 +391,6 @@ class GameConnection(SockJSConnection):
             #logger.info('[WaitingRoomConnection] INIT_MSG game id %s', game_id)
             #treatment = TREATMENTS[GAMES[game_id]];
             self.send(json.dumps({'type': GameConnection.ROLE_MSG, 'role': role}))
-            GameConnection.ready += 1
             GameConnection.PARTICIPANTS[game_id].add(self)
             present_subjects = GameConnection.PARTICIPANTS[game_id]
             print len(present_subjects)
@@ -470,7 +469,7 @@ class GameConnection(SockJSConnection):
 
     def on_close(self):
         GameConnection.PARTICIPANTS = defaultdict(lambda: set());
-        GameConnection.ready = 0;
+        GameConnection.GAMES = {}
         #logger.info('[WaitingRoomConnection] DISCONNECTION of subject: %s from game: %s', self.subject_id, self.game_id)
         # stop heartbeat if enabled
         if tornado.options.options.heartbeat:
