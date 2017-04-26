@@ -379,7 +379,7 @@ class GameConnection(SockJSConnection):
     HEARTBEAT = 'h'
 
     def _init(self):
-        logger.info('[GameConnection] INIT_MSG update' + repr(GameConnection.PAIRS['gm14'])
+        logger.info('[GameConnection] INIT_MSG update' + repr(GameConnection.PAIRS['gm14']))
         try:
             role = GameConnection.ROLES[GameConnection.ready % 2]
            # user = db.players.find_one({"_id": self.get_argument('oid')})
