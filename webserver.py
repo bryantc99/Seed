@@ -238,6 +238,8 @@ class WaitingRoomConnection(SockJSConnection):
                     logger.info('[WaitingRoomConnection] available for %d: %s', j, str(available))
 
                     partner = random.choice(available)
+                    logger.info('[WaitingRoomConnection] partner for %d: %d', j, partner)
+
                     WaitingRoomConnection.PAIRS[self.rd - 1][self.subject_no - 1] = partner
                     WaitingRoomConnection.PAIRS[self.rd - 1][partner - 1] = self.subject_no
                     WaitingRoomConnection.MATCHED.append(partner)
