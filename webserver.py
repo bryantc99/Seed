@@ -217,6 +217,7 @@ class WaitingRoomConnection(SockJSConnection):
             self.game_id = "gm" + str(self.partner) + str(self.subject_no) if self.partner < self.subject_no else "gm" + str(self.subject_no)+ str(self.partner)
             GameConnection.PAIRS[self.game_id].add(self.subject_id)
             GameConnection.GAMES[str(self.subject_id)] = self.game_id
+            GameConnection.PAST_PARTNERS[str(self.subject_id)].append(self.partner)
             print "[WaitingRoomConnection] Subject " + self.subject_id + "assigned to game " + self.game_id
             db.players.update_one({'_id': ObjectId(self.subject_id)},{'$set': {'subject_no': self.subject_no, 'game_id': self.game_id}})
             logger.info('[WaitingRoomConnection] WAIT_MSG from subject: %s of game: %s', self.subject_id, self.game_id)
@@ -363,6 +364,8 @@ class GameConnection(SockJSConnection):
     PAIRS = defaultdict(lambda: set())
     PARTICIPANTS = defaultdict(lambda: set())
     GAMES = {}
+    PAST_PARTNERS = defaultdict(lambda: list())
+
 
    # TREATMENTS = {'fl': {'lowBase': 1, 'varWage': 0},
     #              'fh': {'lowBase': 0, 'varWage': 0},
@@ -393,11 +396,12 @@ class GameConnection(SockJSConnection):
             GameConnection.PARTICIPANTS[game_id].add(self)
             present_subjects = GameConnection.PARTICIPANTS[game_id]
             role = GameConnection.ROLES[len(present_subjects) % 2]
-            self.send(json.dumps({'type': GameConnection.ROLE_MSG, 'role': role}))
+            self.send(json.dumps({'type': GameConnection.ROLE_MSG, 'role': role, 'round': len(GameConnection.PAST_PARTNERS[str(oid)])}))
             print len(present_subjects)
             if len(present_subjects) >= GameConnection.size:
                 logger.info('[GameConnection] READY_MSG for game %s' + game_id)
                 self.broadcast(present_subjects, json.dumps({'type': GameConnection.READY_MSG,
+
                                                            #  'treatment': TREATMENTS['fl'],  
                                                              'game_id': game_id,
                                                              'lowBase': bool(random.getrandbits(1)),

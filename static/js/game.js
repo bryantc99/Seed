@@ -81,6 +81,7 @@ gameApp.config(['$routeProvider',
 gameApp.service("dataModel", function() {
     this.game_id = "gm";
     this.oid = "";
+    this.round = 1;
     this.role = "none";
     this.stage = "init";
     this.lowBase = false;
@@ -219,6 +220,10 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
             return dataModel.role;
         }
 
+        $scope.game.getRound = function() {
+            return dataModel.round;
+        }
+
         $scope.game.nextPage = function() {
             var employer = dataModel.role == "employer";
 
@@ -309,6 +314,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
                 var role = msg.role;
                 console.log("Client has role:" + role);
                 dataModel.role = role;
+                dataModel.round = msg.round;
                 $scope.game.hasRole = true;
             }
             else if (type === READY_MSG) {
