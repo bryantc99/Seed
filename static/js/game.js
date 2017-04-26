@@ -236,6 +236,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
 
             var page = "";
             if (dataModel.stage === "init") {
+                console.log("in it init");
                 dataModel.oid = oid;
                 dataModel.wage = dataModel.lowBase ? 12 : 16;
                 dataModel.finalWage = dataModel.wage;
@@ -344,7 +345,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
                     $scope.game.nextPage();
                 }
                 else {
-                    console.log("nope nope");
+                    console.log("nope nope" + $scope.game.fastemployer);
                     dataModel.oid = oid;
                     dataModel.wage = dataModel.lowBase ? 12 : 16;
                     dataModel.finalWage = dataModel.wage;
