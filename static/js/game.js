@@ -80,6 +80,7 @@ gameApp.config(['$routeProvider',
 
 gameApp.service("dataModel", function() {
     this.game_id = "gm";
+    this.oid = "";
     this.role = "none";
     this.stage = "init";
     this.lowBase = false;
@@ -220,6 +221,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
 
             var page = "";
             if (dataModel.stage === "init") {
+                dataModel.oid = oid;
                 dataModel.wage = dataModel.lowBase ? 12 : 16;
                 dataModel.finalWage = dataModel.wage;
                 page = employer ? '2' : 'wait';

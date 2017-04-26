@@ -224,7 +224,7 @@ class WaitingRoomConnection(SockJSConnection):
 
             if len(present_subjects) >= self.admission_size:
                 WaitingRoomConnection.room_statuses[self.game_id] = WaitingRoomConnection.ENTRY_OPEN
-                logger.info('[WaitingRoomConnection] ENTRY OPEN for game: %s', self.game_id)
+                logger.info('[WaitingRoomConnection] ENTRY OPEN for games')
                 logger.info('[WaitingRoomConnection] Subjects: %d', len(present_subjects))
                 self.broadcast(present_subjects, json.dumps({'type': WaitingRoomConnection.ACTIVATE_MSG}))
    
@@ -382,7 +382,7 @@ class GameConnection(SockJSConnection):
     HEARTBEAT = 'h'
 
     def _init(self, oid):
-        logger.info('[GameConnection] INIT_MSG update ' + GameConnection.GAMES[oid] + repr(GameConnection.PAIRS[GameConnection.GAMES[oid]]))
+        logger.info('[GameConnection] INIT_MSG update ' + GameConnection.GAMES[oid])
         try:
             game_id = GameConnection.GAMES[oid]
            # user = db.players.find_one({"_id": self.get_argument('oid')})
@@ -397,6 +397,7 @@ class GameConnection(SockJSConnection):
             print len(present_subjects)
             print GameConnection.PARTICIPANTS[game_id]
             if len(present_subjects) >= GameConnection.size:
+                logger.info('[GameConnection] READY_MSG for game %s' + game_id)
                 self.broadcast(present_subjects, json.dumps({'type': GameConnection.READY_MSG,
                                                            #  'treatment': TREATMENTS['fl'],  
                                                              'game_id': game_id,
