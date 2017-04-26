@@ -228,6 +228,9 @@ class WaitingRoomConnection(SockJSConnection):
                         WaitingRoomConnection.EMPLOYEE_FIRST.append(i)
                 for j in WaitingRoomConnection.EMPLOYER_FIRST:
                     available = []
+                    logger.info('[WaitingRoomConnection] employee first for %d: %s', j, str(WaitingRoomConnection.EMPLOYEE_FIRST))
+                    logger.info('[WaitingRoomConnection] matched for %d: %s', j, str(WaitingRoomConnection.MATCHED))
+
                     for k in WaitingRoomConnection.EMPLOYEE_FIRST:
                         add = True
                         if k not in WaitingRoomConnection.MATCHED:
