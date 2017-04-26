@@ -120,7 +120,9 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
 
         $scope.game.setContinue = function(access) {
             //true = A, false = B
-            $scope.game.continue = access;
+            $scope.$apply(function(){
+                $scope.game.continue = access;
+            });
         }
 
         $scope.game.setWait = function(wait) {
@@ -308,6 +310,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
                 dataModel.varWage = msg.varWage;
                 dataModel.game_id = msg.game_id;
                 $scope.game.setContinue(true);
+                console.log($scope.game.continue);
                 $scope.game.setWait(false);
             }
             else if (type == CONTRACT_MSG) {
