@@ -394,6 +394,7 @@ class GameConnection(SockJSConnection):
             GameConnection.ready += 1
             GameConnection.PARTICIPANTS[game_id].add(self)
             present_subjects = GameConnection.PARTICIPANTS[game_id]
+            print len(present_subjects)
             if len(present_subjects) >= GameConnection.size:
                 self.broadcast(present_subjects, json.dumps({'type': GameConnection.READY_MSG,
                                                            #  'treatment': TREATMENTS['fl'],   
@@ -468,7 +469,7 @@ class GameConnection(SockJSConnection):
                     }})
 
     def on_close(self):
-        GameConnection.participants = [];
+        GameConnection.PARTICIPANTS = defaultdict(lambda: set());
         GameConnection.ready = 0;
         #logger.info('[WaitingRoomConnection] DISCONNECTION of subject: %s from game: %s', self.subject_id, self.game_id)
         # stop heartbeat if enabled
