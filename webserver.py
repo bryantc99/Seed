@@ -188,7 +188,7 @@ class WaitingRoomConnection(SockJSConnection):
     NUM_ROUNDS = 3
     PAIRS = [4, 3, 2, 1]
 
-    EMPLOYER_FIRST = random.sample(range(TOT_PLAYERS), 2)
+    EMPLOYER_FIRST = random.sample(xrange(1, TOT_PLAYERS+1), 2)
 
     # if the subject has already been admitted or has already done this experiment
     
