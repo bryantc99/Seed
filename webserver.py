@@ -235,7 +235,7 @@ class WaitingRoomConnection(SockJSConnection):
                         add = True
                         if k not in WaitingRoomConnection.MATCHED:
                             for l in range(self.rd - 1):
-                                if PAIRS[l][j - 1] == k:
+                                if WaitingRoomConnection.PAIRS[l][j - 1] == k:
                                     add = False
                             if add:      
                                 available.append(k)
