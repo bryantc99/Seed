@@ -120,7 +120,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
             if(dataModel.round > 1)
                 $window.location.assign("/payment?oid=" + oid);
             else
-                $window.location.assign("/welcome?oid=" + oid + "?rd=" + dataModel.round + 1);
+                $window.location.assign("/welcome?oid=" + oid + "&rd=" + dataModel.round + 1);
         }
 
         $scope.game.setContinue = function(access) {
@@ -340,9 +340,11 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
                 var employer = dataModel.role == "employer";
 
                 if (employer || !$scope.game.fastemployer) {
+                    console.log("next contract next");
                     $scope.game.nextPage();
                 }
                 else {
+                    console.log("nope nope");
                     dataModel.oid = oid;
                     dataModel.wage = dataModel.lowBase ? 12 : 16;
                     dataModel.finalWage = dataModel.wage;
