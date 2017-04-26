@@ -217,9 +217,10 @@ class WaitingRoomConnection(SockJSConnection):
 
             present_subjects = WaitingRoomConnection.available_subjects
             self.admission_size = WaitingRoomConnection.admission_sizes
+            present_subjects.add(self)
+            self.subject_no = len(present_subjects)
 
-
-            if len(present_subjects) == 0:
+            if len(present_subjects) == 1:
                 WaitingRoomConnection.EMPLOYER_FIRST = random.sample(xrange(1, WaitingRoomConnection.TOT_PLAYERS+1), 2)
                 for i in xrange(1, WaitingRoomConnection.TOT_PLAYERS+1):
                     if not i in WaitingRoomConnection.EMPLOYER_FIRST:
@@ -243,8 +244,7 @@ class WaitingRoomConnection(SockJSConnection):
             print "[WaitingRoomConnection] Pairs: " + str(WaitingRoomConnection.PAIRS[0]);
             WaitingRoomConnection.MATCHED = [];
 
-            present_subjects.add(self)
-            self.subject_no = len(present_subjects)
+
             self.partner = WaitingRoomConnection.PAIRS[self.rd - 1][self.subject_no - 1]
             self.game_id = "gm" + str(self.partner) + str(self.subject_no) if self.partner < self.subject_no else "gm" + str(self.subject_no)+ str(self.partner)
             GameConnection.PAIRS[self.game_id].add(self.subject_id)
