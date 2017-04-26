@@ -384,7 +384,6 @@ class GameConnection(SockJSConnection):
     def _init(self, oid):
         logger.info('[GameConnection] INIT_MSG update ' + GameConnection.GAMES[oid] + repr(GameConnection.PAIRS['gm23']))
         try:
-            role = GameConnection.ROLES[GameConnection.ready % 2]
             game_id = GameConnection.GAMES[oid]
            # user = db.players.find_one({"_id": self.get_argument('oid')})
            # game_id = 'gm12'
@@ -393,7 +392,9 @@ class GameConnection(SockJSConnection):
             self.send(json.dumps({'type': GameConnection.ROLE_MSG, 'role': role}))
             GameConnection.PARTICIPANTS[game_id].add(self)
             present_subjects = GameConnection.PARTICIPANTS[game_id]
+            role = GameConnection.ROLES[len(present_subjects) % 2]
             print len(present_subjects)
+            print GameConnection.PARTICIPANTS[game_id]
             if len(present_subjects) >= GameConnection.size:
                 self.broadcast(present_subjects, json.dumps({'type': GameConnection.READY_MSG,
                                                            #  'treatment': TREATMENTS['fl'],   
