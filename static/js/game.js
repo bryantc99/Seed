@@ -215,6 +215,10 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
             return dataModel.finalWage;
         }
 
+        $scope.game.getRole = function() {
+            return dataModel.role;
+        }
+
         $scope.game.nextPage = function() {
             var employer = dataModel.role == "employer";
 

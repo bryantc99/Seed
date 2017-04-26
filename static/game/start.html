@@ -1,10 +1,7 @@
 <form name="form_intro1" id="form_intro1" onsubmit="finish()">
 	<div class="welcome_parts" data-part="1" style="display: block;">
 		<h1>Welcome to this experiment</h1>
-		<p>In this experiment you are given the role of either the <b>employer</b> or an <b>employee</b> of a virtual company.</p>
-		<p>You will be matched up with another participant or a computer player. We will tell you in advance whether you are playing with another human or a computer participant.</p>
-		<p>You will be playing with this other participant or computer player for <b>one or more periods</b>. After this we will match you with a new player.</p>
-		<p>You will earn <b>points</b> which will be converted into dollars at the end of the session.</p>
+		<p>In this round you are given the role of the <b>{{game.getRole()}}</b> of a virtual company.</p>
 		<p>Click on <b>Next</b> to continue to the game.</p><p>
 		<input type="button" id="next" value="Next" class="button" ng-click="game.nextPage()" ng-show="game.continue"></p>
 
