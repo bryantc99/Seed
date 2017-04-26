@@ -120,8 +120,10 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
         $scope.game.finishGame = function(){
             if(dataModel.round > 1)
                 $window.location.assign("/payment?oid=" + oid);
-            else
-                $window.location.assign("/welcome?oid=" + oid + "&rd=" + dataModel.round + 1);
+            else {
+                var nextRd = dataModel.round + 1;
+                $window.location.assign("/welcome?oid=" + oid + "&rd=" + nextRd);
+            }
         }
 
         $scope.game.setContinue = function(access) {
