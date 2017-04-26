@@ -389,10 +389,11 @@ class GameConnection(SockJSConnection):
            # game_id = 'gm12'
             #logger.info('[WaitingRoomConnection] INIT_MSG game id %s', game_id)
             #treatment = TREATMENTS[GAMES[game_id]];
-            self.send(json.dumps({'type': GameConnection.ROLE_MSG, 'role': role}))
+           
             GameConnection.PARTICIPANTS[game_id].add(self)
             present_subjects = GameConnection.PARTICIPANTS[game_id]
             role = GameConnection.ROLES[len(present_subjects) % 2]
+            self.send(json.dumps({'type': GameConnection.ROLE_MSG, 'role': role}))
             print len(present_subjects)
             print GameConnection.PARTICIPANTS[game_id]
             if len(present_subjects) >= GameConnection.size:
