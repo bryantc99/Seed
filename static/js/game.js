@@ -218,7 +218,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
             var employer = dataModel.role == "employer";
 
             $scope.game.continue = false;
-            dataModel.counter = 11;
+            dataModel.counter = 31;
 
 
             var page = "";
