@@ -378,8 +378,8 @@ class GameConnection(SockJSConnection):
     heartbeat_interval = 5000
     HEARTBEAT = 'h'
 
-    def _init(self):
-        logger.info('[GameConnection] INIT_MSG update' + repr(GameConnection.PAIRS['gm14']))
+    def _init(self, oid):
+        logger.info('[GameConnection] INIT_MSG update ' + oid + repr(GameConnection.PAIRS['gm23']))
         try:
             role = GameConnection.ROLES[GameConnection.ready % 2]
            # user = db.players.find_one({"_id": self.get_argument('oid')})
@@ -445,7 +445,7 @@ class GameConnection(SockJSConnection):
             if msg_type == GameConnection.INIT_MSG:
                 logger.info("[GameConnection] Player at Game Screen")
 
-                self._init()
+                self._init(msg['subject_id'])
             elif msg_type == GameConnection.CONTRACT_MSG or msg_type == GameConnection.EFFORT_MSG or msg_type == GameConnection.ACTION_MSG:
                 if(False):
                     self.broadcast(GameConnection.participants, message)
