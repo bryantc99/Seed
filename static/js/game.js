@@ -262,7 +262,8 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
                                         "accept": dataModel.accept, 
                                         "effortLevel": dataModel.accept ? dataModel.effortLevel : 'None', 
                                         "action": dataModel.action, 
-                                        "payment": payment}));
+                                        "payment": payment,
+                                        "game_id": dataModel.game_id}));
 
             }
 

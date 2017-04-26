@@ -459,6 +459,7 @@ class GameConnection(SockJSConnection):
                 else:
                     self.broadcast(GameConnection.PARTICIPANTS[game_id], message)
             elif msg_type == GameConnection.FINISH_MSG:
+                game_id = msg['game_id']
                 logger.debug('[GameConnection] Entering info for subject %s into db',  msg['oid'])
 
                 db.players.update_one({'_id': ObjectId(msg['oid'])},{'$set': {
@@ -471,8 +472,10 @@ class GameConnection(SockJSConnection):
                     "action": msg['action'] 
                     }})
 
+                GameConnection.PARTICIPANTS[game_id] = set();
+
+
     def on_close(self):
-        #GameConnection.PARTICIPANTS = defaultdict(lambda: set());
         #logger.info('[WaitingRoomConnection] DISCONNECTION of subject: %s from game: %s', self.subject_id, self.game_id)
         # stop heartbeat if enabled
         if tornado.options.options.heartbeat:
