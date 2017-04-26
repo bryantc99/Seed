@@ -319,6 +319,8 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
                 dataModel.varWage = msg.varWage;
                 dataModel.offerMade = msg.offerMade;
                 dataModel.wage = dataModel.lowBase ? 12 : 16;
+                dataModel.stage = "contract";
+                console.log("contract made");
 
                 $scope.game.nextPage();
             }
