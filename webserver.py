@@ -235,17 +235,17 @@ class WaitingRoomConnection(SockJSConnection):
                                     add = False
                             if add:      
                                 available.append(k)
-                    partner = random.choice(available)
-                    WaitingRoomConnection.PAIRS[self.rd - 1][self.subject_no - 1] = partner
+                    self.partner = random.choice(available)
+                    WaitingRoomConnection.PAIRS[self.rd - 1][self.subject_no - 1] = self.partner
                     WaitingRoomConnection.PAIRS[self.rd - 1][self.partner - 1] = self.subject_no
-                    WaitingRoomConnection.MATCHED.append(partner)
+                    WaitingRoomConnection.MATCHED.append(self.partner)
                     WaitingRoomConnection.MATCHED.append(self.subject_no)
 
             print "[WaitingRoomConnection] Pairs: " + str(WaitingRoomConnection.PAIRS[0]);
             WaitingRoomConnection.MATCHED = [];
 
 
-            self.partner = WaitingRoomConnection.PAIRS[self.rd - 1][self.subject_no - 1]
+            #self.partner = WaitingRoomConnection.PAIRS[self.rd - 1][self.subject_no - 1]
             self.game_id = "gm" + str(self.partner) + str(self.subject_no) if self.partner < self.subject_no else "gm" + str(self.subject_no)+ str(self.partner)
             GameConnection.PAIRS[self.game_id].add(self.subject_id)
             GameConnection.GAMES[str(self.subject_id)] = self.game_id
