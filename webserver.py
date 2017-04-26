@@ -244,10 +244,10 @@ class WaitingRoomConnection(SockJSConnection):
                     partner = random.choice(available)
                     logger.info('[WaitingRoomConnection] partner for %d: %d', j, partner)
 
-                    WaitingRoomConnection.PAIRS[self.rd - 1][self.subject_no - 1] = partner
-                    WaitingRoomConnection.PAIRS[self.rd - 1][partner - 1] = self.subject_no
+                    WaitingRoomConnection.PAIRS[self.rd - 1][j - 1] = partner
+                    WaitingRoomConnection.PAIRS[self.rd - 1][partner - 1] = j
                     WaitingRoomConnection.MATCHED.append(partner)
-                    WaitingRoomConnection.MATCHED.append(self.subject_no)
+                    WaitingRoomConnection.MATCHED.append(j)
 
             logger.info('[WaitingRoomConnection] employer first: %s', str(WaitingRoomConnection.EMPLOYER_FIRST))
             logger.info('[WaitingRoomConnection] employee first: %s', str(WaitingRoomConnection.EMPLOYEE_FIRST))
