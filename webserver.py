@@ -223,6 +223,8 @@ class WaitingRoomConnection(SockJSConnection):
             GameConnection.GAMES[str(self.subject_id)] = self.game_id
             GameConnection.PAST_PARTNERS[str(self.subject_id)].append(self.partner)
             GameConnection.PLAYER_ROLES[str(self.subject_id)] = "employer" if self.subject_no in WaitingRoomConnection.EMPLOYER_FIRST and self.rd < 2 else "employee"
+            print "[WaitingRoomConnection] Subject " + self.subject_id + "assigned to role" + GameConnection.PLAYER_ROLES[str(self.subject_id)]
+
             print "[WaitingRoomConnection] Subject " + self.subject_id + "assigned to game " + self.game_id
             db.players.update_one({'_id': ObjectId(self.subject_id)},{'$set': {'subject_no': self.subject_no, 'game_id': self.game_id}})
             logger.info('[WaitingRoomConnection] WAIT_MSG from subject: %s of game: %s', self.subject_id, self.game_id)
