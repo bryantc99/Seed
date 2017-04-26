@@ -447,13 +447,13 @@ class GameConnection(SockJSConnection):
         else:
             msg = json.loads(message)
             msg_type = msg['type']
-            game_id = msg['game_id']
 
             if msg_type == GameConnection.INIT_MSG:
                 logger.info("[GameConnection] Player at Game Screen")
 
                 self._init(msg['subject_id'])
             elif msg_type == GameConnection.CONTRACT_MSG or msg_type == GameConnection.EFFORT_MSG or msg_type == GameConnection.ACTION_MSG:
+                game_id = msg['game_id']
                 if(False):
                     self.broadcast(GameConnection.PARTICIPANTS[game_id], message)
                 else:
