@@ -192,6 +192,8 @@ class WaitingRoomConnection(SockJSConnection):
     EMPLOYEE_FIRST = []
     MATCHED = []
 
+    NUMBERS = {}
+
     # if the subject has already been admitted or has already done this experiment
     
     def _duplicate(self):
@@ -217,9 +219,15 @@ class WaitingRoomConnection(SockJSConnection):
             present_subjects = WaitingRoomConnection.available_subjects
             self.admission_size = WaitingRoomConnection.admission_sizes
             present_subjects.add(self)
-            self.subject_no = len(present_subjects)
+            self.subject_no = len(present_subjects) if self.rd == 1 else WaitingRoomConnection.NUMBERS[str(self.subject_id)]
+
+            if self.rd == 1:
+                WaitingRoomConnection.NUMBERS[str(self.subject_id)] = self.subject_no
 
             if len(present_subjects) == 1:
+                GameConnection.PAIRS = defaultdict(lambda: set())
+                GameConnection.PARTICIPANTS = defaultdict(lambda: set())
+                GameConnection.GAMES = {}
                 WaitingRoomConnection.EMPLOYER_FIRST = random.sample(xrange(1, WaitingRoomConnection.TOT_PLAYERS+1), 2)
                 WaitingRoomConnection.EMPLOYEE_FIRST = []
                 WaitingRoomConnection.MATCHED = []
@@ -261,7 +269,7 @@ class WaitingRoomConnection(SockJSConnection):
             GameConnection.PAIRS[self.game_id].add(self.subject_id)
             GameConnection.GAMES[str(self.subject_id)] = self.game_id
             GameConnection.PAST_PARTNERS[str(self.subject_id)].append(self.partner)
-            GameConnection.PLAYER_ROLES[str(self.subject_id)] = "employer" if self.subject_no in WaitingRoomConnection.EMPLOYER_FIRST and int(self.rd) < 2 else "employee"
+            GameConnection.PLAYER_ROLES[str(self.subject_id)] = "employer" if ((self.subject_no in WaitingRoomConnection.EMPLOYER_FIRST and int(self.rd) < 2) or (self.subject_no in WaitingRoomConnection.EMPLOYEE_FIRST and int(self.rd) >= 2)) else "employee"
             print "[WaitingRoomConnection] Subject " + self.subject_id + "assigned to role" + GameConnection.PLAYER_ROLES[str(self.subject_id)]
 
             print "[WaitingRoomConnection] Subject " + self.subject_id + "assigned to game " + self.game_id
