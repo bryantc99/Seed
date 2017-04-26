@@ -228,8 +228,9 @@ class WaitingRoomConnection(SockJSConnection):
                 GameConnection.PAIRS = defaultdict(lambda: set())
                 GameConnection.PARTICIPANTS = defaultdict(lambda: set())
                 GameConnection.GAMES = {}
-                WaitingRoomConnection.EMPLOYER_FIRST = random.sample(xrange(1, WaitingRoomConnection.TOT_PLAYERS+1), 2)
-                WaitingRoomConnection.EMPLOYEE_FIRST = []
+                if self.rd == 1:
+                  WaitingRoomConnection.EMPLOYER_FIRST = random.sample(xrange(1, WaitingRoomConnection.TOT_PLAYERS+1), 2)
+                  WaitingRoomConnection.EMPLOYEE_FIRST = []
                 WaitingRoomConnection.MATCHED = []
                 for i in xrange(1, WaitingRoomConnection.TOT_PLAYERS+1):
                     if not i in WaitingRoomConnection.EMPLOYER_FIRST:
