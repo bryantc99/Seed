@@ -98,7 +98,7 @@ gameApp.service("dataModel", function() {
     this.action = '';
 
     this.counting = false;
-    this.counter = 10;
+    this.counter = 30;
     this.continue = false;
 })
 
