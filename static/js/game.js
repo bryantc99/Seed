@@ -101,6 +101,8 @@ gameApp.service("dataModel", function() {
     this.counting = false;
     this.counter = 30;
     this.continue = false;
+
+    this.fastemployer = true;
 })
 
 gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$location', '$rootScope',
@@ -108,7 +110,6 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
         $scope.game = {};
         $scope.game.continue = dataModel.continue;
         $scope.game.wait = true;
-        $scope.game.fastemployer = true;
         $scope.game.hasRole = false;
 
 
@@ -242,7 +243,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
                 dataModel.finalWage = dataModel.wage;
                 page = employer ? '2' : 'wait';
                 $scope.game.wait = !employer;
-                $scope.game.fastemployer = false;
+                dataModel.fastemployer = false;
 
                 dataModel.stage = "contract";
             }
@@ -340,7 +341,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
                 console.log("contract made");
                 var employer = dataModel.role == "employer";
 
-                if (employer || !$scope.game.fastemployer) {
+                if (employer || !dataModel.fastemployer) {
                     console.log("next contract next");
                     $scope.game.nextPage();
                 }
