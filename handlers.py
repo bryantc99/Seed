@@ -85,7 +85,7 @@ class WelcomeHandler(BaseHandler):
          #   self.render("about.html", title="Oxford Experiments", oid = oid)
         #else:
         print "oid: " + self.get_argument(oid)
-        self.render("welcome.html", title="Oxford Experiments", oid = oid, rd=rd)
+        self.render("welcome.html", title="Oxford Experiments", oid = oid)
     def post(self, oid):
         #oid = self.get_argument('oid')
         self.render("welcome.html", title="Oxford Experiments", oid = oid, round = 1)
