@@ -108,7 +108,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
         $scope.game.continue = dataModel.continue;
         $scope.game.wait = true;
         $scope.game.fastemployer = true;
-        console.log($scope.game.continue);
+        $scope.game.hasRole = false;
 
 
         $scope.game.newPage = function(page){
@@ -309,6 +309,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
                 var role = msg.role;
                 console.log("Client has role:" + role);
                 dataModel.role = role;
+                $scope.game.hasRole = true;
             }
             else if (type === READY_MSG) {
                 console.log("Participants ready");
