@@ -359,7 +359,7 @@ class GameConnection(SockJSConnection):
 
     ROLES = ["employer", "employee"]
 
-    PAIRS = defaultdict(lambda: list())
+    PAIRS = defaultdict(lambda: set())
 
    # TREATMENTS = {'fl': {'lowBase': 1, 'varWage': 0},
     #              'fh': {'lowBase': 0, 'varWage': 0},
