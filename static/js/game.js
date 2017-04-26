@@ -107,6 +107,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
         $scope.game = {};
         $scope.game.continue = dataModel.continue;
         $scope.game.wait = true;
+        $scope.game.fastemployer = true;
         console.log($scope.game.continue);
 
 
@@ -228,6 +229,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
                 dataModel.finalWage = dataModel.wage;
                 page = employer ? '2' : 'wait';
                 $scope.game.wait = !employer;
+                $scope.game.fastemployer = false;
 
                 dataModel.stage = "contract";
             }
@@ -321,8 +323,15 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
                 dataModel.wage = dataModel.lowBase ? 12 : 16;
                 dataModel.stage = "contract";
                 console.log("contract made");
-
-                $scope.game.nextPage();
+                if (!$scope.game.fastemployer) {
+                    $scope.game.nextPage();
+                }
+                else {
+                    var employer = dataModel.role == "employer";
+                    dataModel.oid = oid;
+                    dataModel.wage = dataModel.lowBase ? 12 : 16;
+                    dataModel.finalWage = dataModel.wage;
+                }
             }
             else if (type == EFFORT_MSG) {
                 var acceptStr = msg.accept ? "accept" : "reject";
