@@ -85,8 +85,8 @@ class WelcomeHandler(BaseHandler):
          #   self.render("about.html", title="Oxford Experiments", oid = oid)
         #else:
             self.render("welcome.html", title="Oxford Experiments", oid = oid, round = 1)
-    def post(self):
-        oid = self.get_argument('oid')
+    def post(self, oid):
+        #oid = self.get_argument('oid')
         self.render("welcome.html", title="Oxford Experiments", oid = oid, round = 1)
 
 class PaymentHandler(BaseHandler):
