@@ -72,7 +72,7 @@ function connect() {
         console.log("Client - connected");
         console.log("Client - protocol used: " + conn.protocol);
         // send WAIT_MSG
-        var wait_msg = JSON.stringify({"type": WAIT_MSG, "game_id": game, "subject_id": params['oid']});
+        var wait_msg = JSON.stringify({"type": WAIT_MSG, "game_id": game, "subject_id": params['oid'], "rd": params['rd']});
         conn.send(wait_msg);
         console.log("Client - WAIT_MSG sent");
     };
