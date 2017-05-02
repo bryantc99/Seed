@@ -74,6 +74,10 @@ gameApp.config(['$routeProvider',
             templateUrl: '../../static/game/finish.html',
             controller: 'GameController'
         }).
+        when('/timeup', {
+            templateUrl: '../../static/game/timeup.html',
+            controller: 'GameController'
+        }).
         otherwise({
             redirectTo: '/error'
         });
@@ -235,7 +239,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
             var employer = dataModel.role == "employer";
 
             $scope.game.continue = false;
-            dataModel.counter = 31;
+            dataModel.counter = 11;
 
 
             var page = "";
@@ -409,6 +413,7 @@ gameApp.controller('TimerController', ['$scope', '$window', 'dataModel', '$inter
                 $interval.cancel(stop);
                 stop = undefined;
             }
+            console.log("stop me");
             $scope.game.disconnect();
         };
 
