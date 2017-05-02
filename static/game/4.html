@@ -24,6 +24,8 @@
 				</tr>
 			</tbody>
 		</table>
-		<p><input name="submit" type="button" value="OK" ng-click="game.sendAction()" ng-show="game.continue" class="button"></p>
+		<p><input name="submit" type="button" value="OK" ng-click="game.sendAction()" ng-show="game.continue" class="button">
+					<input type="button" id="dummy" value="dummy" style="visibility:hidden" class="button" ng-show="!game.continue">
+</p>
 	</div>
 </form>
