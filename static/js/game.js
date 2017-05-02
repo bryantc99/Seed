@@ -317,10 +317,6 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
             conn.send(JSON.stringify({"type": ACTION_MSG, "game_id": dataModel.game_id, "action": dataModel.action}));
         }
 
-        $scope.game.disconnect = function() {
-            conn.send(JSON.stringify({"type": QUIT_MSG, "game_id": dataModel.game_id}));
-            $scope.game.newPage("timeup");
-        }
  
         conn.onmessage = function(e) {
             var msg = JSON.parse(e.data);
@@ -403,6 +399,11 @@ gameApp.controller('TimerController', ['$scope', '$window', 'dataModel', '$inter
                 }
             }, 1000); 
         };
+
+        $scope.game.disconnect = function() {
+            conn.send(JSON.stringify({"type": QUIT_MSG, "game_id": dataModel.game_id}));
+            $window.location.assign("/game/user/" + oid + "#/timeup");
+        }
 
         if (!dataModel.counting)
             $scope.game.countdown();
