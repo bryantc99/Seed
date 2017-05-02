@@ -119,7 +119,11 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
 
 
         $scope.game.newPage = function(page){
-                $window.location.assign("/game/user/" + oid + "#/" + page);
+            $window.location.assign("/game/user/" + oid + "#/" + page);
+        }
+
+        $scope.game.payment = function() {
+            $window.location.assign("/payment?oid=" + oid);
         }
 
         $scope.game.finishGame = function(){
