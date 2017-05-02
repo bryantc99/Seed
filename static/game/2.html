@@ -17,11 +17,12 @@
 					<td colspan="4">
 						<input name="submit" type="button" value="Option B" ng-click="game.setContract(false);" class="button">
 					</td>
-					<td colspan="4" ng-if="game.getVarWage()">
-						<input name="submit" type="button" value="No Contract" ng-click="game.setContract('none');" class="button">
+					<td colspan="4">
+						<input name="submit" ng-if="game.getVarWage()" type="button" value="No Contract" ng-click="game.setContract('none');" class="button">
 					</td>
-					<td colspan="4" ng-show="game.getContract().length > 0">
-						<p>You will <br><br> offer option <span class="offernum">{{game.getContract()}}</span></p>
+					<td colspan="4">
+					<span ng-show="game.getContract().length > 0">
+						<p>You will <br><br> offer option <span class="offernum">{{game.getContract()}}</span></p></span>
 					</td>
 				</tr>
 			</tbody>
