@@ -218,7 +218,7 @@ class WaitingRoomConnection(SockJSConnection):
             logger.info('[WaitingRoomConnection] admission_sizes: %s', WaitingRoomConnection.admission_sizes)
 
             present_subjects = WaitingRoomConnection.available_subjects
-            self.admission_size = WaitingRoomConnection.admission_sizes
+            self.admission_size = WaitingRoomConnection.TOT_PLAYERS
             present_subjects.add(self)
             self.subject_no = len(present_subjects) if self.rd == 1 else WaitingRoomConnection.NUMBERS[str(self.subject_id)]
 
@@ -240,7 +240,7 @@ class WaitingRoomConnection(SockJSConnection):
                       WaitingRoomConnection.EMPLOYEE_FIRST = []
                     WaitingRoomConnection.MATCHED = []
                     for i in xrange(1, WaitingRoomConnection.TOT_PLAYERS+1):
-                        if not i in WaitingRoomConnection.EMPLOYER_FIRST:
+                        if not i in WaitingRoomConnection.EMPLOYER_FIRST and not i in WaitingRoomConnection.EMPLOYEE_FIRST:
                             WaitingRoomConnection.EMPLOYEE_FIRST.append(i)
                     for j in WaitingRoomConnection.EMPLOYER_FIRST:
                         if j in WaitingRoomConnection.MATCHED:
