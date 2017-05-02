@@ -98,6 +98,7 @@ gameApp.service("dataModel", function() {
     this.offerMade = true;
     this.reaction = false;
     this.ready = false;
+    this.subject_no = 0;
     
     this.wage = 12;
     this.finalWage = 12;
@@ -347,6 +348,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
                 dataModel.lowBase = msg.lowBase;
                 dataModel.varWage = msg.varWage;
                 dataModel.game_id = msg.game_id;
+                dataModel.subject_no = msg.subject_no;
                 $scope.game.setContinue(true);
                 console.log($scope.game.continue);
                 $scope.game.setWait(false);
@@ -422,7 +424,7 @@ gameApp.controller('TimerController', ['$scope', '$window', 'dataModel', '$inter
 
         $scope.game.disconnect = function() {
             dataModel.quit = true;
-            conn.send(JSON.stringify({"type": QUIT_MSG, "game_id": dataModel.game_id}));
+            conn.send(JSON.stringify({"type": QUIT_MSG, "game_id": dataModel.game_id, "subject_no": dataModel.subject_no}));
             $window.location.assign("/game/user/" + oid + "#/timeup");
         }
 

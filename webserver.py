@@ -191,6 +191,7 @@ class WaitingRoomConnection(SockJSConnection):
     EMPLOYER_FIRST = []
     EMPLOYEE_FIRST = []
     MATCHED = []
+    DROPPED = []
 
     NUMBERS = {}
 
@@ -223,6 +224,8 @@ class WaitingRoomConnection(SockJSConnection):
 
             if self.rd == 1:
                 WaitingRoomConnection.NUMBERS[str(self.subject_id)] = self.subject_no
+                GameConnection.NUMBERS[str(self.subject_id)] = self.subject_no
+
 
             if len(present_subjects) == 1:
                 GameConnection.PAIRS = defaultdict(lambda: set())
@@ -242,7 +245,7 @@ class WaitingRoomConnection(SockJSConnection):
 
                     for k in WaitingRoomConnection.EMPLOYEE_FIRST:
                         add = True
-                        if k not in WaitingRoomConnection.MATCHED:
+                        if k not in WaitingRoomConnection.MATCHED and k not in WaitingRoomConnection.DROPPED:
                             for l in range(self.rd - 1):
                                 if WaitingRoomConnection.PAIRS[l][j - 1] == k:
                                     add = False
@@ -422,6 +425,7 @@ class GameConnection(SockJSConnection):
     PAIRS = defaultdict(lambda: set())
     PARTICIPANTS = defaultdict(lambda: set())
     GAMES = {}
+    NUMBERS = {}
     PAST_PARTNERS = defaultdict(lambda: list())
     PLAYER_ROLES = {}
 
@@ -463,6 +467,7 @@ class GameConnection(SockJSConnection):
 
                                                            #  'treatment': TREATMENTS['fl'],  
                                                              'game_id': game_id,
+                                                             'subject_no': GameConnection.NUMBERS[str(oid)],
                                                              'lowBase': bool(random.getrandbits(1)),
                                                              'varWage': bool(random.getrandbits(1))}))
             
@@ -515,7 +520,11 @@ class GameConnection(SockJSConnection):
                 logger.info("[GameConnection] Player at Game Screen")
 
                 self._init(msg['subject_id'])
-            elif msg_type == GameConnection.CONTRACT_MSG or msg_type == GameConnection.EFFORT_MSG or msg_type == GameConnection.ACTION_MSG or msg_type == GameConnection.QUIT_MSG:
+            elif msg_type == GameConnection.CONTRACT_MSG or msg_type == GameConnection.EFFORT_MSG or msg_type == GameConnection.ACTION_MSG or msg_type:
+                game_id = msg['game_id']
+                self.broadcast(GameConnection.PARTICIPANTS[game_id], message)
+            elif msg_type == GameConnection.QUIT_MSG:
+                WaitingRoomConnection.DROPPED.append(msg['subject_no'])
                 game_id = msg['game_id']
                 self.broadcast(GameConnection.PARTICIPANTS[game_id], message)
             elif msg_type == GameConnection.FINISH_MSG:
