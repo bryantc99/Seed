@@ -97,6 +97,7 @@ gameApp.service("dataModel", function() {
     this.varWage = true;
     this.offerMade = true;
     this.reaction = false;
+    this.ready = false;
     
     this.wage = 12;
     this.finalWage = 12;
@@ -342,6 +343,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
             else if (type === READY_MSG) {
                 console.log("Participants ready");
                // console.log(msg.treatment)
+                dataModel.ready = true;
                 dataModel.lowBase = msg.lowBase;
                 dataModel.varWage = msg.varWage;
                 dataModel.game_id = msg.game_id;
@@ -385,6 +387,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
             }
             else if (type == QUIT_MSG) {
                 if (!dataModel.quit) {
+                    dataModel.quit = true;
                     $scope.game.newPage("nopartner");
                 }
             }      
@@ -407,7 +410,9 @@ gameApp.controller('TimerController', ['$scope', '$window', 'dataModel', '$inter
             stop = $interval(function() {
                 if ($scope.game.counter > 0) {
                     console.log($scope.game.counter);
-                    dataModel.counter--;
+                    if (dataModel.ready) {
+                        dataModel.counter--;
+                    }
                     $scope.game.counter = dataModel.counter;
                 } else {
                     $scope.game.timerStop();
@@ -430,7 +435,6 @@ gameApp.controller('TimerController', ['$scope', '$window', 'dataModel', '$inter
                 $interval.cancel(stop);
                 stop = undefined;
             }
-            console.log("stop me");
             if (!dataModel.quit) {
                 $scope.game.disconnect();
             }
