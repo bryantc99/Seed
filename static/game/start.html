@@ -3,7 +3,9 @@
 		<p><b>Your role: {{game.getRole()}}</b></p>
 		<p>For this game, you have the role of the {{game.getRole()}}.</p>
 		<p>Click on <b>Next</b> to continue.</p><p>
-		<input type="button" id="next" value="Next" class="button" ng-click="game.nextPage()" ng-show="game.continue"></p>
+		<input type="button" id="next" value="Next" class="button" ng-click="game.nextPage()" ng-show="game.continue">
+		<input type="button" id="dummy" value="dummy" style="display:none" class="button" ng-show="!game.continue">
+		</p>
 
 	</div>
 	<div ng-show="!game.hasRole"><h1>Loading...</h1></div>
