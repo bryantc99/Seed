@@ -225,41 +225,52 @@ class WaitingRoomConnection(SockJSConnection):
             if self.rd == 1:
                 WaitingRoomConnection.NUMBERS[str(self.subject_id)] = self.subject_no
                 GameConnection.NUMBERS[str(self.subject_id)] = self.subject_no
+            
+            repeat = True
+            count = 0
+            while (repeat):
+                repeat = False
+                count = count + 1
+                if len(present_subjects) == 1:
+                    GameConnection.PAIRS = defaultdict(lambda: set())
+                    GameConnection.PARTICIPANTS = defaultdict(lambda: set())
+                    GameConnection.GAMES = {}
+                    if self.rd == 1:
+                      WaitingRoomConnection.EMPLOYER_FIRST = random.sample(xrange(1, WaitingRoomConnection.TOT_PLAYERS+1), 2)
+                      WaitingRoomConnection.EMPLOYEE_FIRST = []
+                    WaitingRoomConnection.MATCHED = []
+                    for i in xrange(1, WaitingRoomConnection.TOT_PLAYERS+1):
+                        if not i in WaitingRoomConnection.EMPLOYER_FIRST:
+                            WaitingRoomConnection.EMPLOYEE_FIRST.append(i)
+                    for j in WaitingRoomConnection.EMPLOYER_FIRST:
+                        available = []
+                        logger.info('[WaitingRoomConnection] employee first for %d: %s', j, str(WaitingRoomConnection.EMPLOYEE_FIRST))
+                        logger.info('[WaitingRoomConnection] matched for %d: %s', j, str(WaitingRoomConnection.MATCHED))
+
+                        for k in WaitingRoomConnection.EMPLOYEE_FIRST:
+                            add = True
+                            if k not in WaitingRoomConnection.MATCHED and k not in WaitingRoomConnection.DROPPED:
+                                for l in range(self.rd - 1):
+                                    if WaitingRoomConnection.PAIRS[l][j - 1] == k:
+                                        add = False
+                                if add:      
+                                    available.append(k)
+                        logger.info('[WaitingRoomConnection] available for %d: %s', j, str(available))
+
+                        if (len(available) == 0 && count < 50):
+                            repeat = True
+                        else:
+                            partner = 0
+                            if (len(availabe) != 0):
+                                partner = random.choice(available)
+                                WaitingRoomConnection.PAIRS[self.rd - 1][partner - 1] = j
+                                WaitingRoomConnection.MATCHED.append(partner)
 
 
-            if len(present_subjects) == 1:
-                GameConnection.PAIRS = defaultdict(lambda: set())
-                GameConnection.PARTICIPANTS = defaultdict(lambda: set())
-                GameConnection.GAMES = {}
-                if self.rd == 1:
-                  WaitingRoomConnection.EMPLOYER_FIRST = random.sample(xrange(1, WaitingRoomConnection.TOT_PLAYERS+1), 2)
-                  WaitingRoomConnection.EMPLOYEE_FIRST = []
-                WaitingRoomConnection.MATCHED = []
-                for i in xrange(1, WaitingRoomConnection.TOT_PLAYERS+1):
-                    if not i in WaitingRoomConnection.EMPLOYER_FIRST:
-                        WaitingRoomConnection.EMPLOYEE_FIRST.append(i)
-                for j in WaitingRoomConnection.EMPLOYER_FIRST:
-                    available = []
-                    logger.info('[WaitingRoomConnection] employee first for %d: %s', j, str(WaitingRoomConnection.EMPLOYEE_FIRST))
-                    logger.info('[WaitingRoomConnection] matched for %d: %s', j, str(WaitingRoomConnection.MATCHED))
+                            logger.info('[WaitingRoomConnection] partner for %d: %d', j, partner)
 
-                    for k in WaitingRoomConnection.EMPLOYEE_FIRST:
-                        add = True
-                        if k not in WaitingRoomConnection.MATCHED and k not in WaitingRoomConnection.DROPPED:
-                            for l in range(self.rd - 1):
-                                if WaitingRoomConnection.PAIRS[l][j - 1] == k:
-                                    add = False
-                            if add:      
-                                available.append(k)
-                    logger.info('[WaitingRoomConnection] available for %d: %s', j, str(available))
-
-                    partner = random.choice(available)
-                    logger.info('[WaitingRoomConnection] partner for %d: %d', j, partner)
-
-                    WaitingRoomConnection.PAIRS[self.rd - 1][j - 1] = partner
-                    WaitingRoomConnection.PAIRS[self.rd - 1][partner - 1] = j
-                    WaitingRoomConnection.MATCHED.append(partner)
-                    WaitingRoomConnection.MATCHED.append(j)
+                            WaitingRoomConnection.PAIRS[self.rd - 1][j - 1] = partner
+                            WaitingRoomConnection.MATCHED.append(j)
 
             logger.info('[WaitingRoomConnection] employer first: %s', str(WaitingRoomConnection.EMPLOYER_FIRST))
             logger.info('[WaitingRoomConnection] employee first: %s', str(WaitingRoomConnection.EMPLOYEE_FIRST))
@@ -269,7 +280,9 @@ class WaitingRoomConnection(SockJSConnection):
 
 
             self.partner = WaitingRoomConnection.PAIRS[self.rd - 1][self.subject_no - 1]
-            self.game_id = "gm" + str(self.partner) + str(self.subject_no) if self.partner < self.subject_no else "gm" + str(self.subject_no)+ str(self.partner)
+            self.game_id = "nogame"
+            if (self.partner != 0):
+                self.game_id = "gm" + str(self.partner) + str(self.subject_no) if self.partner < self.subject_no else "gm" + str(self.subject_no)+ str(self.partner)
             GameConnection.PAIRS[self.game_id].add(self.subject_id)
             GameConnection.GAMES[str(self.subject_id)] = self.game_id
             GameConnection.PAST_PARTNERS[str(self.subject_id)].append(self.partner)
