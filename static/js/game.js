@@ -17,7 +17,7 @@ var WAIT_MSG = 99,
     CONTRACT_MSG = 114,
     EFFORT_MSG = 115,
     ACTION_MSG = 116,
-    FINISH_MSG = 117;
+    FINISH_MSG = 117,
     QUIT_MSG = 118;
 
 var protocols = ["websocket", "xdr-streaming", "xhr-streaming", "xdr-polling", "xhr-polling", "iframe-eventsource"];
