@@ -83,6 +83,7 @@ class Application(tornado.web.Application):
 
         GameConnection.ready = 0
         GameConnection.size = 2
+        WaitingRoomConnection.TOT_PLAYERS = 4
         #GameConnection.participants = list();
 
         urls = [
@@ -147,10 +148,7 @@ class WaitingRoomConnection(SockJSConnection):
     # sessions_available: list
     available_sessions = defaultdict(lambda: list())
 
-    # game_id:size
-    # game_id: string
-    # size: int
-    admission_sizes = 4
+
     # game_id:status
     # game_id: string
     # status: int
@@ -184,7 +182,6 @@ class WaitingRoomConnection(SockJSConnection):
     HEARTBEAT = 'h'
 
     # constants
-    TOT_PLAYERS = 4
     NUM_ROUNDS = 2
     PAIRS = [[4, 3, 2, 1],[4,3,2,1]]
 
@@ -211,12 +208,9 @@ class WaitingRoomConnection(SockJSConnection):
         
     def _register(self, subject, game, rd):
         self.subject_id = subject
-        self.admission_sizes = WaitingRoomConnection.TOT_PLAYERS
         self.rd = int(rd)
         try:
             # first check if the waiting room has been configured
-            logger.info('[WaitingRoomConnection] admission_sizes: %s', WaitingRoomConnection.admission_sizes)
-
             present_subjects = WaitingRoomConnection.available_subjects
             self.admission_size = WaitingRoomConnection.TOT_PLAYERS
             present_subjects.add(self)
@@ -294,7 +288,7 @@ class WaitingRoomConnection(SockJSConnection):
             print "[WaitingRoomConnection] Subject " + self.subject_id + "assigned to game " + self.game_id
             db.players.update_one({'_id': ObjectId(self.subject_id)},{'$set': {'subject_no': self.subject_no, 'game_id': self.game_id}})
             logger.info('[WaitingRoomConnection] WAIT_MSG from subject: %s of game: %s', self.subject_id, self.game_id)
-            print "[WaitingRoomConnection] Number of waiting subjects:" + str(self.subject_no) + "/" + str(self.admission_size)
+            print "[WaitingRoomConnection] Number of waiting subjects:" + len(present_subjects) + "/" + str(self.admission_size)
 
             if len(present_subjects) >= self.admission_size:
                 WaitingRoomConnection.room_statuses[self.game_id] = WaitingRoomConnection.ENTRY_OPEN
