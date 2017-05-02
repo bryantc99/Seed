@@ -243,6 +243,8 @@ class WaitingRoomConnection(SockJSConnection):
                         if not i in WaitingRoomConnection.EMPLOYER_FIRST:
                             WaitingRoomConnection.EMPLOYEE_FIRST.append(i)
                     for j in WaitingRoomConnection.EMPLOYER_FIRST:
+                        if j in WaitingRoomConnection.MATCHED:
+                            continue
                         available = []
                         logger.info('[WaitingRoomConnection] employee first for %d: %s', j, str(WaitingRoomConnection.EMPLOYEE_FIRST))
                         logger.info('[WaitingRoomConnection] matched for %d: %s', j, str(WaitingRoomConnection.MATCHED))
@@ -261,7 +263,7 @@ class WaitingRoomConnection(SockJSConnection):
                             repeat = True
                         else:
                             partner = 0
-                            if (len(availabe) != 0):
+                            if (len(available) != 0):
                                 partner = random.choice(available)
                                 WaitingRoomConnection.PAIRS[self.rd - 1][partner - 1] = j
                                 WaitingRoomConnection.MATCHED.append(partner)
