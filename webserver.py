@@ -515,12 +515,9 @@ class GameConnection(SockJSConnection):
                 logger.info("[GameConnection] Player at Game Screen")
 
                 self._init(msg['subject_id'])
-            elif msg_type == GameConnection.CONTRACT_MSG or msg_type == GameConnection.EFFORT_MSG or msg_type == GameConnection.ACTION_MSG:
+            elif msg_type == GameConnection.CONTRACT_MSG or msg_type == GameConnection.EFFORT_MSG or msg_type == GameConnection.ACTION_MSG or msg_type == GameConnection.QUIT_MSG:
                 game_id = msg['game_id']
-                if(False):
-                    self.broadcast(GameConnection.PARTICIPANTS[game_id], message)
-                else:
-                    self.broadcast(GameConnection.PARTICIPANTS[game_id], message)
+                self.broadcast(GameConnection.PARTICIPANTS[game_id], message)
             elif msg_type == GameConnection.FINISH_MSG:
                 game_id = msg['game_id']
                 logger.debug('[GameConnection] Entering info for subject %s into db',  msg['oid'])

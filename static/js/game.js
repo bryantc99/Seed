@@ -78,6 +78,10 @@ gameApp.config(['$routeProvider',
             templateUrl: '../../static/game/timeup.html',
             controller: 'GameController'
         }).
+        when('/nopartner', {
+            templateUrl: '../../static/game/nopartner.html',
+            controller: 'GameController'
+        }).
         otherwise({
             redirectTo: '/error'
         });
@@ -104,10 +108,12 @@ gameApp.service("dataModel", function() {
     this.action = '';
 
     this.counting = false;
-    this.counter = 30;
+    this.counter = 10;
     this.continue = false;
 
     this.fastemployer = true;
+
+    this.quit = false;
 })
 
 gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$location', '$rootScope',
@@ -376,7 +382,12 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
                 if (dataModel.action === "penalize")
                     dataModel.finalWage -= dataModel.bonus;
                 $scope.game.nextPage();
-            }              
+            }
+            else if (type == QUIT_MSG) {
+                if (!dataModel.quit) {
+                    $scope.game.newPage("nopartner");
+                }
+            }      
         };
     }]);
 
@@ -405,6 +416,7 @@ gameApp.controller('TimerController', ['$scope', '$window', 'dataModel', '$inter
         };
 
         $scope.game.disconnect = function() {
+            dataModel.quit = true;
             conn.send(JSON.stringify({"type": QUIT_MSG, "game_id": dataModel.game_id}));
             $window.location.assign("/game/user/" + oid + "#/timeup");
         }
