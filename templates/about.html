@@ -39,30 +39,60 @@
 <h2>About this study</h2>
 <p>Thank you for your interest!</p>
 
-<p>This is a study by the University of Oxford on choices people make. 
-We will present you with a situation and ask you to make choices.</p>
-<p>Your choices and the choices of the other participants will determine how much you earn.
-We will explain how this works during the session.</p>
+<p>We will present you with different choices. Your choices and those of other participants determine how much you earn.</p>
+<p>In this experiment, we will assign you the role of either a <b>worker</b> or an <b>employer</b>. Another participant will be given the other role.</p>
+<p>The experiment is divided into games. Each game lasts for 10 periods.</p>
+<p>For the duration of a game, each employer is matched to one worker at random, and each worker is matched to one employer at random. During the 10 periods of the game you will have the <b>same role: worker or employer</b>.</p>
+<p>You will play multiple games of 10 periods. In each of these games you can earn points. At the end, the computer randomly picks one game. For this game, we will pay you the sum of what you earned over the 10 periods. 100 points are worth $1.</p>
+<p> Within each period, there are four stages:
+<ol>
+	<li>The employer offers a contract to the worker. The contract specifies a wage W and an effort level E. Sometimes the wage W depends on effort E. </li>
+	<li>The worker chooses to <p>accept</p> or <p>reject</p> this contract. </li>
+	<li>If the worker has accepted the contract, the worker chooses high or low effort.</li>
+	<li>If the worker has accepted the contract, the employer <p>pays the worker</p> according to the contract. </li>
+</ol>
+</p>
+<p> The earnings of the worker and the employer:
+<ul>
+	<li> If the worker <b>rejects</b> the offer, both get <b>zero points</b>.</li>
+	<li> If the worker <b>accepts</b> the contract, the earnings depend on the worker's effort:
+	<ul>
+	  <li>The employer gets <b>X points</b> for <b>high effort</b> and <b>Y points</b> for <b>low effort</b>. The employer also pays a wage of <b>W</b> points to the worker as specified by the contract.</li>
+	  <li>The cost to theworker payoff exerting efforts is <b>Z points</b> for <b>high effort</b> and <b>0 points</b> for <b>low effort</b>. The worker also receives a wage payment of <b>W</b> points from the employer as specified by the contract.</li>
+	</ul>
+</ul>
+</p>
+<p> So the earnings each period are: 
+<ul>
+	<li>For the employer: the benefit from effort minus the wage.</li>	
+	<li>For the worker: the wage minus the cost of effort.</li>
+</ul>
+</p>
+<p> An example: 
+<ul>
+	<li>Suppose the employer offers a wage of 20 points.</li>
+	<li>The worker accepts this offer and chooses low effort.</li>
+	<li>The employer now earns: X points – 20 points = X-20 points. </li>
+	<li>The worker now earns: 20 points – 0 points = 20 points. </li>
+</ul>
+</p>
+
+
 
 <p>&nbsp;</p> 
  
 
-      <p>Please select <b>I agree</b> to participate in this study.</p><p></p>
-      <p> Your ID is {{oid}}</p>
+      <p>Please press <b>Continue</b> to answer a quiz.</p><p></p>
 		
 		<!--form action="/quiz/oid/{{oid}}" method="post"-->
       <form action="/welcome" method="get">
       <input type="hidden" name ="oid" value="{{oid}}">
       <input type="hidden" name ="rd" value="1">
 
-      <input type="submit" value="I agree" class="button">
+      <input type="submit" value="Continue" class="button">
       </form>
 <hr>
-<p>Background information: The principal researcher in this project is Elwyn Davies (elwyn.davies@economics.ox.ac.uk), doctoral student at the University of Oxford. If you agree to participate in this project, the research will be written up as a thesis. This thesis, as well as other publications resulting from this project, might be published online as well as in print.
-</p>
 
-<p>Complaints: The University of Oxford has set up a central committee (the Central University Research Ethics Committee, CUREC) to review studies like these on their ethical aspects. This study has been approved by this committee. If you have a concern about any aspect of this project, please speak to the researcher concerned who will do his best to answer your query. If you remain unhappy and wish to make a formal complaint, please contact the Research Ethics Committee at the University of Oxford (ethics@socsci.ox.ac.uk; +44 (0)1865 614871; Social Sciences & Humanities Inter-Divisional Research Ethics Committee, Oxford University, Hayes House, 75 George Street, Oxford, OX1 2BQ, United Kingdom).
-</p>
 </div>
 </div>
 </div>

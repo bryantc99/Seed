@@ -273,7 +273,7 @@ class WaitingRoomConnection(SockJSConnection):
             GameConnection.PAIRS[self.game_id].add(self.subject_id)
             GameConnection.GAMES[str(self.subject_id)] = self.game_id
             GameConnection.PAST_PARTNERS[str(self.subject_id)].append(self.partner)
-            GameConnection.PLAYER_ROLES[str(self.subject_id)] = "employer" if ((self.subject_no in WaitingRoomConnection.EMPLOYER_FIRST and int(self.rd) < 2) or (self.subject_no in WaitingRoomConnection.EMPLOYEE_FIRST and int(self.rd) >= 2)) else "employee"
+            GameConnection.PLAYER_ROLES[str(self.subject_id)] = "employer" if ((self.subject_no in WaitingRoomConnection.EMPLOYER_FIRST and int(self.rd) < 2) or (self.subject_no in WaitingRoomConnection.EMPLOYEE_FIRST and int(self.rd) >= 2)) else "worker"
             print "[WaitingRoomConnection] Subject " + self.subject_id + "assigned to role" + GameConnection.PLAYER_ROLES[str(self.subject_id)]
 
             print "[WaitingRoomConnection] Subject " + self.subject_id + "assigned to game " + self.game_id
@@ -420,7 +420,7 @@ class GameConnection(SockJSConnection):
     BLOCK_ADMISSION = 1010
     CONTINUOUS_ADMISSION = 1111
 
-    ROLES = ["employer", "employee"]
+    ROLES = ["employer", "worker"]
 
     PAIRS = defaultdict(lambda: set())
     PARTICIPANTS = defaultdict(lambda: set())

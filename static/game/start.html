@@ -1,8 +1,8 @@
 <form name="form_intro1" id="form_intro1" onsubmit="finish()">
 	<div class="welcome_parts" data-part="1" style="display: block;" ng-show="game.hasRole">
-		<h1>Welcome to Round {{game.getRound()}}</h1>
-		<p>In this round you are given the role of the <b>{{game.getRole()}}</b> of a virtual company.</p>
-		<p>Click on <b>Next</b> to continue to the game.</p><p>
+		<p><b>Your role: {{game.getRole()}}</b></p>
+		<p>For this game, you have the role of {{game.getRole()}}</p>
+		<p>Click on <b>Next</b> to continue.</p><p>
 		<input type="button" id="next" value="Next" class="button" ng-click="game.nextPage()" ng-show="game.continue"></p>
 
 	</div>
