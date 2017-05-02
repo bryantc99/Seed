@@ -14,8 +14,8 @@
 						<input name="submit" type="button" value="Reject" ng-click="game.setAccept(false); game.continue = true;" class="button">
 					</td>
 					<td></td>
-					<td colspan="4"  ng-show="game.getAccept().length > 0">
-						<p>You will <br><br> <span class="offernum">{{game.getAccept()}}</span> the offer</p>
+					<td colspan="4">
+						<p ng-show="game.getAccept().length > 0">You will <br><br> <span class="offernum">{{game.getAccept()}}</span> the offer</p>
 					</td>
 				</tr>
 			</tbody>
