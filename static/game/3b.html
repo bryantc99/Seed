@@ -15,8 +15,8 @@
 						<input name="submit" type="button" value="High" ng-click="game.setEffort('High'); game.continue = true;" class="button">
 					</td>
 					<td></td>
-					<td colspan="4" ng-show="game.getEffort().length > 0">
-						<p>You will work using <br><br> <span class="offernum">{{game.getEffort()}}</span> effort</p>
+					<td colspan="4" width="30%">
+						<p ng-show="game.getEffort().length > 0">You will work using <br><br> <span class="offernum">{{game.getEffort()}}</span> effort</p>
 					</td>
 				</tr>
 
