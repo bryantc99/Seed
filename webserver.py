@@ -257,7 +257,7 @@ class WaitingRoomConnection(SockJSConnection):
                                     available.append(k)
                         logger.info('[WaitingRoomConnection] available for %d: %s', j, str(available))
 
-                        if (len(available) == 0 && count < 50):
+                        if (len(available) == 0 and count < 50):
                             repeat = True
                         else:
                             partner = 0
