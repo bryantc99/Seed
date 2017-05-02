@@ -431,7 +431,9 @@ gameApp.controller('TimerController', ['$scope', '$window', 'dataModel', '$inter
                 stop = undefined;
             }
             console.log("stop me");
-            $scope.game.disconnect();
+            if (!dataModel.quit) {
+                $scope.game.disconnect();
+            }
         };
 
         $scope.$on('$destroy', function() {
