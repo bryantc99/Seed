@@ -540,7 +540,7 @@ class GameConnection(SockJSConnection):
                 self.broadcast(GameConnection.PARTICIPANTS[game_id], message)
             elif msg_type == GameConnection.QUIT_MSG:
                 WaitingRoomConnection.DROPPED.append(msg['subject_no'])
-                WaitingRoomConnection.admission_sizes = WaitingRoomConnection.admission_sizes - 1
+                WaitingRoomConnection.TOT_PLAYERS = WaitingRoomConnection.TOT_PLAYERS - 1
                 game_id = msg['game_id']
                 self.broadcast(GameConnection.PARTICIPANTS[game_id], message)
             elif msg_type == GameConnection.FINISH_MSG:
