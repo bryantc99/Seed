@@ -408,6 +408,7 @@ class GameConnection(SockJSConnection):
     EFFORT_MSG = 115
     ACTION_MSG = 116
     FINISH_MSG = 117
+    QUIT_MSG = 118
 
     ENTRY_OPEN = 110
     ENTRY_CLOSE = 111

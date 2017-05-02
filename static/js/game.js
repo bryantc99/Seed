@@ -18,6 +18,7 @@ var WAIT_MSG = 99,
     EFFORT_MSG = 115,
     ACTION_MSG = 116,
     FINISH_MSG = 117;
+    QUIT_MSG = 118;
 
 var protocols = ["websocket", "xdr-streaming", "xhr-streaming", "xdr-polling", "xhr-polling", "iframe-eventsource"];
 var options = {protocols_whitelist: protocols, debug: true, jsessionid: false};
@@ -206,7 +207,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
             return dataModel.accept;
         }
 
-           $scope.game.getReactionVal = function() {
+        $scope.game.getReactionVal = function() {
             return dataModel.reaction;
         }
 
@@ -309,7 +310,12 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
         }
 
         $scope.game.sendAction = function() {
-            conn.send(JSON.stringify({"type": ACTION_MSG, "game_id": dataModel.game_id, "action": dataModel.action}))
+            conn.send(JSON.stringify({"type": ACTION_MSG, "game_id": dataModel.game_id, "action": dataModel.action}));
+        }
+
+        $scope.game.disconnect = function() {
+            conn.send(JSON.stringify({"type": QUIT_MSG, "game_id": dataModel.game_id}));
+            $scope.game.newPage("timeup");
         }
  
         conn.onmessage = function(e) {
@@ -403,6 +409,7 @@ gameApp.controller('TimerController', ['$scope', '$window', 'dataModel', '$inter
                 $interval.cancel(stop);
                 stop = undefined;
             }
+            $scope.game.disconnect();
         };
 
         $scope.$on('$destroy', function() {
