@@ -277,6 +277,7 @@ class WaitingRoomConnection(SockJSConnection):
 
             self.partner = WaitingRoomConnection.PAIRS[self.rd - 1][self.subject_no - 1]
             self.game_id = "nogame"
+            print "game id is " + self.game_id
             if (self.partner != 0):
                 self.game_id = "gm" + str(self.partner) + str(self.subject_no) if self.partner < self.subject_no else "gm" + str(self.subject_no)+ str(self.partner)
             GameConnection.PAIRS[self.game_id].add(self.subject_id)
