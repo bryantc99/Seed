@@ -68,7 +68,9 @@ mainApp.controller('MainController', ['$scope', '$resource', '$interval', '$http
                 $http({
                     method: 'POST',
                     url: '/about',
-                    params: {name: $scope.main.user.name}
+                    data: $.param({name: $scope.main.user.name}),
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+
                 }).then(function successCallback(response) {
                 }, function errorCallback(response) {
                 });
