@@ -62,7 +62,16 @@ mainApp.controller('MainController', ['$scope', '$resource', '$interval', 'userI
             console.log("validate");
             if ($scope.main.user.name != "Gerald") {
                 $scope.main.wrongId = true;
-                console.log($scope.main.wrongId)
+                
+            }
+            else {
+                $http({
+                    method: 'POST',
+                    url: '/about',
+                    data: {name: $scope.main.user.name}
+                }).then(function successCallback(response) {
+                }, function errorCallback(response) {
+                });
             }
         }
 
