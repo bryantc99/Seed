@@ -51,7 +51,7 @@ class MainHandler(BaseHandler):
 
 class RegisterHandler(BaseHandler):
     def post(self):
-        print "AT about"
+        print "About: " + name
         name = self.get_argument('name')
         result = db.players.insert_one({
             "name" : name
