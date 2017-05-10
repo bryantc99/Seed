@@ -423,6 +423,7 @@ gameApp.controller('TimerController', ['$scope', '$window', 'dataModel', '$inter
         };
 
         $scope.game.disconnect = function() {
+            console.log("quit from game " + dataModel.game_id + " by subject " + dataModel.subject_no);
             dataModel.quit = true;
             conn.send(JSON.stringify({"type": QUIT_MSG, "game_id": dataModel.game_id, "subject_no": dataModel.subject_no}));
             $window.location.assign("/game/user/" + oid + "#/timeup");
