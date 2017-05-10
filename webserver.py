@@ -210,6 +210,7 @@ class WaitingRoomConnection(SockJSConnection):
     def _register(self, subject, game, rd):
         self.subject_id = subject
         self.rd = int(rd)
+        logger.info("[WaitingRoomConnection] Subject " + self.subject_id + " waiting for Round " + self.rd)
         try:
             # first check if the waiting room has been configured
             present_subjects = WaitingRoomConnection.available_subjects
