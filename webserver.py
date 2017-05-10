@@ -83,7 +83,8 @@ class Application(tornado.web.Application):
 
         GameConnection.ready = 0
         GameConnection.size = 2
-        WaitingRoomConnection.TOT_PLAYERS = 4
+        WaitingRoomConnection.MAX = 4
+        WaitingRoomConnection.TOT_PLAYERS = WaitingRoomConnection.MAX
         #GameConnection.participants = list();
 
         urls = [
@@ -219,6 +220,7 @@ class WaitingRoomConnection(SockJSConnection):
             if self.rd == 1:
                 WaitingRoomConnection.NUMBERS[str(self.subject_id)] = self.subject_no
                 GameConnection.NUMBERS[str(self.subject_id)] = self.subject_no
+                WaitingRoomConnection.TOT_PLAYERS = WaitingRoomConnection.MAX
             
             repeat = True
             count = 0
@@ -534,7 +536,7 @@ class GameConnection(SockJSConnection):
                 game_id = msg['game_id']
                 self.broadcast(GameConnection.PARTICIPANTS[game_id], message)
             elif msg_type == GameConnection.QUIT_MSG:
-                logger.info("[GameConnection] I JUST QUIT")
+                logger.info("[GameConnection] Player " + msg['subject_no'] + " disconnected from game " + msg['game_id'])
                 WaitingRoomConnection.DROPPED.append(msg['subject_no'])
                 WaitingRoomConnection.TOT_PLAYERS = WaitingRoomConnection.TOT_PLAYERS - 1
                 logger.info("Tot players " + WaitingRoomConnection.TOT_PLAYERS)
