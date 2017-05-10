@@ -57,7 +57,7 @@ class RegisterHandler(BaseHandler):
         #    })
         #print "About: " + name
 
-        self.render("about.html", title="Oxford Experiments", oid = 1)
+        self.redirect("about.html")
         #self.render("about.html", title="Oxford Experiments", oid = result.inserted_id)
         #self.render("welcome.html", title="Oxford Experiments", oid = result.inserted_id, round = 1)
 
