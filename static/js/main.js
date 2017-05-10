@@ -29,6 +29,7 @@ mainApp.controller('MainController', ['$scope', '$resource', '$interval', 'userI
         $scope.main.user = {};
         $scope.main.user.name = "default";
         $scope.main.timeUp = false;
+        $scope.main.wrongId = false;
 
         $scope.main.getName = function() {
             return userInfo.name;
