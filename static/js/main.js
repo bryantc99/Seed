@@ -60,8 +60,10 @@ mainApp.controller('MainController', ['$scope', '$resource', '$interval', 'userI
 
         $scope.main.validate = function() {
             console.log("validate");
-            if ($scope.main.user.name != "Gerald")
+            if ($scope.main.user.name != "Gerald") {
                 $scope.main.wrongId = true;
+                console.log($scope.main.wrongId)
+            }
         }
 
         $scope.$on('$destroy', function() {
