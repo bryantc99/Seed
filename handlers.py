@@ -51,13 +51,13 @@ class MainHandler(BaseHandler):
 
 class RegisterHandler(BaseHandler):
     def post(self):
-        #name = self.get_argument('name')
-        #result = db.players.insert_one({
-        #    "name" : name
-        #    })
-        #print "About: " + name
+        name = self.get_argument('name')
+        result = db.players.insert_one({
+            "name" : name
+            })
+        print "About: " + name
 
-        self.render("about.html")
+        self.render("about.html", title="Oxford Experiments", oid = result.inserted_id)
         #self.render("about.html", title="Oxford Experiments", oid = result.inserted_id)
         #self.render("welcome.html", title="Oxford Experiments", oid = result.inserted_id, round = 1)
 
