@@ -68,7 +68,7 @@ mainApp.controller('MainController', ['$scope', '$resource', '$interval', '$http
                 $http({
                     method: 'POST',
                     url: '/about',
-                    data: {name: $scope.main.user.name}
+                    params: {name: $scope.main.user.name}
                 }).then(function successCallback(response) {
                 }, function errorCallback(response) {
                 });
