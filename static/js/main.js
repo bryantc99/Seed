@@ -58,6 +58,11 @@ mainApp.controller('MainController', ['$scope', '$resource', '$interval', 'userI
             }
         };
 
+        $scope.main.validate = function() {
+            if ($scope.main.user.name != "Gerald")
+                $scope.main.wrongId = true;
+        }
+
         $scope.$on('$destroy', function() {
           // Make sure that the interval is destroyed too
           $scope.main.timerStop();
