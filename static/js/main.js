@@ -68,8 +68,14 @@ mainApp.controller('MainController', ['$scope', '$resource', '$interval', '$http
                 $http({
                     method: 'POST',
                     url: '/about',
-                    data: $.param({name: $scope.main.user.name}),
-                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                    data: {name: $scope.main.user.name},
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    transformRequest: function(obj) {
+                        var str = [];
+                        for(var p in obj)
+                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                        return str.join("&");
+                    },
 
                 }).then(function successCallback(response) {
                 }, function errorCallback(response) {
