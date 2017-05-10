@@ -23,8 +23,8 @@ mainApp.service("userInfo", function() {
     this.name = "default";
 })
 
-mainApp.controller('MainController', ['$scope', '$resource', '$interval', 'userInfo',
-    function ($scope, $resource, $interval, userInfo) {
+mainApp.controller('MainController', ['$scope', '$resource', '$interval', '$http', 'userInfo', 
+    function ($scope, $resource, $interval, $http, userInfo) {
         $scope.main = {};
         $scope.main.user = {};
         $scope.main.user.name = "default";
@@ -62,9 +62,9 @@ mainApp.controller('MainController', ['$scope', '$resource', '$interval', 'userI
             console.log("validate");
             if ($scope.main.user.name != "Gerald") {
                 $scope.main.wrongId = true;
-                
             }
             else {
+                userInfo.name = $scope.main.user.name;
                 $http({
                     method: 'POST',
                     url: '/about',
