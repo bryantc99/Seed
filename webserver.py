@@ -540,7 +540,6 @@ class GameConnection(SockJSConnection):
                 logger.info("[GameConnection] Player " + str(msg['subject_no']) + " disconnected from game " + msg['game_id'])
                 WaitingRoomConnection.DROPPED.append(msg['subject_no'])
                 WaitingRoomConnection.TOT_PLAYERS = WaitingRoomConnection.TOT_PLAYERS - 1
-                logger.info("Tot players " + WaitingRoomConnection.TOT_PLAYERS)
                 game_id = msg['game_id']
                 self.broadcast(GameConnection.PARTICIPANTS[game_id], message)
             elif msg_type == GameConnection.FINISH_MSG:
