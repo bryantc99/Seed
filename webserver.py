@@ -133,6 +133,12 @@ class Application(tornado.web.Application):
             if status == 'OK':
                 logger.info('[Application] Redis db 1 selected')
 
+
+                
+class AdminHandler(BaseHandler):
+    def get(self):
+        print str(SessionConnection.US_Players) + " US, " + str(SessionConnection.India_Players) + " India"
+
 class SessionConnection(SockJSConnection):
 
     # game_id:subjects
@@ -217,7 +223,6 @@ class SessionConnection(SockJSConnection):
         try:
             # first check if the waiting room has been configured
             present_subjects = SessionConnection.available_subjects
-            self.admission_size = SessionConnection.TOT_PLAYERS
             present_subjects.add(self)
             
         except Exception as e:
