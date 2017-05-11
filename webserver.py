@@ -133,10 +133,6 @@ class Application(tornado.web.Application):
             if status == 'OK':
                 logger.info('[Application] Redis db 1 selected')
 
-class AdminHandler(tornado.web.RequestHandler):
-    def get(self):
-        print str(SessionConnection.US_Players) + " US, " + str(SessionConnection.India_Players) + " India"
-
 class SessionConnection(SockJSConnection):
 
     # game_id:subjects
@@ -763,6 +759,11 @@ class GameConnection(SockJSConnection):
         if tornado.options.options.heartbeat:
             self._stop_heartbeat()
         client.close()
+
+
+class AdminHandler(tornado.web.RequestHandler):
+    def get(self):
+        print str(SessionConnection.US_Players) + " US, " + str(SessionConnection.India_Players) + " India"
 
 def main():
     tornado.options.parse_command_line() 

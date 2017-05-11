@@ -45,11 +45,6 @@ class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
         return self.get_secure_cookie("user")
 
-
-class AdminHandler(BaseHandler):
-    def get(self):
-        print str(SessionConnection.US_Players) + " US, " + str(SessionConnection.India_Players) + " India"
-
 class MainHandler(BaseHandler):
     def get(self):
         self.render("index.html", title="Oxford Experiments")
