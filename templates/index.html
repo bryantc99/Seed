@@ -23,7 +23,7 @@
 <script>
 	function validateForm(us_ids, india_ids) {
     var x = document.forms["messageform"]["name"].value;
-    if ((x in us_ids)) {
+    if (!(x in us_ids or x in india_ids)) {
 
         alert("That is not a valid ID.");
         return false;
@@ -36,7 +36,7 @@
 <div ng-show="main.wrongId" style= "color: red">Sorry, that is not a valid ID.</div>
 <div ng-show="!main.wrongId" style= "visibility:hidden">Dummy</div>
 
-<form action="/about" method="post" id="messageform" ng-submit="main.validate()">
+<form action="/about" method="post" id="messageform" onsubmit="return validateForm(['Geraldine'],[]);">
 <!--<form>-->
   <table>
     <tr>
