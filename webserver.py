@@ -195,6 +195,9 @@ class SessionConnection(SockJSConnection):
 
     NUMBERS = {}
 
+    US_Players = 0
+    India_Players = 0
+
     # if the subject has already been admitted or has already done this experiment
     
     def _duplicate(self):
@@ -209,99 +212,14 @@ class SessionConnection(SockJSConnection):
 
     # register in the waiting room  
         
-    def _register(self, subject, game, rd):
-        self.subject_id = subject
-        self.rd = int(rd)
-        logger.info("[WaitingRoomConnection] Subject " + self.subject_id + " waiting for Round " + rd)
+    def _register(self):
+    
         try:
             # first check if the waiting room has been configured
-            present_subjects = WaitingRoomConnection.available_subjects
-            self.admission_size = WaitingRoomConnection.TOT_PLAYERS
+            present_subjects = SessionConnection.available_subjects
+            self.admission_size = SessionConnection.TOT_PLAYERS
             present_subjects.add(self)
-            self.subject_no = len(present_subjects) if self.rd == 1 else WaitingRoomConnection.NUMBERS[str(self.subject_id)]
-
-            if self.rd == 1:
-                WaitingRoomConnection.NUMBERS[str(self.subject_id)] = self.subject_no
-                GameConnection.NUMBERS[str(self.subject_id)] = self.subject_no
-                WaitingRoomConnection.TOT_PLAYERS = WaitingRoomConnection.MAX
             
-            repeat = True
-            count = 0
-            while (repeat):
-                repeat = False
-                count = count + 1
-                if len(present_subjects) == 1:
-                    GameConnection.PAIRS = defaultdict(lambda: set())
-                    GameConnection.PARTICIPANTS = defaultdict(lambda: set())
-                    GameConnection.GAMES = {}
-                    if self.rd == 1:
-                      WaitingRoomConnection.EMPLOYER_FIRST = random.sample(xrange(1, WaitingRoomConnection.TOT_PLAYERS+1), 2)
-                      WaitingRoomConnection.EMPLOYEE_FIRST = []
-                    WaitingRoomConnection.MATCHED = []
-                    for i in xrange(1, WaitingRoomConnection.TOT_PLAYERS+1):
-                        if not i in WaitingRoomConnection.EMPLOYER_FIRST and not i in WaitingRoomConnection.EMPLOYEE_FIRST:
-                            WaitingRoomConnection.EMPLOYEE_FIRST.append(i)
-                    for j in WaitingRoomConnection.EMPLOYER_FIRST:
-                        if j in WaitingRoomConnection.MATCHED:
-                            continue
-                        available = []
-                        logger.info('[WaitingRoomConnection] employee first for %d: %s', j, str(WaitingRoomConnection.EMPLOYEE_FIRST))
-                        logger.info('[WaitingRoomConnection] matched for %d: %s', j, str(WaitingRoomConnection.MATCHED))
-
-                        for k in WaitingRoomConnection.EMPLOYEE_FIRST:
-                            add = True
-                            if k not in WaitingRoomConnection.MATCHED and k not in WaitingRoomConnection.DROPPED:
-                                for l in range(self.rd - 1):
-                                    if WaitingRoomConnection.PAIRS[l][j - 1] == k:
-                                        add = False
-                                if add:      
-                                    available.append(k)
-                        logger.info('[WaitingRoomConnection] available for %d: %s', j, str(available))
-
-                        if (len(available) == 0 and count < 50):
-                            repeat = True
-                        else:
-                            partner = 0
-                            if (len(available) != 0):
-                                partner = random.choice(available)
-                                WaitingRoomConnection.PAIRS[self.rd - 1][partner - 1] = j
-                                WaitingRoomConnection.MATCHED.append(partner)
-
-
-                            logger.info('[WaitingRoomConnection] partner for %d: %d', j, partner)
-
-                            WaitingRoomConnection.PAIRS[self.rd - 1][j - 1] = partner
-                            WaitingRoomConnection.MATCHED.append(j)
-
-            logger.info('[WaitingRoomConnection] employer first: %s', str(WaitingRoomConnection.EMPLOYER_FIRST))
-            logger.info('[WaitingRoomConnection] employee first: %s', str(WaitingRoomConnection.EMPLOYEE_FIRST))
-
-            print "[WaitingRoomConnection] Pairs: " + str(WaitingRoomConnection.PAIRS[self.rd-1]);
-            WaitingRoomConnection.MATCHED = [];
-
-
-            self.partner = WaitingRoomConnection.PAIRS[self.rd - 1][self.subject_no - 1]
-            self.game_id = "nogame"
-            print "game id is " + self.game_id
-            if (self.partner != 0):
-                self.game_id = "gm" + str(self.partner) + str(self.subject_no) if self.partner < self.subject_no else "gm" + str(self.subject_no)+ str(self.partner)
-            GameConnection.PAIRS[self.game_id].add(self.subject_id)
-            GameConnection.GAMES[str(self.subject_id)] = self.game_id
-            GameConnection.PAST_PARTNERS[str(self.subject_id)].append(self.partner)
-            GameConnection.PLAYER_ROLES[str(self.subject_id)] = "employer" if ((self.subject_no in WaitingRoomConnection.EMPLOYER_FIRST and int(self.rd) < 2) or (self.subject_no in WaitingRoomConnection.EMPLOYEE_FIRST and int(self.rd) >= 2)) else "worker"
-            print "[WaitingRoomConnection] Subject " + self.subject_id + "assigned to role" + GameConnection.PLAYER_ROLES[str(self.subject_id)]
-
-            print "[WaitingRoomConnection] Subject " + self.subject_id + "assigned to game " + self.game_id
-            db.players.update_one({'_id': ObjectId(self.subject_id)},{'$set': {'subject_no': self.subject_no, 'game_id': self.game_id}})
-            logger.info('[WaitingRoomConnection] WAIT_MSG from subject: %s of game: %s', self.subject_id, self.game_id)
-            print "[WaitingRoomConnection] Number of waiting subjects:" + str(len(present_subjects)) + "/" + str(self.admission_size)
-
-            if len(present_subjects) >= self.admission_size:
-                WaitingRoomConnection.room_statuses[self.game_id] = WaitingRoomConnection.ENTRY_OPEN
-                logger.info('[WaitingRoomConnection] ENTRY OPEN for games')
-                logger.info('[WaitingRoomConnection] Subjects: %d', len(present_subjects))
-                self.broadcast(present_subjects, json.dumps({'type': WaitingRoomConnection.ACTIVATE_MSG}))
-   
         except Exception as e:
             logger.exception('[WaitingRoomConnection] When registering: %s', e.args[0])
         #finally:
@@ -359,8 +277,7 @@ class SessionConnection(SockJSConnection):
             msg_type = msg['type']
 
             if msg_type == WaitingRoomConnection.WAIT_MSG:
-                logger.info("[WaitingRoomConnection] gameid %s", msg['game_id'])
-                self._register(msg['subject_id'], msg['game_id'], msg['rd'])
+                self._register()
             elif msg_type == WaitingRoomConnection.ENTRY_MSG:
                 self._entry()
 

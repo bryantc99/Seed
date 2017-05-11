@@ -48,7 +48,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
 class AdminHandler(BaseHandler):
     def get(self):
-        self.render("admin.html", title="Oxford Experiments")
+        print str(SessionConnection.US_Players) + " US, " + str(SessionConnection.India_Players) + " India"
 
 class MainHandler(BaseHandler):
     def get(self):
