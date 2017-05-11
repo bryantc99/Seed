@@ -763,7 +763,12 @@ class GameConnection(SockJSConnection):
 
 class AdminHandler(tornado.web.RequestHandler):
     def get(self):
-        print str(SessionConnection.US_Players) + " US, " + str(SessionConnection.India_Players) + " India"
+        self.write(str(SessionConnection.US_Players) + " US, " + str(SessionConnection.India_Players) + " India")
+        self.write(" <p> US-US: </p> <form> <input type='number' name='num' id='usNum'> <input type='submit' value='OK' class='button'></form>");
+        self.write(" <p> India-India: </p> <form> <input type='number' name='num' id='usNum'> <input type='submit' value='OK' class='button'></form>");
+        self.write(" <p> US-India: </p> <form> <input type='number' name='num' id='usNum'> <input type='submit' value='OK' class='button'></form> <form> <input type='number' name='num' id='usNum'> <input type='submit' value='OK' class='button'></form>");
+        self.write(" <p> India-US: </p> <form> <input type='number' name='num' id='usNum'> <input type='submit' value='OK' class='button'></form> <form> <input type='number' name='num' id='usNum'> <input type='submit' value='OK' class='button'></form>");
+
 
 def main():
     tornado.options.parse_command_line() 
