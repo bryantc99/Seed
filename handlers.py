@@ -45,9 +45,18 @@ class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
         return self.get_secure_cookie("user")
 
+
+class AdminHandler(BaseHandler):
+    def get(self):
+        self.render("admin.html", title="Oxford Experiments")
+
 class MainHandler(BaseHandler):
     def get(self):
         self.render("index.html", title="Oxford Experiments")
+
+class SessionHandler(BaseHandler):
+    def post(self):
+        self.render("session.html", title="Oxford Experiments")
 
 class RegisterHandler(BaseHandler):
     def post(self):

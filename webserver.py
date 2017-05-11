@@ -80,6 +80,7 @@ class Application(tornado.web.Application):
         options = {'disconnect_delay': 5, 'jsessionid': False, 'sockjs_url': 'https://d1fxtkz8shb9d2.cloudfront.net/sockjs-0.3.min.js'}
         self.WaitRouter = SockJSRouter(WaitingRoomConnection, '/sockjs/wait', options)
         self.GameRouter = SockJSRouter(GameConnection, '/sockjs/game', options)
+        self.SessionRouter = SockJSRouter(SessionConnection, '/sockjs/session', options)
 
         GameConnection.ready = 0
         GameConnection.size = 2
@@ -89,6 +90,7 @@ class Application(tornado.web.Application):
 
         urls = [
             (r'/', handlers.MainHandler),
+            (r'/session', handlers.SessionHandler),
             (r'/about', handlers.RegisterHandler),
             (r'/quiz/user/([a-zA-Z0-9])*', handlers.QuizHandler),
             (r'/instructionsemployer([^/]*)', handlers.InstructionsHandler),
@@ -102,9 +104,10 @@ class Application(tornado.web.Application):
             (r'/api/player/(.*)', handlers.PlayerHandler),
             (r'/api/credential', handlers.CredentialHandler),
             (r'/experimenter/config/sync/activate/([a-zA-Z0-9]+$)', handlers.SyncExperimentLaunchHandler),
-            (r'/admin/user', handlers.UserHandler)
+            (r'/admin/user', handlers.UserHandler),
+            (r'/admin', handlers.AdminHandler)
 
-        ] + self.WaitRouter.urls + self.GameRouter.urls
+        ] + self.WaitRouter.urls + self.GameRouter.urls + self.SessionRouter.urls
         settings = {
             "debug": True,
             "template_path": os.path.join(os.path.dirname(__file__), "templates"),
@@ -129,6 +132,281 @@ class Application(tornado.web.Application):
             status = yield tornado.gen.Task(self.redis_pub.select, '1')
             if status == 'OK':
                 logger.info('[Application] Redis db 1 selected')
+
+class SessionConnection(SockJSConnection):
+
+    # game_id:subjects
+    # game_id: string
+    # subjects: set(connection)
+    available_subjects = set()
+
+    # game_id:session_id:subjects
+    # game_id: string
+    # session_id: int
+    # subjects: set(subject_id)
+    admitted_subjects = defaultdict(lambda: defaultdict(lambda: set()))
+
+    # game_id:sessions_available
+    # game_id: string
+    # sessions_available: list
+    available_sessions = defaultdict(lambda: list())
+
+
+    # game_id:status
+    # game_id: string
+    # status: int
+    room_statuses = {}
+
+    # game_id:type
+    # game_id: string
+    # type: int
+    room_types = {}
+
+    WAIT_MSG = 99
+    ENTRY_MSG = 100
+    ACTIVATE_MSG = 101
+    DEACTIVATE_MSG = 102
+    FULL_MSG = 103
+    CLOSE_MSG = 104
+    SESSION_MSG = 105
+    HEARTBEAT_MSG = 106
+    NO_CONFIG_MSG = 110
+    DUPLICATE_MSG = 111
+
+    ENTRY_OPEN = 110
+    ENTRY_CLOSE = 111
+    ENTRY_FULL = 112
+
+    BLOCK_ADMISSION = 1010
+    CONTINUOUS_ADMISSION = 1111
+
+    # heartbeat interval
+    heartbeat_interval = 5000
+    HEARTBEAT = 'h'
+
+    # constants
+    NUM_ROUNDS = 2
+    PAIRS = [[4, 3, 2, 1],[4,3,2,1]]
+
+    EMPLOYER_FIRST = []
+    EMPLOYEE_FIRST = []
+    MATCHED = []
+    DROPPED = []
+
+    NUMBERS = {}
+
+    # if the subject has already been admitted or has already done this experiment
+    
+    def _duplicate(self):
+        available = False
+        admitted = False
+        if self.game_id in WaitingRoomConnection.available_subjects:
+            available = any(conn.subject_id == self.subject_id for conn in WaitingRoomConnection.available_subjects)
+        if self.game_id in WaitingRoomConnection.admitted_subjects:
+            admitted = any(subjects for subjects in WaitingRoomConnection.admitted_subjects[self.game_id].itervalues() if self.subject_id in subjects)
+
+        return available or admitted
+
+    # register in the waiting room  
+        
+    def _register(self, subject, game, rd):
+        self.subject_id = subject
+        self.rd = int(rd)
+        logger.info("[WaitingRoomConnection] Subject " + self.subject_id + " waiting for Round " + rd)
+        try:
+            # first check if the waiting room has been configured
+            present_subjects = WaitingRoomConnection.available_subjects
+            self.admission_size = WaitingRoomConnection.TOT_PLAYERS
+            present_subjects.add(self)
+            self.subject_no = len(present_subjects) if self.rd == 1 else WaitingRoomConnection.NUMBERS[str(self.subject_id)]
+
+            if self.rd == 1:
+                WaitingRoomConnection.NUMBERS[str(self.subject_id)] = self.subject_no
+                GameConnection.NUMBERS[str(self.subject_id)] = self.subject_no
+                WaitingRoomConnection.TOT_PLAYERS = WaitingRoomConnection.MAX
+            
+            repeat = True
+            count = 0
+            while (repeat):
+                repeat = False
+                count = count + 1
+                if len(present_subjects) == 1:
+                    GameConnection.PAIRS = defaultdict(lambda: set())
+                    GameConnection.PARTICIPANTS = defaultdict(lambda: set())
+                    GameConnection.GAMES = {}
+                    if self.rd == 1:
+                      WaitingRoomConnection.EMPLOYER_FIRST = random.sample(xrange(1, WaitingRoomConnection.TOT_PLAYERS+1), 2)
+                      WaitingRoomConnection.EMPLOYEE_FIRST = []
+                    WaitingRoomConnection.MATCHED = []
+                    for i in xrange(1, WaitingRoomConnection.TOT_PLAYERS+1):
+                        if not i in WaitingRoomConnection.EMPLOYER_FIRST and not i in WaitingRoomConnection.EMPLOYEE_FIRST:
+                            WaitingRoomConnection.EMPLOYEE_FIRST.append(i)
+                    for j in WaitingRoomConnection.EMPLOYER_FIRST:
+                        if j in WaitingRoomConnection.MATCHED:
+                            continue
+                        available = []
+                        logger.info('[WaitingRoomConnection] employee first for %d: %s', j, str(WaitingRoomConnection.EMPLOYEE_FIRST))
+                        logger.info('[WaitingRoomConnection] matched for %d: %s', j, str(WaitingRoomConnection.MATCHED))
+
+                        for k in WaitingRoomConnection.EMPLOYEE_FIRST:
+                            add = True
+                            if k not in WaitingRoomConnection.MATCHED and k not in WaitingRoomConnection.DROPPED:
+                                for l in range(self.rd - 1):
+                                    if WaitingRoomConnection.PAIRS[l][j - 1] == k:
+                                        add = False
+                                if add:      
+                                    available.append(k)
+                        logger.info('[WaitingRoomConnection] available for %d: %s', j, str(available))
+
+                        if (len(available) == 0 and count < 50):
+                            repeat = True
+                        else:
+                            partner = 0
+                            if (len(available) != 0):
+                                partner = random.choice(available)
+                                WaitingRoomConnection.PAIRS[self.rd - 1][partner - 1] = j
+                                WaitingRoomConnection.MATCHED.append(partner)
+
+
+                            logger.info('[WaitingRoomConnection] partner for %d: %d', j, partner)
+
+                            WaitingRoomConnection.PAIRS[self.rd - 1][j - 1] = partner
+                            WaitingRoomConnection.MATCHED.append(j)
+
+            logger.info('[WaitingRoomConnection] employer first: %s', str(WaitingRoomConnection.EMPLOYER_FIRST))
+            logger.info('[WaitingRoomConnection] employee first: %s', str(WaitingRoomConnection.EMPLOYEE_FIRST))
+
+            print "[WaitingRoomConnection] Pairs: " + str(WaitingRoomConnection.PAIRS[self.rd-1]);
+            WaitingRoomConnection.MATCHED = [];
+
+
+            self.partner = WaitingRoomConnection.PAIRS[self.rd - 1][self.subject_no - 1]
+            self.game_id = "nogame"
+            print "game id is " + self.game_id
+            if (self.partner != 0):
+                self.game_id = "gm" + str(self.partner) + str(self.subject_no) if self.partner < self.subject_no else "gm" + str(self.subject_no)+ str(self.partner)
+            GameConnection.PAIRS[self.game_id].add(self.subject_id)
+            GameConnection.GAMES[str(self.subject_id)] = self.game_id
+            GameConnection.PAST_PARTNERS[str(self.subject_id)].append(self.partner)
+            GameConnection.PLAYER_ROLES[str(self.subject_id)] = "employer" if ((self.subject_no in WaitingRoomConnection.EMPLOYER_FIRST and int(self.rd) < 2) or (self.subject_no in WaitingRoomConnection.EMPLOYEE_FIRST and int(self.rd) >= 2)) else "worker"
+            print "[WaitingRoomConnection] Subject " + self.subject_id + "assigned to role" + GameConnection.PLAYER_ROLES[str(self.subject_id)]
+
+            print "[WaitingRoomConnection] Subject " + self.subject_id + "assigned to game " + self.game_id
+            db.players.update_one({'_id': ObjectId(self.subject_id)},{'$set': {'subject_no': self.subject_no, 'game_id': self.game_id}})
+            logger.info('[WaitingRoomConnection] WAIT_MSG from subject: %s of game: %s', self.subject_id, self.game_id)
+            print "[WaitingRoomConnection] Number of waiting subjects:" + str(len(present_subjects)) + "/" + str(self.admission_size)
+
+            if len(present_subjects) >= self.admission_size:
+                WaitingRoomConnection.room_statuses[self.game_id] = WaitingRoomConnection.ENTRY_OPEN
+                logger.info('[WaitingRoomConnection] ENTRY OPEN for games')
+                logger.info('[WaitingRoomConnection] Subjects: %d', len(present_subjects))
+                self.broadcast(present_subjects, json.dumps({'type': WaitingRoomConnection.ACTIVATE_MSG}))
+   
+        except Exception as e:
+            logger.exception('[WaitingRoomConnection] When registering: %s', e.args[0])
+        #finally:
+            #if len(WaitingRoomConnection.available_subjects[self.game_id]) >= self.waiting_size - 1:
+                #WaitingRoomConnection.room_statuses[self.game_id] = WaitingRoomConnection.ENTRY_CLOSE
+
+    def _entry(self):
+        logger.info('[WaitingRoomConnection] ENTRY_MSG from subject: %s of game: %s', self.subject_id, self.game_id)
+        try:
+            print "Entry" 
+        except Exception as e:
+            print "exception"
+            logger.exception('[WaitingRoomConnection] When entering: %s', e.args[0])
+
+    def _start_heartbeat(self):
+        self.missed_heartbeats = 0
+        self.heartbeat_timer = tornado.ioloop.PeriodicCallback(self._check_heartbeat, WaitingRoomConnection.heartbeat_interval)
+        self.heartbeat_timer.start()
+
+    def _check_heartbeat(self):
+        #logger.info('[WaitingRoomConnection] - HEARTBEAT check for subject %s of game %s' % (self.subject_id, self.game_id))
+        self.missed_heartbeats += 1
+        # drop the connection if 3 consecutive heartbeats are missed
+        if self.missed_heartbeats > 2:
+            #logger.info('[WaitingRoomConnection] HEARTBEAT reached limit for subject %s of game %s', self.subject_id, self.game_id)
+            #logger.info('[WaitingRoomConnection] Closing connection for subject %s of game %s', self.subject_id, self.game_id)
+            self.close()
+
+    def _stop_heartbeat(self):
+        if self.heartbeat_timer is not None:
+            self.heartbeat_timer.stop()
+            self.heartbeat_timer = None
+            #logger.info('[WaitingRoomConnection] Heartbeat stopped for subject: %s of game: %s' % (self.subject_id, self.game_id))
+
+    def on_open(self, info):
+        logger.debug('[WaitingRoomConnection] Transport %s opened for client %s of connection id: %s', self.session.transport_name, info.ip, self.session.session_id)
+        self.game_id = None
+        self.admission_size = None
+        self.subject_id = None
+        self.heartbeat_timer = None
+        if tornado.options.options.heartbeat:
+            self.send(json.dumps({'type': WaitingRoomConnection.HEARTBEAT_MSG}))
+            self._start_heartbeat()
+
+    def on_message(self, message):
+        # ignore HEARTBEAT
+        if message == WaitingRoomConnection.HEARTBEAT:
+            #logger.info('[WaitingRoomConnection] HEARTBEAT from subject: %s of game: %s' % (self.subject_id, self.game_id))
+            self.missed_heartbeats = 0
+        else:
+            # any other msg serve the same purpose as heartbeats
+            self.missed_heartbeats = 0
+
+            msg = json.loads(message)
+            msg_type = msg['type']
+
+            if msg_type == WaitingRoomConnection.WAIT_MSG:
+                logger.info("[WaitingRoomConnection] gameid %s", msg['game_id'])
+                self._register(msg['subject_id'], msg['game_id'], msg['rd'])
+            elif msg_type == WaitingRoomConnection.ENTRY_MSG:
+                self._entry()
+
+    def on_close(self):
+        #logger.info('[WaitingRoomConnection] DISCONNECTION of subject: %s from game: %s', self.subject_id, self.game_id)
+        # stop heartbeat if enabled
+
+
+        if tornado.options.options.heartbeat:
+            self._stop_heartbeat()
+
+        # remove from available_subjects if present
+        present_subjects = WaitingRoomConnection.available_subjects
+        if self in present_subjects:
+            present_subjects.remove(self)
+            #logger.info('[WaitingRoomConnection] Removed subject: %s from game: %s, number of remaining subjects: %d', self.subject_id, self.game_id, len(present_subjects))
+
+            # if there is still session left and entry is OPEN
+            if len(WaitingRoomConnection.available_sessions[self.game_id]) > 0 and WaitingRoomConnection.room_statuses[self.game_id] == WaitingRoomConnection.ENTRY_OPEN:
+                # no subject has entered and available subjects drop below required admission size
+                if self.game_id not in WaitingRoomConnection.admitted_subjects and len(present_subjects) < self.admission_size:
+                    #logger.info('[WaitingRoomConnection] Insufficient subjects waiting before any admission, ENTRY CLOSED for game: %s', self.game_id)
+                    WaitingRoomConnection.room_statuses[self.game_id] = WaitingRoomConnection.ENTRY_CLOSE
+                    self.broadcast(present_subjects, json.dumps({'type': WaitingRoomConnection.DEACTIVATE_MSG}))
+                # some subject(s) has entered and available subjects drop below (required admission size - admitted)
+                elif WaitingRoomConnection.room_types[self.game_id] == WaitingRoomConnection.BLOCK_ADMISSION and self.game_id in WaitingRoomConnection.admitted_subjects and \
+                len(present_subjects) < (self.admission_size - len(WaitingRoomConnection.admitted_subjects[self.game_id][WaitingRoomConnection.available_sessions[self.game_id][0]])):
+                    #logger.info('[WaitingRoomConnection] Insufficient subjects waiting after some admission, ENTRY CLOSED for game: %s', self.game_id)
+                    WaitingRoomConnection.room_statuses[self.game_id] = WaitingRoomConnection.ENTRY_CLOSE
+                    self.broadcast(present_subjects, json.dumps({'type': WaitingRoomConnection.DEACTIVATE_MSG}))
+
+        #logger.debug('[WaitingRoomConnection] Transport %s closed for client %s of connection id: %s', self.session.transport_name, self.session.conn_info.ip, self.session.session_id)
+
+    @classmethod
+    def clear_up(cls, game):
+        #logger.info('[WaitingRoomConnection] Cleaning up Waiting Room for game: %s ...', game)
+        for available in list(cls.available_subjects):
+            available.close()
+        del cls.available_subjects
+
+        cls.admitted_subjects.pop(game, None)
+        cls.available_sessions.pop(game, None)
+
+        # leave WaitingRoomConnection.admission_sizes and WaitingRoomConnection.room_statuses to manual deactivation
+        # or automatic clean-up when all live sessions finish for a given game
+        #logger.info('[WaitingRoomConnection] Cleaned up Waiting Room for game: %s', game)
 
 
 class WaitingRoomConnection(SockJSConnection):
