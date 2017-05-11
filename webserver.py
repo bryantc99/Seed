@@ -133,9 +133,7 @@ class Application(tornado.web.Application):
             if status == 'OK':
                 logger.info('[Application] Redis db 1 selected')
 
-
-                
-class AdminHandler(BaseHandler):
+class AdminHandler(tornado.web.RequestHandler):
     def get(self):
         print str(SessionConnection.US_Players) + " US, " + str(SessionConnection.India_Players) + " India"
 
