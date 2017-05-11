@@ -62,8 +62,10 @@ mainApp.controller('MainController', ['$scope', '$resource', '$interval', '$http
             console.log("validate");
             if ($scope.main.user.name != "Gerald") {
                 $scope.main.wrongId = true;
+                return false;
             }
             else {
+                return true;
                 userInfo.name = $scope.main.user.name;
                 $http({
                     method: 'POST',
