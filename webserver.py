@@ -105,7 +105,7 @@ class Application(tornado.web.Application):
             (r'/api/credential', handlers.CredentialHandler),
             (r'/experimenter/config/sync/activate/([a-zA-Z0-9]+$)', handlers.SyncExperimentLaunchHandler),
             (r'/admin/user', handlers.UserHandler),
-            (r'/admin', handlers.AdminHandler)
+            (r'/admin', AdminHandler)
 
         ] + self.WaitRouter.urls + self.GameRouter.urls + self.SessionRouter.urls
         settings = {
