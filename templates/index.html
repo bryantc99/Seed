@@ -23,7 +23,7 @@
 <script>
 	function validateForm(us_ids, india_ids) {
     var x = document.forms["messageform"]["name"].value;
-    if (!(x in us_ids or x in india_ids)) {
+    if (!(x in us_ids || x in india_ids)) {
 
         alert("That is not a valid ID.");
         return false;
