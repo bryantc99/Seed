@@ -33,12 +33,12 @@ mainApp.controller('MainController', ['$scope', '$resource', '$interval', '$http
 
         $scope.main.us_ids = ['Gerladine'];
         $scope.main.india_ids = ['Pooya'];
-        
+
         $scope.main.getName = function() {
             return userInfo.name;
         }
 
-        $scope.main.counter = 10;
+        $scope.main.counter = 20;
         var stop;
         $scope.main.countdown = function(){
             if ( angular.isDefined(stop) ) return;
@@ -88,6 +88,9 @@ mainApp.controller('MainController', ['$scope', '$resource', '$interval', '$http
             }
         }
 
+        $scope.main.reset = function() {
+            $scope.main.counter = 20;
+        }
         $scope.$on('$destroy', function() {
           // Make sure that the interval is destroyed too
           $scope.main.timerStop();

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="mainApp" ng-controller="MainController">
 <head>
 <title>Oxford Experiments</title>
 <meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no">
@@ -18,7 +18,19 @@
 
 </head>
 <body>
+	<div class="headerwarning" id="headerbar">
+		<div id="periodcounter"></div>
+		<div ng-if="!main.timeUp" id="timecounter" style="display: block;">You have {{!main.counter}} seconds left.</div>
+		<div ng-if="main.timeUp" id="timecounter" style="display: block;">Time is up! You will not be able to continue.</div>
 
+		<div id="balance">
+			<a href="" onclick="reloadpage()" id="reloadlink" style="display: none;">R</a> &nbsp; &nbsp; 
+			<span style="font-weight: normal;">LabBox</span> &nbsp; &nbsp; 
+		</div>
+	</div>
+
+	<div class="bar" id="headerwaitbar" style="width: 100%">
+		<div class="barcontents" style="width: 0px; display: none;" id="countdownbar"></div>
 
 <div id="screenarea_outer">
 <div id="screenarea_middle">
@@ -29,6 +41,10 @@
 <p>We are now preparing the experiment. Please wait, until you see a Proceed button.</p>
 <p><b>Please keep this window open. If you close or deactivate this window, you might not be able to participate.</b></p>
 <p>We will ask every 20 seconds to confirm that you are still available. Please click OK if you are asked to do so.</p>
+
+<form>
+	<input value="Check In" id="checkin" ng-click="main.reset()" oncontextmenu="return false;" class="button">
+</form>
 
 </div>
 </div>

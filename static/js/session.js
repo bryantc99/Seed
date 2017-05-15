@@ -30,11 +30,10 @@ var conn = null,
 	retry_id = null,
 	timeout = null;
 
-var proceed = $("#proceed");
 
-proceed.one("click", function(e) {
-    enter();
-});
+function checkin() {
+    console.log("check in");
+}
 
 function enter() {
     // send ENTRY_MSG

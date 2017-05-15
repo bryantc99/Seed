@@ -220,6 +220,7 @@ class SessionConnection(SockJSConnection):
             present_subjects.add(self)
             
         except Exception as e:
+            US_Players = US_Players + 1
             logger.exception('[WaitingRoomConnection] When registering: %s', e.args[0])
         #finally:
             #if len(WaitingRoomConnection.available_subjects[self.game_id]) >= self.waiting_size - 1:
@@ -763,11 +764,12 @@ class GameConnection(SockJSConnection):
 
 class AdminHandler(tornado.web.RequestHandler):
     def get(self):
-        self.write(str(SessionConnection.US_Players) + " US, " + str(SessionConnection.India_Players) + " India")
-        self.write(" <p> US-US: </p> <form> <input type='number' name='num' id='usNum'> <input type='submit' value='OK' class='button'></form>");
-        self.write(" <p> India-India: </p> <form> <input type='number' name='num' id='usNum'> <input type='submit' value='OK' class='button'></form>");
-        self.write(" <p> US-India: </p> <form> <input type='number' name='num' id='usNum'> <input type='submit' value='OK' class='button'></form> <form> <input type='number' name='num' id='usNum'> <input type='submit' value='OK' class='button'></form>");
-        self.write(" <p> India-US: </p> <form> <input type='number' name='num' id='usNum'> <input type='submit' value='OK' class='button'></form> <form> <input type='number' name='num' id='usNum'> <input type='submit' value='OK' class='button'></form>");
+        self.render("admin.html",usp=SessionConnection.US_Players,ip=SessionConnection.India_Players)
+        #self.write(str(SessionConnection.US_Players) + " US, " + str(SessionConnection.India_Players) + " India")
+        #self.write(" <p> US-US: </p> <form> <input type='number' name='num' id='usNum'> <input type='submit' value='OK' class='button'></form>");
+        #self.write(" <p> India-India: </p> <form> <input type='number' name='num' id='usNum'> <input type='submit' value='OK' class='button'></form>");
+        #self.write(" <p> US-India: </p> <form> <input type='number' name='num' id='usNum'> <input type='submit' value='OK' class='button'></form> <form> <input type='number' name='num' id='usNum'> <input type='submit' value='OK' class='button'></form>");
+        #self.write(" <p> India-US: </p> <form> <input type='number' name='num' id='usNum'> <input type='submit' value='OK' class='button'></form> <form> <input type='number' name='num' id='usNum'> <input type='submit' value='OK' class='button'></form>");
 
 
 def main():
