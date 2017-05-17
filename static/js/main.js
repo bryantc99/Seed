@@ -38,7 +38,7 @@ mainApp.controller('MainController', ['$scope', '$resource', '$interval', '$http
             return userInfo.name;
         }
 
-        $scope.main.counter = 20;
+        $scope.main.counter = 60;
         var stop;
         $scope.main.countdown = function(){
             if ( angular.isDefined(stop) ) return;
