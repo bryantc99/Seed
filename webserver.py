@@ -778,7 +778,7 @@ class AdminHandler(tornado.web.RequestHandler):
 def createSession(sessionType, num):
     print "Creating session of type " + sessionType + " with " + num + " players."
     if(SessionConnection.present_subjects and len(SessionConnection.present_subjects) >= 0):
-        print SessionConnection.present_subjects
+        print "subjects: " + SessionConnection.present_subjects
         SessionConnection.broadcast(SessionConnection.present_subjects, json.dumps({'type': SessionConnection.ACTIVATE_MSG}))
 
 
