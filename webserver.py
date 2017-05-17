@@ -218,11 +218,11 @@ class SessionConnection(SockJSConnection):
         print "there"
     
         try:
+            US_Players = US_Players + 1
             present_subjects = SessionConnection.available_subjects
             present_subjects.add(self)
             
         except Exception as e:
-            US_Players = US_Players + 1
             logger.exception('[WaitingRoomConnection] When registering: %s', e.args[0])
         #finally:
             #if len(WaitingRoomConnection.available_subjects[self.game_id]) >= self.waiting_size - 1:
@@ -257,7 +257,7 @@ class SessionConnection(SockJSConnection):
             #logger.info('[WaitingRoomConnection] Heartbeat stopped for subject: %s of game: %s' % (self.subject_id, self.game_id))
 
     def on_open(self, info):
-        logger.debug('[WaitingRoomConnectionsdfsdfs] Transport %s opened for client %s of connection id: %s', self.session.transport_name, info.ip, self.session.session_id)
+        logger.debug('[SessionConnection] Transport %s opened for client %s of connection id: %s', self.session.transport_name, info.ip, self.session.session_id)
         self.game_id = None
         self.admission_size = None
         self.subject_id = None
@@ -267,8 +267,6 @@ class SessionConnection(SockJSConnection):
             self._start_heartbeat()
 
     def on_message(self, message):
-        logger.info('look at my')
-        print "look at me"
         # ignore HEARTBEAT
         if message == WaitingRoomConnection.HEARTBEAT:
             #logger.info('[WaitingRoomConnection] HEARTBEAT from subject: %s of game: %s' % (self.subject_id, self.game_id))
@@ -281,7 +279,6 @@ class SessionConnection(SockJSConnection):
             msg_type = msg['type']
 
             if msg_type == SessionConnection.WAIT_MSG:
-                print "here"
                 self._register()
             elif msg_type == WaitingRoomConnection.ENTRY_MSG:
                 self._entry()
