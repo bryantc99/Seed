@@ -33,14 +33,11 @@
 
 <p>Welcome to this study conducted by Stanford University.</p><p>This is a <b>timed study</b>, which means that you can only participate at a fixed time. <b>The session has now opened.</b> Please fill in your details to check if you can still participate.</p><p>Please enter your MTurk ID:</p>
 
-<div ng-show="main.wrongId" style= "color: red">Sorry, that is not a valid ID.</div>
-<div ng-show="!main.wrongId" style= "visibility:hidden">Dummy</div>
-
 <form action="/session" method="post" id="messageform" onsubmit="return validateForm(['us1','us2'],['india1', 'india2']);">
 <!--<form>-->
   <table>
     <tr>
-      <td><input type="text" name="name" id="playerName" ng-Model = "main.user.name" size="30"></td>
+      <td><input type="text" name="name" id="playerName" value="{{mid}}" size="30"></td>
       <td>
         <input type="submit" value="{{ _("OK") }}" class="button">
         <input type="hidden" name="next" value="{{ request.path }}">

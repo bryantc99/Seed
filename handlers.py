@@ -47,7 +47,8 @@ class BaseHandler(tornado.web.RequestHandler):
 
 class MainHandler(BaseHandler):
     def get(self):
-        self.render("index.html", title="Oxford Experiments")
+        mid = self.get_argument("mid")
+        self.render("index.html", title="Oxford Experiments", mid=mid)
 
 class SessionHandler(BaseHandler):
     def post(self):

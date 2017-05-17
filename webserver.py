@@ -135,6 +135,8 @@ class Application(tornado.web.Application):
 
 class SessionConnection(SockJSConnection):
 
+    print "Session created"
+
     # game_id:subjects
     # game_id: string
     # subjects: set(connection)
@@ -213,9 +215,9 @@ class SessionConnection(SockJSConnection):
     # register in the waiting room  
         
     def _register(self):
+        print "there"
     
         try:
-            # first check if the waiting room has been configured
             present_subjects = SessionConnection.available_subjects
             present_subjects.add(self)
             
@@ -265,6 +267,8 @@ class SessionConnection(SockJSConnection):
             self._start_heartbeat()
 
     def on_message(self, message):
+        logger.info('look at my')
+        print "look at me"
         # ignore HEARTBEAT
         if message == WaitingRoomConnection.HEARTBEAT:
             #logger.info('[WaitingRoomConnection] HEARTBEAT from subject: %s of game: %s' % (self.subject_id, self.game_id))
@@ -276,7 +280,8 @@ class SessionConnection(SockJSConnection):
             msg = json.loads(message)
             msg_type = msg['type']
 
-            if msg_type == WaitingRoomConnection.WAIT_MSG:
+            if msg_type == SessionConnection.WAIT_MSG:
+                print "here"
                 self._register()
             elif msg_type == WaitingRoomConnection.ENTRY_MSG:
                 self._entry()
