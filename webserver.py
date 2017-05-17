@@ -216,9 +216,7 @@ class SessionConnection(SockJSConnection):
 
     # register in the waiting room  
         
-    def _register(self):
-        print "there"
-    
+    def _register(self):    
         try:
             SessionConnection.US_Players = SessionConnection.US_Players + 1
             SessionConnection.present_subjects = SessionConnection.available_subjects
@@ -779,7 +777,7 @@ class AdminHandler(tornado.web.RequestHandler):
 
 def createSession(sessionType, num):
     print "Creating session of type " + sessionType + " with " + num + " players."
-    if(SessionConnection.present_subjects and len(Session.Connection.present_subjects) >= 0):
+    if(SessionConnection.present_subjects and len(SessionConnection.present_subjects) >= 0):
         print len(SessionConnection.present_subjects)
         SessionConnection.broadcast(SessionConnection.present_subjects, json.dumps({'type': SessionConnection.ACTIVATE_MSG}))
 
