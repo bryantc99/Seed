@@ -89,7 +89,7 @@ mainApp.controller('MainController', ['$scope', '$resource', '$interval', '$http
         }
 
         $scope.main.reset = function() {
-            $scope.main.counter = 20;
+            $scope.main.counter = 60;
         }
         $scope.$on('$destroy', function() {
           // Make sure that the interval is destroyed too
