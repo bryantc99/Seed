@@ -200,6 +200,8 @@ class SessionConnection(SockJSConnection):
     US_Players = 0
     India_Players = 0
 
+    present_subjects = set()
+
     # if the subject has already been admitted or has already done this experiment
     
     def _duplicate(self):
@@ -219,8 +221,8 @@ class SessionConnection(SockJSConnection):
     
         try:
             SessionConnection.US_Players = SessionConnection.US_Players + 1
-            present_subjects = SessionConnection.available_subjects
-            present_subjects.add(self)
+            SessionConnection.present_subjects = SessionConnection.available_subjects
+            SessionConnection.present_subjects.add(self)
             
         except Exception as e:
             logger.exception('[WaitingRoomConnection] When registering: %s', e.args[0])
@@ -768,11 +770,18 @@ class AdminHandler(tornado.web.RequestHandler):
         self.render("admin.html",usp=SessionConnection.US_Players,ip=SessionConnection.India_Players)
 
     def post(self):
-        print "posted"
         if self.get_argument('usAllNum'):
-            print self.get_argument('usAllNum')
+            createSession("US-only", self.get_argument('usAllNum'))
         
+
         self.render("admin.html",usp=SessionConnection.US_Players,ip=SessionConnection.India_Players)
+
+
+def createSession(sessionType, num):
+    print "Creating session of type " + sessionType + " with " + num + " players."
+    if(SessionConnection.present_subjects and len(Session.Connection.present_subjects) >= 0):
+        print len(SessionConnection.present_subjects)
+        SessionConnection.broadcast(SessionConnection.present_subjects, json.dumps({'type': SessionConnection.ACTIVATE_MSG}))
 
 
 def main():
