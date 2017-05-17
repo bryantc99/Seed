@@ -769,6 +769,7 @@ class AdminHandler(tornado.web.RequestHandler):
 
     def post(self):
         print "posted"
+        self.render("admin.html",usp=SessionConnection.US_Players,ip=SessionConnection.India_Players)
 
 
 def main():
