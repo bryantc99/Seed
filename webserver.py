@@ -218,7 +218,7 @@ class SessionConnection(SockJSConnection):
         print "there"
     
         try:
-            US_Players = US_Players + 1
+            SessionConnection.US_Players = SesionConnection.US_Players + 1
             present_subjects = SessionConnection.available_subjects
             present_subjects.add(self)
             
