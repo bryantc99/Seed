@@ -257,7 +257,7 @@ class SessionConnection(SockJSConnection):
             #logger.info('[WaitingRoomConnection] Heartbeat stopped for subject: %s of game: %s' % (self.subject_id, self.game_id))
 
     def on_open(self, info):
-        logger.debug('[WaitingRoomConnection] Transport %s opened for client %s of connection id: %s', self.session.transport_name, info.ip, self.session.session_id)
+        logger.debug('[WaitingRoomConnectionsdfsdfs] Transport %s opened for client %s of connection id: %s', self.session.transport_name, info.ip, self.session.session_id)
         self.game_id = None
         self.admission_size = None
         self.subject_id = None
@@ -535,14 +535,12 @@ class WaitingRoomConnection(SockJSConnection):
             #logger.info('[WaitingRoomConnection] Heartbeat stopped for subject: %s of game: %s' % (self.subject_id, self.game_id))
 
     def on_open(self, info):
-        logger.debug('[WaitingRoomConnection] Transport %s opened for client %s of connection id: %s', self.session.transport_name, info.ip, self.session.session_id)
-        self.game_id = None
-        self.admission_size = None
-        self.subject_id = None
+        logger.debug('[SessionConnection] Transport %s opened for client %s of connection id: %s', self.session.transport_name, info.ip, self.session.session_id)
         self.heartbeat_timer = None
         if tornado.options.options.heartbeat:
             self.send(json.dumps({'type': WaitingRoomConnection.HEARTBEAT_MSG}))
             self._start_heartbeat()
+        print "made it"
 
     def on_message(self, message):
         # ignore HEARTBEAT
