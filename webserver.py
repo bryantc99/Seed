@@ -769,9 +769,9 @@ class AdminHandler(tornado.web.RequestHandler):
 
     def post(self):
         print "posted"
-        if(self.get_argument('usAllNum')) {
+        if self.get_argument('usAllNum'):
             print self.get_argument('usAllNum')
-        }
+        
         self.render("admin.html",usp=SessionConnection.US_Players,ip=SessionConnection.India_Players)
 
 
