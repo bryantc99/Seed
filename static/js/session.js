@@ -270,12 +270,3 @@ function credential() {
 connect();
 
 
-var adminApp = angular.module('adminApp', []);
-
-adminApp.controller('AdminController', ['$scope', 
-    function ($scope) {
-        $scope.admin = {};
-
-    }]);
-
-
