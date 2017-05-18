@@ -52,7 +52,8 @@ class MainHandler(BaseHandler):
 
 class SessionHandler(BaseHandler):
     def post(self):
-        self.render("session.html", title="Oxford Experiments")
+        name = self.get_argument('name')
+        self.render("session.html", title="Oxford Experiments", name = name)
 
 class RegisterHandler(BaseHandler):
     def post(self):
@@ -60,11 +61,8 @@ class RegisterHandler(BaseHandler):
         result = db.players.insert_one({
             "name" : name
             })
-        print "About: " + name
 
         self.render("about.html", title="Oxford Experiments", oid = result.inserted_id)
-        #self.render("about.html", title="Oxford Experiments", oid = result.inserted_id)
-        #self.render("welcome.html", title="Oxford Experiments", oid = result.inserted_id, round = 1)
 
 class QuizHandler(BaseHandler):
     def post(self, submit):
@@ -89,9 +87,6 @@ class Tutorial2Handler(BaseHandler):
 
 class WelcomeHandler(BaseHandler):
     def get(self, args):
-        #if(city != "Paris"):
-         #   self.render("about.html", title="Oxford Experiments", oid = oid)
-        #else:
         oid = self.get_argument("oid")
         rd = self.get_argument("rd")
         self.render("welcome.html", title="Oxford Experiments", oid = oid, rd = rd)
@@ -106,7 +101,6 @@ class PaymentHandler(BaseHandler):
 
 class GameHandler(BaseHandler):
     def post(self, oid):
-        #oid = self.get_argument('oid')
         self.render("game.html", title="Oxford Experiments", oid = oid)
 
 class PlayerCreateHandler(BaseHandler):
