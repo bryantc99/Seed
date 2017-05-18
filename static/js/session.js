@@ -109,6 +109,8 @@ function connect() {
             //document.getElementById("oid").value = params['oid'];
             //document.getElementById("gameEntry").action = "game/user/" + params['oid'];
             document.getElementById("sessionproceed").style.display = "block";
+            document.getElementById("checkin").style.display = "none";
+
         }
         else if (type === DEACTIVATE_MSG) {
             console.log("Client - deactivated");
