@@ -290,8 +290,8 @@ class SessionConnection(SockJSConnection):
     def on_close(self):
         #logger.info('[WaitingRoomConnection] DISCONNECTION of subject: %s from game: %s', self.subject_id, self.game_id)
         # stop heartbeat if enabled
-
-        SessionConnection.US_Players = SessionConnection.US_Players - 1
+        if SessionConnection.admin_client != self:
+            SessionConnection.US_Players = SessionConnection.US_Players - 1
 
         if tornado.options.options.heartbeat:
             self._stop_heartbeat()
