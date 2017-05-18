@@ -31,9 +31,6 @@ mainApp.controller('MainController', ['$scope', '$resource', '$interval', '$http
         $scope.main.timeUp = false;
         $scope.main.wrongId = false;
 
-        $scope.main.us_ids = ['Gerladine'];
-        $scope.main.india_ids = ['Pooya'];
-
         $scope.main.getName = function() {
             return userInfo.name;
         }
