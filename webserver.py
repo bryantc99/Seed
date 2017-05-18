@@ -285,7 +285,7 @@ class SessionConnection(SockJSConnection):
             elif msg_type == SessionConnection.ENTRY_MSG:
                 self._entry()
             elif msg_type == SessionConnection.ADMIN_MSG:
-                admin_client = self
+                SessionConnection.admin_client = self
 
     def on_close(self):
         #logger.info('[WaitingRoomConnection] DISCONNECTION of subject: %s from game: %s', self.subject_id, self.game_id)
