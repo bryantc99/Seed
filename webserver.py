@@ -172,6 +172,7 @@ class SessionConnection(SockJSConnection):
     CLOSE_MSG = 104
     SESSION_MSG = 105
     HEARTBEAT_MSG = 106
+    ADMIN_MSG = 107
     NO_CONFIG_MSG = 110
     DUPLICATE_MSG = 111
 
@@ -201,6 +202,7 @@ class SessionConnection(SockJSConnection):
     India_Players = 0
 
     present_subjects = set()
+    admin_client = 0
 
     # if the subject has already been admitted or has already done this experiment
     
@@ -282,6 +284,8 @@ class SessionConnection(SockJSConnection):
                 self._register()
             elif msg_type == WaitingRoomConnection.ENTRY_MSG:
                 self._entry()
+            elif msg_type == WaitingRoomConnection.ADMIN_MSG:
+                admin_client = self
 
     def on_close(self):
         #logger.info('[WaitingRoomConnection] DISCONNECTION of subject: %s from game: %s', self.subject_id, self.game_id)
@@ -779,7 +783,7 @@ def createSession(sessionType, num):
     print "Creating session of type " + sessionType + " with " + num + " players."
     if(SessionConnection.present_subjects and len(SessionConnection.present_subjects) >= 0):
         print "subjects: " + str(SessionConnection.present_subjects)
-        SessionConnection.broadcast(SessionConnection.present_subjects, json.dumps({'type': SessionConnection.ACTIVATE_MSG}))
+        SessionConnection.admin_client.broadcast(SessionConnection.present_subjects, json.dumps({'type': SessionConnection.ACTIVATE_MSG}))
 
 
 def main():
