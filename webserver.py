@@ -282,9 +282,9 @@ class SessionConnection(SockJSConnection):
 
             if msg_type == SessionConnection.WAIT_MSG:
                 self._register()
-            elif msg_type == WaitingRoomConnection.ENTRY_MSG:
+            elif msg_type == SessionConnection.ENTRY_MSG:
                 self._entry()
-            elif msg_type == WaitingRoomConnection.ADMIN_MSG:
+            elif msg_type == SessionConnection.ADMIN_MSG:
                 admin_client = self
 
     def on_close(self):
