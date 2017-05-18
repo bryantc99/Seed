@@ -38,15 +38,19 @@
 <div class="screen" data-role="content">
 
 <p><b>Welcome to this experiment.</b></p>
+<div id="waitingtext">
 <p>We are now preparing the experiment. Please wait, until you see a Proceed button.</p>
 <p><b>Please keep this window open. If you close or deactivate this window, you might not be able to participate.</b></p>
 <p>Keep clicking the <b>Check In</b> button before time runs out to confirm you are still available. Please click Proceed if you are asked to do so.</p>
-
+</div>
+<div id="readytext" style="display:none">
+<p>We are now ready to start. Please press the Proceed button to continue.</p>
+</div>
 <form>
 	<input name = "Check In" value="Check In" id="checkin" ng-click="main.reset()" oncontextmenu="return false;" type="button" class="button">
 </form>
 
-<form action=>
+<form action="/about">
 	<input type="submit" value="Proceed" id="sessionproceed" style="display:none" oncontextmenu="return false;" class="button">
 </form>
 

@@ -30,11 +30,6 @@ var conn = null,
 	retry_id = null,
 	timeout = null;
 
-
-function checkin() {
-    console.log("check in");
-}
-
 function enter() {
     // send ENTRY_MSG
     var entry_msg = JSON.stringify({"type": ENTRY_MSG});
@@ -110,6 +105,8 @@ function connect() {
             //document.getElementById("gameEntry").action = "game/user/" + params['oid'];
             document.getElementById("sessionproceed").style.display = "block";
             document.getElementById("checkin").style.display = "none";
+            document.getElementById("readytext").style.display = "inline"
+            document.getElementById("waitingtext").style.display = "none"
 
         }
         else if (type === DEACTIVATE_MSG) {
