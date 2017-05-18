@@ -1,6 +1,6 @@
 <form name="form_intro1" id="form_intro1" onsubmit="finish()">
 	<div class="welcome_parts" data-part="1" style="display: block;" ">
-		<h1>You have been offered {{game.getWage()}} points <span ng-if="game.getVarWage()"> with <b>{{game.getBonus()}}</b> point <span ng-if="game.getLowBase()">bonus for high effort</span> <span ng-if="!game.getLowBase()">deduction for low effort</span>
+		<h1>The employer offered {{game.getWage()}} points <span ng-if="game.getVarWage()"> with <b>{{game.getBonus()}}</b> points <span ng-if="game.getLowBase()">bonus for high effort</span> <span ng-if="!game.getLowBase()">deduction for low effort</span>
 		  </span></h1>
 		<p>Do you want to accept or reject this offer?</p>
 		<br>

@@ -2,7 +2,7 @@
 	<div class="welcome_parts" data-part="1" style="display: block;" ">
 		<h1>Results</h1>
 		<span ng-if="game.getOfferMade()">
-		<p>Employer offered <b>{{game.getWage()}}</b> dollars per hour <span ng-if="game.getVarWage()"> with <b>{{game.getBonus()}}</b> dollar <span ng-if="game.getLowBase()">bonus for high effort</span> <span ng-if="!game.getLowBase()">deduction for low effort</span>
+		<p>Employer offered <b>{{game.getWage()}}</b> points <span ng-if="game.getVarWage()"> with <b>{{game.getBonus()}}</b> points <span ng-if="game.getLowBase()">bonus for high effort</span> <span ng-if="!game.getLowBase()">deduction for low effort</span>
 		  </span></p>
 		<p>Employee {{game.getAccept()}}ed the offer.</p>
 		<p ng-if="game.getAcceptVal()">Employee exerted <b>{{game.getEffort()}}</b> effort.</p>

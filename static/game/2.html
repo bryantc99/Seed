@@ -3,7 +3,7 @@
 		<h1>Choose a contract to offer the employee.</h1>
 		<p> Option A: Fixed wage of <b>{{game.getWage()}}</b> points </p>
 		<p ng-if="!game.getVarWage()"> Option B: No contract </p>
-		<p ng-if="game.getVarWage()"> Option B: Base wage of <b>{{game.getWage()}}</b> points with <b>{{game.getBonus()}}</b> point <span ng-if="game.getLowBase()">bonus for high effort</span> <span ng-if="!game.getLowBase()">deduction for low effort</span>
+		<p ng-if="game.getVarWage()"> Option B: Base wage of <b>{{game.getWage()}}</b> points with <b>{{game.getBonus()}}</b> points <span ng-if="game.getLowBase()">bonus for high effort</span> <span ng-if="!game.getLowBase()">deduction for low effort</span>
 		</p>
 		<p ng-if="game.getVarWage()"> No Contract: Both you and the worker will earn 0 points.
 		</p>

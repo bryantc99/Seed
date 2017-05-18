@@ -1,20 +1,19 @@
 <form name="form_intro1" id="form_intro1" onsubmit="finish()">
 	<div class="welcome_parts" data-part="1" style="display: block;" ">
-		<h1>You offered {{game.getWage()}} dollars per hour  <span ng-if="game.getVarWage()"> with {{game.getBonus()}} dollar <span ng-if="game.getLowBase()">bonus for high effort</span> <span ng-if="!game.getLowBase()">deduction for low effort</span>
+		<h1>You offered {{game.getWage()}} points <span ng-if="game.getVarWage()"> with a {{game.getBonus()}} points <span ng-if="game.getLowBase()">bonus for high effort</span> <span ng-if="!game.getLowBase()">deduction for low effort</span>
 		  </span></h1>
-		<p>Employee {{game.getAccept()}}ed the offer.</p>
-		<p ng-if="game.getAcceptVal()">Employee exerted <b>{{game.getEffort()}}</b> effort.</p>
+		<p>The worker accepted the offer and chose <b>{{game.getEffort()}}</b> effort.</p>
 		<table class="offertable" style="width: 100%" cellspacing="0">
 			<tbody>
 				<tr class="topline">
 					<td colspan="4">
-						<input ng-if="!game.getLowBase()" name="submit" type="button" value="Excuse" ng-click="game.setAction('excuse'); game.continue = true;" class="button">
-						<input ng-if="game.getLowBase()" name="submit" type="button" value="Ignore" ng-click="game.setAction('ignore'); game.continue = true;" class="button">
+						<input ng-if="!game.getLowBase()" name="submit" type="button" value="No" ng-click="game.setAction('excuse'); game.continue = true;" class="button">
+						<input ng-if="game.getLowBase()" name="submit" type="button" value="No" ng-click="game.setAction('ignore'); game.continue = true;" class="button">
 
 					</td>
 					<td colspan="4">
-						<input ng-if="!game.getLowBase()" name="submit" type="button" value="Penalize" ng-click="game.setAction('penalize'); game.continue = true;" class="button">
-						<input ng-if="game.getLowBase()" name="submit" type="button" value="Reward" ng-click="game.setAction('reward'); game.continue = true;" class="button">
+						<input ng-if="!game.getLowBase()" name="submit" type="button" value="Yes" ng-click="game.setAction('penalize'); game.continue = true;" class="button">
+						<input ng-if="game.getLowBase()" name="submit" type="button" value="Yes" ng-click="game.setAction('reward'); game.continue = true;" class="button">
 
 					</td>
 					<td colspan="4"></td>
