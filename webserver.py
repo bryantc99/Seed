@@ -412,7 +412,7 @@ class WaitingRoomConnection(SockJSConnection):
         logger.info("[WaitingRoomConnection] Subject " + self.subject_id + " waiting for Round " + rd)
         try:
 
-            if !WaitingRoomConnection.available_subjects[self.rd]:
+            if not WaitingRoomConnection.available_subjects[self.rd]:
                 WaitingRoomConnection.available_subjects[self.rd] = set()
 
             present_subjects[self.rd] = WaitingRoomConnection.available_subjects[self.rd]
