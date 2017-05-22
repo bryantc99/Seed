@@ -560,7 +560,7 @@ class WaitingRoomConnection(SockJSConnection):
                 self._entry()
 
     def on_close(self):
-        #logger.info('[WaitingRoomConnection] DISCONNECTION of subject: %s from game: %s', self.subject_id, self.game_id)
+        logger.info('[WaitingRoomConnection] DISCONNECTION of subject: %s from game %s in round %d', self.subject_id, self.game_id, self.rd)
         # stop heartbeat if enabled
 
 
