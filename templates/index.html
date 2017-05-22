@@ -21,19 +21,12 @@
 
 <div class="screen" data-role="content">
 <script>
-	function validateForm(us_ids, india_ids) {
-    var x = document.forms["messageform"]["name"].value;
-    if (us_ids.indexOf(x) == -1 && india_ids.indexOf(x) == -1) {
 
-        alert("That is not a valid ID.");
-        return false;
-    }
-}
 </script>
 
 <p>Welcome to this study conducted by Stanford University.</p><p>This is a <b>timed study</b>, which means that you can only participate at a fixed time. <b>The session has now opened.</b> Please fill in your details to check if you can still participate.</p><p>Please enter your MTurk ID:</p>
 
-<form action="/session" method="post" id="messageform" onsubmit="return validateForm(['us1','us2', 'us3', 'us4'],['india1', 'india2']);">
+<form action="/session" method="post" id="messageform" ng-submit="return validateForm(['us1','us2', 'us3', 'us4'],['india1', 'india2']);">
 <!--<form>-->
   <table>
     <tr>

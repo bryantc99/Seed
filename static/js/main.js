@@ -85,6 +85,16 @@ mainApp.controller('MainController', ['$scope', '$resource', '$interval', '$http
             }
         }
 
+        $scope.validateForm = function(us_ids, india_ids) {
+            var x = document.forms["messageform"]["name"].value;
+            if (us_ids.indexOf(x) == -1 && india_ids.indexOf(x) == -1) {
+
+                alert("That is not a valid ID.");
+            return false;
+        }
+
+}
+
         $scope.main.reset = function() {
             $scope.main.counter = 60;
         }
