@@ -666,10 +666,12 @@ class GameConnection(SockJSConnection):
     HEARTBEAT = 'h'
 
     def _init(self, oid):
-        logger.info('[GameConnection] INIT_MSG update ' + GameConnection.GAMES[str(oid)])
         try:
             self.rd = GameConnection.ROUNDS[str(oid)]
             game_id = GameConnection.GAMES[self.rd][str(oid)]
+
+            logger.info('[GameConnection] Initializing game ' + game_id)
+
 
             GameConnection.PARTICIPANTS[game_id].add(self)
             present_subjects = GameConnection.PARTICIPANTS[game_id]
