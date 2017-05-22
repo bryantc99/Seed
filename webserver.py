@@ -648,6 +648,7 @@ class GameConnection(SockJSConnection):
             game_id = GameConnection.GAMES[self.rd][str(oid)]
 
             for k in WaitingRoomConnection.DROPPED:
+                print "The player " + k + " has been dropped"
                 if str(k) in game_id:
                     game_id = "nogame"
 
