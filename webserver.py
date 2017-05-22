@@ -574,24 +574,10 @@ class WaitingRoomConnection(SockJSConnection):
             present_subjects = WaitingRoomConnection.available_subjects[rd]
             if self in present_subjects:
                 present_subjects.remove(self)
-                #logger.info('[WaitingRoomConnection] Removed subject: %s from game: %s, number of remaining subjects: %d', self.subject_id, self.game_id, len(present_subjects))
 
-                # if there is still session left and entry is OPEN
-                if len(WaitingRoomConnection.available_sessions[self.game_id]) > 0 and WaitingRoomConnection.room_statuses[self.game_id] == WaitingRoomConnection.ENTRY_OPEN:
-                    # no subject has entered and available subjects drop below required admission size
-                    if self.game_id not in WaitingRoomConnection.admitted_subjects and len(present_subjects) < self.admission_size:
-                        #logger.info('[WaitingRoomConnection] Insufficient subjects waiting before any admission, ENTRY CLOSED for game: %s', self.game_id)
-                        WaitingRoomConnection.room_statuses[self.game_id] = WaitingRoomConnection.ENTRY_CLOSE
-                        self.broadcast(present_subjects, json.dumps({'type': WaitingRoomConnection.DEACTIVATE_MSG}))
-                    # some subject(s) has entered and available subjects drop below (required admission size - admitted)
-                    elif WaitingRoomConnection.room_types[self.game_id] == WaitingRoomConnection.BLOCK_ADMISSION and self.game_id in WaitingRoomConnection.admitted_subjects and \
-                    len(present_subjects) < (self.admission_size - len(WaitingRoomConnection.admitted_subjects[self.game_id][WaitingRoomConnection.available_sessions[self.game_id][0]])):
-                        #logger.info('[WaitingRoomConnection] Insufficient subjects waiting after some admission, ENTRY CLOSED for game: %s', self.game_id)
-                        WaitingRoomConnection.room_statuses[self.game_id] = WaitingRoomConnection.ENTRY_CLOSE
-                        self.broadcast(present_subjects, json.dumps({'type': WaitingRoomConnection.DEACTIVATE_MSG}))
             rd = rd + 1
 
-        #logger.debug('[WaitingRoomConnection] Transport %s closed for client %s of connection id: %s', self.session.transport_name, self.session.conn_info.ip, self.session.session_id)
+        print "Finished closing connection for subject " + self.subject_id
 
     @classmethod
     def clear_up(cls, game):
