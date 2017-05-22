@@ -573,7 +573,7 @@ class WaitingRoomConnection(SockJSConnection):
         self.rd = 1
 
         while len(WaitingRoomConnection.available_subjects[self.rd]) > 0:
-        present_subjects = WaitingRoomConnection.available_subjects[self.rd]
+            present_subjects = WaitingRoomConnection.available_subjects[self.rd]
             if self in present_subjects:
                 present_subjects.remove(self)
                 #logger.info('[WaitingRoomConnection] Removed subject: %s from game: %s, number of remaining subjects: %d', self.subject_id, self.game_id, len(present_subjects))
