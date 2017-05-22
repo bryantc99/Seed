@@ -335,7 +335,7 @@ class WaitingRoomConnection(SockJSConnection):
     # game_id:subjects
     # game_id: string
     # subjects: set(connection)
-    available_subjects = set()
+    available_subjects = defaultdict(lambda: set())
 
     # game_id:session_id:subjects
     # game_id: string
@@ -411,8 +411,11 @@ class WaitingRoomConnection(SockJSConnection):
         self.rd = int(rd)
         logger.info("[WaitingRoomConnection] Subject " + self.subject_id + " waiting for Round " + rd)
         try:
-            # first check if the waiting room has been configured
-            present_subjects = WaitingRoomConnection.available_subjects
+
+            if !WaitingRoomConnection.available_subjects[self.rd]:
+                WaitingRoomConnection.available_subjects[self.rd] = set()
+
+            present_subjects[self.rd] = WaitingRoomConnection.available_subjects[self.rd]
             self.admission_size = WaitingRoomConnection.TOT_PLAYERS
             present_subjects.add(self)
             self.subject_no = len(present_subjects) if self.rd == 1 else WaitingRoomConnection.NUMBERS[str(self.subject_id)]
@@ -444,8 +447,8 @@ class WaitingRoomConnection(SockJSConnection):
                         if j in WaitingRoomConnection.MATCHED:
                             continue
                         available = []
-                        logger.info('[WaitingRoomConnection] employee first for %d: %s', j, str(WaitingRoomConnection.EMPLOYEE_FIRST))
-                        logger.info('[WaitingRoomConnection] matched for %d: %s', j, str(WaitingRoomConnection.MATCHED))
+                        #logger.info('[WaitingRoomConnection] employee first for %d: %s', j, str(WaitingRoomConnection.EMPLOYEE_FIRST))
+                        #logger.info('[WaitingRoomConnection] matched for %d: %s', j, str(WaitingRoomConnection.MATCHED))
 
                         for k in WaitingRoomConnection.EMPLOYEE_FIRST:
                             add = True
@@ -471,11 +474,13 @@ class WaitingRoomConnection(SockJSConnection):
 
                             WaitingRoomConnection.PAIRS[self.rd - 1][j - 1] = partner
                             WaitingRoomConnection.MATCHED.append(j)
+            
+            if self.rd == 1 and self.subject_no == 1:
+                logger.info('[WaitingRoomConnection] employer first: %s', str(WaitingRoomConnection.EMPLOYER_FIRST))
+                logger.info('[WaitingRoomConnection] employee first: %s', str(WaitingRoomConnection.EMPLOYEE_FIRST))
 
-            logger.info('[WaitingRoomConnection] employer first: %s', str(WaitingRoomConnection.EMPLOYER_FIRST))
-            logger.info('[WaitingRoomConnection] employee first: %s', str(WaitingRoomConnection.EMPLOYEE_FIRST))
 
-            print "[WaitingRoomConnection] Pairs: " + str(WaitingRoomConnection.PAIRS[self.rd-1]);
+                print "[WaitingRoomConnection] Pairs: " + str(WaitingRoomConnection.PAIRS[self.rd-1]);
             WaitingRoomConnection.MATCHED = [];
 
 
@@ -483,14 +488,12 @@ class WaitingRoomConnection(SockJSConnection):
             self.game_id = "nogame"
             if (self.partner != 0):
                 self.game_id = "gm" + str(self.partner) + str(self.subject_no) if self.partner < self.subject_no else "gm" + str(self.subject_no)+ str(self.partner)
-            print "game id is " + self.game_id
 
             GameConnection.PAIRS[self.game_id].add(self.subject_id)
             GameConnection.GAMES[str(self.subject_id)] = self.game_id
             GameConnection.PAST_PARTNERS[str(self.subject_id)].append(self.partner)
             GameConnection.PLAYER_ROLES[str(self.subject_id)] = "employer" if ((self.subject_no in WaitingRoomConnection.EMPLOYER_FIRST and int(self.rd) < 2) or (self.subject_no in WaitingRoomConnection.EMPLOYEE_FIRST and int(self.rd) >= 2)) else "worker"
-            print "[WaitingRoomConnection] Subject " + self.subject_id + "assigned to role" + GameConnection.PLAYER_ROLES[str(self.subject_id)]
-
+            print "[WaitingRoomConnection] Subject " + self.subject_id + " assigned to role " + GameConnection.PLAYER_ROLES[str(self.subject_id)]
             print "[WaitingRoomConnection] Subject " + self.subject_id + "assigned to game " + self.game_id
             db.players.update_one({'_id': ObjectId(self.subject_id)},{'$set': {'subject_no': self.subject_no, 'game_id': self.game_id}})
             logger.info('[WaitingRoomConnection] WAIT_MSG from subject: %s of game: %s', self.subject_id, self.game_id)
