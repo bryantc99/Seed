@@ -568,14 +568,9 @@ class WaitingRoomConnection(SockJSConnection):
             self._stop_heartbeat()
 
         # remove from available_subjects if present
-        rd = 1
-
-        while len(WaitingRoomConnection.available_subjects[rd]) > 0:
-            present_subjects = WaitingRoomConnection.available_subjects[rd]
-            if self in present_subjects:
-                present_subjects.remove(self)
-
-            rd = rd + 1
+ 
+        if self in WaitingRoomConnection.available_subjects[self.rd]:
+            WaitingRoomConnection.available_subjects.remove(self)
 
         print "Finished closing connection for subject " + self.subject_id
 
