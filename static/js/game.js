@@ -414,7 +414,7 @@ gameApp.controller('TimerController', ['$scope', '$window', 'dataModel', '$inter
             stop = $interval(function() {
                 if ($scope.game.counter > 0) {
                     console.log($scope.game.counter);
-                    if (dataModel.ready || !dataModel.wait) {
+                    if (dataModel.ready && !dataModel.wait) {
                         dataModel.counter--;
                     }
                     $scope.game.counter = dataModel.counter;
