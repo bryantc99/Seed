@@ -422,6 +422,8 @@ class WaitingRoomConnection(SockJSConnection):
 
             if self.rd == 1:
                 WaitingRoomConnection.NUMBERS[str(self.subject_id)] = self.subject_no
+                logger.info("[WaitingRoomConnection] Subject " + self.subject_id + " assigned #" + self.subject_no)
+
                 GameConnection.NUMBERS[str(self.subject_id)] = self.subject_no
                 WaitingRoomConnection.TOT_PLAYERS = WaitingRoomConnection.MAX
             
@@ -482,9 +484,10 @@ class WaitingRoomConnection(SockJSConnection):
 
             self.partner = WaitingRoomConnection.PAIRS[self.rd - 1][self.subject_no - 1]
             self.game_id = "nogame"
-            print "game id is " + self.game_id
             if (self.partner != 0):
                 self.game_id = "gm" + str(self.partner) + str(self.subject_no) if self.partner < self.subject_no else "gm" + str(self.subject_no)+ str(self.partner)
+            print "game id is " + self.game_id
+
             GameConnection.PAIRS[self.game_id].add(self.subject_id)
             GameConnection.GAMES[str(self.subject_id)] = self.game_id
             GameConnection.PAST_PARTNERS[str(self.subject_id)].append(self.partner)
@@ -542,7 +545,6 @@ class WaitingRoomConnection(SockJSConnection):
         if tornado.options.options.heartbeat:
             self.send(json.dumps({'type': WaitingRoomConnection.HEARTBEAT_MSG}))
             self._start_heartbeat()
-        print "made it"
 
     def on_message(self, message):
         # ignore HEARTBEAT
