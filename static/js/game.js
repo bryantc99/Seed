@@ -110,7 +110,7 @@ gameApp.service("dataModel", function() {
     this.action = '';
 
     this.counting = false;
-    this.counter = 10;
+    this.counter = 20;
     this.continue = false;
 
     this.fastemployer = true;
@@ -251,7 +251,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
             var employer = dataModel.role == "employer";
 
             $scope.game.continue = false;
-            dataModel.counter = 11;
+            dataModel.counter = 21;
 
 
             var page = "";
@@ -402,7 +402,7 @@ gameApp.controller('TimerController', ['$scope', '$window', 'dataModel', '$inter
     function ($scope, $window, dataModel, $interval, $rootScope) {
         $scope.game = {};
 
-        $scope.game.counter = 10;
+        $scope.game.counter = 20;
         $scope.game.wait = true;
 
         $scope.game.timeUp = false;
@@ -414,7 +414,6 @@ gameApp.controller('TimerController', ['$scope', '$window', 'dataModel', '$inter
 
             stop = $interval(function() {
                 if ($scope.game.counter > 0) {
-                    console.log($scope.game.counter);
                     if (dataModel.ready && !dataModel.wait) {
                         dataModel.counter--;
                     }

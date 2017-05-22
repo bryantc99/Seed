@@ -560,7 +560,7 @@ class WaitingRoomConnection(SockJSConnection):
                 self._entry()
 
     def on_close(self):
-        logger.info('[WaitingRoomConnection] DISCONNECTION of subject: %s from game %s in round %d', self.subject_id, self.game_id, self.rd)
+        logger.info('[WaitingRoomConnection] DISCONNECTION of subject: %s from game %s waiting room in round %d', self.subject_id, self.game_id, self.rd)
         # stop heartbeat if enabled
 
 
@@ -718,10 +718,14 @@ class GameConnection(SockJSConnection):
                 game_id = msg['game_id']
                 self.broadcast(GameConnection.PARTICIPANTS[self.rd][game_id], message)
             elif msg_type == GameConnection.QUIT_MSG:
-                logger.info("[GameConnection] Player " + str(msg['subject_no']) + " disconnected from game " + msg['game_id'])
                 WaitingRoomConnection.DROPPED.append(msg['subject_no'])
                 WaitingRoomConnection.TOT_PLAYERS = WaitingRoomConnection.TOT_PLAYERS - 1
-                game_id = msg['game_id']
+                for u in GameConnection.GAMES[self.rd + 1]:
+                    game_check = GameConnection.GAMES[self.rd + 1][u]
+                    if str(msg['subject_no']) in game_check:
+                        GameConnection.GAMES[self.rd + 1][u] = "nogame"
+                logger.info("[GameConnection] Player " + str(msg['subject_no']) + " disconnected from game " + msg['game_id'])
+
                 self.broadcast(GameConnection.PARTICIPANTS[self.rd][game_id], message)
             elif msg_type == GameConnection.FINISH_MSG:
                 game_id = msg['game_id']
