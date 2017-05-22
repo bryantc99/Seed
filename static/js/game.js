@@ -286,6 +286,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
             }
             else {
                 page = '5';
+                dataModel.wait = false;
                 dataModel.stage = "finish";
                 var payment = employer ? 40 - dataModel.wage : dataModel.wage;
                 conn.send(JSON.stringify({"type": FINISH_MSG,
