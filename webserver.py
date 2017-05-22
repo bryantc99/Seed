@@ -409,6 +409,7 @@ class WaitingRoomConnection(SockJSConnection):
     def _register(self, subject, game, rd):
         self.subject_id = subject
         self.rd = int(rd)
+        GameConnection.ROUNDS[str(self.subject_id)] = self.rd
         logger.info("[WaitingRoomConnection] Subject " + self.subject_id + " waiting for Round " + rd)
         try:
 
@@ -432,7 +433,7 @@ class WaitingRoomConnection(SockJSConnection):
                 if len(present_subjects) == 1:
                     GameConnection.PAIRS = defaultdict(lambda: set())
                     GameConnection.PARTICIPANTS = defaultdict(lambda: set())
-                    GameConnection.GAMES = {}
+                    GameConnection.GAMES[self.rd] = {}
                     if self.rd == 1:
                       WaitingRoomConnection.EMPLOYER_FIRST = random.sample(xrange(1, WaitingRoomConnection.TOT_PLAYERS+1), 2)
                       WaitingRoomConnection.EMPLOYEE_FIRST = []
@@ -487,7 +488,7 @@ class WaitingRoomConnection(SockJSConnection):
                 self.game_id = "gm" + str(self.partner) + str(self.subject_no) if self.partner < self.subject_no else "gm" + str(self.subject_no)+ str(self.partner)
 
             GameConnection.PAIRS[self.game_id].add(self.subject_id)
-            GameConnection.GAMES[str(self.subject_id)] = self.game_id
+            GameConnection.GAMES[self.rd][str(self.subject_id)] = self.game_id
             GameConnection.PAST_PARTNERS[str(self.subject_id)].append(self.partner)
             GameConnection.PLAYER_ROLES[str(self.subject_id)] = "employer" if ((self.subject_no in WaitingRoomConnection.EMPLOYER_FIRST and int(self.rd) < 2) or (self.subject_no in WaitingRoomConnection.EMPLOYEE_FIRST and int(self.rd) >= 2)) else "worker"
             print "[WaitingRoomConnection] Subject " + self.subject_id + " assigned to role " + GameConnection.PLAYER_ROLES[str(self.subject_id)]
@@ -640,10 +641,11 @@ class GameConnection(SockJSConnection):
 
     PAIRS = defaultdict(lambda: set())
     PARTICIPANTS = defaultdict(lambda: set())
-    GAMES = {}
+    GAMES = defaultdict(lambda: defaultdict(str))
     NUMBERS = {}
     PAST_PARTNERS = defaultdict(lambda: list())
     PLAYER_ROLES = {}
+    ROUNDS = defaultdict(lambda: int)
 
 
    # TREATMENTS = {'fl': {'lowBase': 1, 'varWage': 0},
@@ -666,12 +668,9 @@ class GameConnection(SockJSConnection):
     def _init(self, oid):
         logger.info('[GameConnection] INIT_MSG update ' + GameConnection.GAMES[str(oid)])
         try:
-            game_id = GameConnection.GAMES[str(oid)]
-           # user = db.players.find_one({"_id": self.get_argument('oid')})
-           # game_id = 'gm12'
-            #logger.info('[WaitingRoomConnection] INIT_MSG game id %s', game_id)
-            #treatment = TREATMENTS[GAMES[game_id]];
-           
+            self.rd = GameConnection.ROUNDS[str(oid)]
+            game_id = GameConnection.GAMES[self.rd][str(oid)]
+
             GameConnection.PARTICIPANTS[game_id].add(self)
             present_subjects = GameConnection.PARTICIPANTS[game_id]
             role = GameConnection.PLAYER_ROLES[str(oid)]
