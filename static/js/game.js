@@ -345,6 +345,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
                 console.log("Participants ready");
                // console.log(msg.treatment)
                 dataModel.ready = true;
+                dataModel.wait - false;
                 dataModel.lowBase = msg.lowBase;
                 dataModel.varWage = msg.varWage;
                 dataModel.game_id = msg.game_id;
@@ -401,6 +402,7 @@ gameApp.controller('TimerController', ['$scope', '$window', 'dataModel', '$inter
         $scope.game = {};
 
         $scope.game.counter = 10;
+        $scope.game.wait = true;
 
         $scope.game.timeUp = false;
 
@@ -412,10 +414,11 @@ gameApp.controller('TimerController', ['$scope', '$window', 'dataModel', '$inter
             stop = $interval(function() {
                 if ($scope.game.counter > 0) {
                     console.log($scope.game.counter);
-                    if (dataModel.ready) {
+                    if (dataModel.ready || !dataModel.wait) {
                         dataModel.counter--;
                     }
                     $scope.game.counter = dataModel.counter;
+                    $scope.game.wait = dataModel.wait;
                 } else {
                     $scope.game.timerStop();
                 }
