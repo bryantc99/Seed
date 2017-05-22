@@ -226,9 +226,6 @@ class SessionConnection(SockJSConnection):
             
         except Exception as e:
             logger.exception('[WaitingRoomConnection] When registering: %s', e.args[0])
-        #finally:
-            #if len(WaitingRoomConnection.available_subjects[self.game_id]) >= self.waiting_size - 1:
-                #WaitingRoomConnection.room_statuses[self.game_id] = WaitingRoomConnection.ENTRY_CLOSE
 
     def _entry(self):
         logger.info('[WaitingRoomConnection] ENTRY_MSG from subject: %s of game: %s', self.subject_id, self.game_id)
@@ -422,7 +419,7 @@ class WaitingRoomConnection(SockJSConnection):
 
             if self.rd == 1:
                 WaitingRoomConnection.NUMBERS[str(self.subject_id)] = self.subject_no
-                logger.info("[WaitingRoomConnection] Subject " + self.subject_id + " assigned #" + self.subject_no)
+                logger.info("[WaitingRoomConnection] Subject " + str(self.subject_id) + " assigned #" + str(self.subject_no))
 
                 GameConnection.NUMBERS[str(self.subject_id)] = self.subject_no
                 WaitingRoomConnection.TOT_PLAYERS = WaitingRoomConnection.MAX
