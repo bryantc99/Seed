@@ -647,6 +647,12 @@ class GameConnection(SockJSConnection):
             self.rd = GameConnection.ROUNDS[str(oid)]
             game_id = GameConnection.GAMES[self.rd][str(oid)]
 
+            for k in WaitingRoomConnection.DROPPED:
+                if str(k) in game_id:
+                    game_id = "nogame"
+
+            print "Game ID for " + str(oid) + " is " + game_id
+
             logger.info('[GameConnection] Initializing game ' + game_id)
 
 
