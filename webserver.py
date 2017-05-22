@@ -568,10 +568,10 @@ class WaitingRoomConnection(SockJSConnection):
             self._stop_heartbeat()
 
         # remove from available_subjects if present
-        self.rd = 1
+        rd = 1
 
-        while len(WaitingRoomConnection.available_subjects[self.rd]) > 0:
-            present_subjects = WaitingRoomConnection.available_subjects[self.rd]
+        while len(WaitingRoomConnection.available_subjects[rd]) > 0:
+            present_subjects = WaitingRoomConnection.available_subjects[rd]
             if self in present_subjects:
                 present_subjects.remove(self)
                 #logger.info('[WaitingRoomConnection] Removed subject: %s from game: %s, number of remaining subjects: %d', self.subject_id, self.game_id, len(present_subjects))
@@ -589,7 +589,7 @@ class WaitingRoomConnection(SockJSConnection):
                         #logger.info('[WaitingRoomConnection] Insufficient subjects waiting after some admission, ENTRY CLOSED for game: %s', self.game_id)
                         WaitingRoomConnection.room_statuses[self.game_id] = WaitingRoomConnection.ENTRY_CLOSE
                         self.broadcast(present_subjects, json.dumps({'type': WaitingRoomConnection.DEACTIVATE_MSG}))
-            self.rd = self.rd + 1
+            rd = rd + 1
 
         #logger.debug('[WaitingRoomConnection] Transport %s closed for client %s of connection id: %s', self.session.transport_name, self.session.conn_info.ip, self.session.session_id)
 
