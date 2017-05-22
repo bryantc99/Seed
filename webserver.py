@@ -648,7 +648,7 @@ class GameConnection(SockJSConnection):
             game_id = GameConnection.GAMES[self.rd][str(oid)]
 
             for k in WaitingRoomConnection.DROPPED:
-                print "The player " + k + " has been dropped"
+                print "The player " + str(k) + " has been dropped"
                 if str(k) in game_id:
                     game_id = "nogame"
 
@@ -727,12 +727,13 @@ class GameConnection(SockJSConnection):
             elif msg_type == GameConnection.QUIT_MSG:
                 WaitingRoomConnection.DROPPED.append(msg['subject_no'])
                 WaitingRoomConnection.TOT_PLAYERS = WaitingRoomConnection.TOT_PLAYERS - 1
+
                 for u in GameConnection.GAMES[self.rd + 1]:
                     game_check = GameConnection.GAMES[self.rd + 1][u]
                     if str(msg['subject_no']) in game_check:
                         GameConnection.GAMES[self.rd + 1][u] = "nogame"
                 logger.info("[GameConnection] Player " + str(msg['subject_no']) + " disconnected from game " + msg['game_id'])
-
+                game_id = msg['game_id']
                 self.broadcast(GameConnection.PARTICIPANTS[self.rd][game_id], message)
             elif msg_type == GameConnection.FINISH_MSG:
                 game_id = msg['game_id']
