@@ -86,7 +86,6 @@ class Application(tornado.web.Application):
         GameConnection.size = 2
         WaitingRoomConnection.MAX = 4
         WaitingRoomConnection.TOT_PLAYERS = WaitingRoomConnection.MAX
-        #GameConnection.participants = list();
 
         urls = [
             (r'/', handlers.MainHandler),
@@ -431,8 +430,7 @@ class WaitingRoomConnection(SockJSConnection):
                 repeat = False
                 count = count + 1
                 if len(present_subjects) == 1:
-                    GameConnection.PAIRS = defaultdict(lambda: set())
-                    GameConnection.PARTICIPANTS = defaultdict(lambda: set())
+                    GameConnection.PARTICIPANTS[self.rd] = defaultdict(lambda: set())
                     GameConnection.GAMES[self.rd] = {}
                     if self.rd == 1:
                       WaitingRoomConnection.EMPLOYER_FIRST = random.sample(xrange(1, WaitingRoomConnection.TOT_PLAYERS+1), 2)
@@ -487,7 +485,6 @@ class WaitingRoomConnection(SockJSConnection):
             if (self.partner != 0):
                 self.game_id = "gm" + str(self.partner) + str(self.subject_no) if self.partner < self.subject_no else "gm" + str(self.subject_no)+ str(self.partner)
 
-            GameConnection.PAIRS[self.game_id].add(self.subject_id)
             GameConnection.GAMES[self.rd][str(self.subject_id)] = self.game_id
             GameConnection.PAST_PARTNERS[str(self.subject_id)].append(self.partner)
             GameConnection.PLAYER_ROLES[str(self.subject_id)] = "employer" if ((self.subject_no in WaitingRoomConnection.EMPLOYER_FIRST and int(self.rd) < 2) or (self.subject_no in WaitingRoomConnection.EMPLOYEE_FIRST and int(self.rd) >= 2)) else "worker"
@@ -639,8 +636,7 @@ class GameConnection(SockJSConnection):
 
     ROLES = ["employer", "worker"]
 
-    PAIRS = defaultdict(lambda: set())
-    PARTICIPANTS = defaultdict(lambda: set())
+    PARTICIPANTS = defaultdict(lambda: defaultdict(lambda: set()))
     GAMES = defaultdict(lambda: defaultdict(str))
     NUMBERS = {}
     PAST_PARTNERS = defaultdict(lambda: list())
@@ -673,8 +669,8 @@ class GameConnection(SockJSConnection):
             logger.info('[GameConnection] Initializing game ' + game_id)
 
 
-            GameConnection.PARTICIPANTS[game_id].add(self)
-            present_subjects = GameConnection.PARTICIPANTS[game_id]
+            GameConnection.PARTICIPANTS[self.rd][game_id].add(self)
+            present_subjects = GameConnection.PARTICIPANTS[self.rd][game_id]
             role = GameConnection.PLAYER_ROLES[str(oid)]
             self.send(json.dumps({'type': GameConnection.ROLE_MSG, 'role': role, 'round': len(GameConnection.PAST_PARTNERS[str(oid)])}))
             print len(present_subjects)
@@ -739,13 +735,13 @@ class GameConnection(SockJSConnection):
                 self._init(msg['subject_id'])
             elif msg_type == GameConnection.CONTRACT_MSG or msg_type == GameConnection.EFFORT_MSG or msg_type == GameConnection.ACTION_MSG:
                 game_id = msg['game_id']
-                self.broadcast(GameConnection.PARTICIPANTS[game_id], message)
+                self.broadcast(GameConnection.PARTICIPANTS[self.rd][game_id], message)
             elif msg_type == GameConnection.QUIT_MSG:
                 logger.info("[GameConnection] Player " + str(msg['subject_no']) + " disconnected from game " + msg['game_id'])
                 WaitingRoomConnection.DROPPED.append(msg['subject_no'])
                 WaitingRoomConnection.TOT_PLAYERS = WaitingRoomConnection.TOT_PLAYERS - 1
                 game_id = msg['game_id']
-                self.broadcast(GameConnection.PARTICIPANTS[game_id], message)
+                self.broadcast(GameConnection.PARTICIPANTS[self.rd][game_id], message)
             elif msg_type == GameConnection.FINISH_MSG:
                 game_id = msg['game_id']
                 logger.debug('[GameConnection] Entering info for subject %s into db',  msg['oid'])
@@ -760,7 +756,7 @@ class GameConnection(SockJSConnection):
                     "action": msg['action'] 
                     }})
 
-                GameConnection.PARTICIPANTS[game_id] = set();
+                GameConnection.PARTICIPANTS[self.rd][game_id] = set();
 
 
     def on_close(self):
