@@ -116,13 +116,13 @@ gameApp.service("dataModel", function() {
     this.fastemployer = true;
 
     this.quit = false;
+    this.wait = true;
 })
 
 gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$location', '$rootScope',
     function ($scope, $window, dataModel, $location, $rootScope) {
         $scope.game = {};
         $scope.game.continue = dataModel.continue;
-        $scope.game.wait = true;
         $scope.game.hasRole = false;
 
 
@@ -152,7 +152,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
 
         $scope.game.setWait = function(wait) {
             console.log("no more waiting!");
-            $scope.game.wait = wait;
+            dataModel.wait = wait;
         }
 
         $scope.game.setContract = function(offer) {
@@ -260,27 +260,27 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
                 dataModel.wage = dataModel.lowBase ? 12 : 16;
                 dataModel.finalWage = dataModel.wage;
                 page = employer ? '2' : 'wait';
-                $scope.game.wait = !employer;
+                dataModel.wait = !employer;
                 dataModel.fastemployer = false;
 
                 dataModel.stage = "contract";
             }
             else if (dataModel.stage === "contract" && dataModel.offerMade) {
                 page = employer ? 'wait' : '3';
-                $scope.game.wait = employer;
+                dataModel.wait = employer;
 
                 dataModel.stage = "effort";
             }
             else if (dataModel.stage === "accept" && dataModel.accept) {
                 page = employer ? 'wait' : '3b';
-                $scope.game.wait = employer;
+                dataModel.wait = employer;
 
                 dataModel.stage = "effort";
             }
             else if (dataModel.stage === "effort" && dataModel.varWage && dataModel.offerMade && dataModel.accept && ((dataModel.lowBase && dataModel.effortLevel === 'High') || (!dataModel.lowBase && dataModel.effortLevel === 'Low'))) {
                 dataModel.reaction = true;
                 page = employer ? '4' : 'wait';
-                $scope.game.wait = !employer;
+                dataModel.wait = !employer;
 
                 dataModel.stage = "action";
             }
