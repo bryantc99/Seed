@@ -21,6 +21,8 @@ if(document.getElementById("tutorial2Entry")) {
 
 mainApp.service("userInfo", function() {
     this.name = "default";
+    this.us_ids = ['us1', 'us2', 'us3', 'us4']
+    this.india_ids = ['india1', 'india2']
 })
 
 mainApp.controller('MainController', ['$scope', '$resource', '$interval', '$http', 'userInfo', 
@@ -85,19 +87,21 @@ mainApp.controller('MainController', ['$scope', '$resource', '$interval', '$http
             }
         }
 
-        $scope.validateForm = function(us_ids, india_ids) {
+        $scope.validateForm = function(e) {
+            console.log(e);
             var x = document.forms["messageform"]["name"].value;
-            if (us_ids.indexOf(x) == -1 && india_ids.indexOf(x) == -1) {
+            if (userInfo.us_ids.indexOf(x) == -1 && userInfo.india_ids.indexOf(x) == -1) {
+                e.preventDefault();
+                alert("That is an invalid or duplicate ID.");
+                return false;
 
-                alert("That is not a valid ID.");
-            return false;
+            }            
         }
-
-}
 
         $scope.main.reset = function() {
             $scope.main.counter = 60;
         }
+
         $scope.$on('$destroy', function() {
           // Make sure that the interval is destroyed too
           $scope.main.timerStop();
