@@ -570,7 +570,7 @@ class WaitingRoomConnection(SockJSConnection):
         # remove from available_subjects if present
  
         if self in WaitingRoomConnection.available_subjects[self.rd]:
-            WaitingRoomConnection.available_subjects.remove(self)
+            WaitingRoomConnection.available_subjects[self.rd].remove(self)
 
         print "Finished closing connection for subject " + self.subject_id
 
