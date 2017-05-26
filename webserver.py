@@ -772,7 +772,8 @@ def createSession(sessionType, num):
     print "Creating session of type " + sessionType + " with " + num + " players."
     if(SessionConnection.present_subjects and len(SessionConnection.present_subjects) >= 0):
         print str(num) + " subjects: " + str(len(SessionConnection.present_subjects)) + " " + str(SessionConnection.present_subjects)
-        SessionConnection.admin_client.broadcast(random.sample(SessionConnection.present_subjects, int(num)), json.dumps({'type': SessionConnection.ACTIVATE_MSG}))
+        #SessionConnection.admin_client.broadcast(random.sample(SessionConnection.present_subjects, int(num)), json.dumps({'type': SessionConnection.ACTIVATE_MSG}))
+        SessionConnection.admin_client.broadcast(SessionConnection.present_subjects, json.dumps({'type': SessionConnection.ACTIVATE_MSG}))
 
 
 def main():
