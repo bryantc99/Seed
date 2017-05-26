@@ -487,6 +487,8 @@ class WaitingRoomConnection(SockJSConnection):
 
             GameConnection.GAMES[self.rd][str(self.subject_id)] = self.game_id
             GameConnection.PAST_PARTNERS[str(self.subject_id)].append(self.partner)
+
+            #roles are assigned and roles are switched at round 2 currently
             GameConnection.PLAYER_ROLES[str(self.subject_id)] = "employer" if ((self.subject_no in WaitingRoomConnection.EMPLOYER_FIRST and int(self.rd) < 2) or (self.subject_no in WaitingRoomConnection.EMPLOYEE_FIRST and int(self.rd) >= 2)) else "worker"
             print "[WaitingRoomConnection] Subject " + self.subject_id + " assigned to role " + GameConnection.PLAYER_ROLES[str(self.subject_id)]
             print "[WaitingRoomConnection] Subject " + self.subject_id + "assigned to game " + self.game_id
@@ -624,20 +626,6 @@ class GameConnection(SockJSConnection):
     PLAYER_ROLES = {}
     ROUNDS = defaultdict(lambda: int)
 
-
-   # TREATMENTS = {'fl': {'lowBase': 1, 'varWage': 0},
-    #              'fh': {'lowBase': 0, 'varWage': 0},
-     #             'vl': {'lowBase': 1, 'varWage': 1},
-      #            'vh': {'lowBase': 0, 'varWage': 1}}
-
-   # GAMES = {'gm12': 'fl',
-    
-    #         'gm34': 'fh',
-     #        'gm14': 'vl',
-      #       'gm24': 'vh',
-       #      'gm13': 'fh',
-        #     'gm24': 'vl'}
-
     # heartbeat interval
     heartbeat_interval = 5000
     HEARTBEAT = 'h'
@@ -646,6 +634,13 @@ class GameConnection(SockJSConnection):
         try:
             self.rd = GameConnection.ROUNDS[str(oid)]
             game_id = GameConnection.GAMES[self.rd][str(oid)]
+
+
+            #To change treatment, edit following code
+            # if (self.rd == 2) {
+            #     lowBase = True
+            #     varWage = False
+            # }
 
             for k in WaitingRoomConnection.DROPPED:
                 print "The player " + str(k) + " has been dropped"
@@ -666,7 +661,7 @@ class GameConnection(SockJSConnection):
                 logger.info('[GameConnection] READY_MSG for game %s' + game_id)
                 self.broadcast(present_subjects, json.dumps({'type': GameConnection.READY_MSG,
 
-                                                           #  'treatment': TREATMENTS['fl'],  
+                                                                #  'treatment' is determined here  
                                                              'game_id': game_id,
                                                              'subject_no': GameConnection.NUMBERS[str(oid)],
                                                              'lowBase': bool(random.getrandbits(1)),
@@ -739,6 +734,7 @@ class GameConnection(SockJSConnection):
                 game_id = msg['game_id']
                 logger.debug('[GameConnection] Entering info for subject %s into db',  msg['oid'])
 
+                #After game, all parameters are handled - put into database 
                 db.players.update_one({'_id': ObjectId(msg['oid'])},{'$set': {
                     "status": "finished",
                     "role": msg['role'],
@@ -776,7 +772,7 @@ def createSession(sessionType, num):
     print "Creating session of type " + sessionType + " with " + num + " players."
     if(SessionConnection.present_subjects and len(SessionConnection.present_subjects) >= 0):
         print "subjects: " + str(SessionConnection.present_subjects)
-        SessionConnection.admin_client.broadcast(SessionConnection.present_subjects, json.dumps({'type': SessionConnection.ACTIVATE_MSG}))
+        SessionConnection.admin_client.broadcast(random.sample(SessionConnection.present_subjects), json.dumps({'type': SessionConnection.ACTIVATE_MSG}))
 
 
 def main():

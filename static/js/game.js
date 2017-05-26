@@ -261,6 +261,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
             var page = "";
             if (dataModel.stage === "init") {
                 dataModel.oid = oid;
+                //HERE IS WHERE WAGE IS DECIDED - constants
                 dataModel.wage = dataModel.lowBase ? 12 : 16;
                 dataModel.finalWage = dataModel.wage;
                 page = employer ? '2' : 'wait';
@@ -292,6 +293,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
                 page = '5';
                 dataModel.wait = false;
                 dataModel.stage = "finish";
+                //payment calculation
                 var payment = employer ? 40 - dataModel.wage : dataModel.wage;
                 conn.send(JSON.stringify({"type": FINISH_MSG,
                                         "oid": oid,

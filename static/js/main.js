@@ -60,32 +60,6 @@ mainApp.controller('MainController', ['$scope', '$resource', '$interval', '$http
             }
         };
 
-        $scope.main.validate = function() {
-            console.log("validate");
-            if ($scope.main.user.name != "Gerald") {
-                $scope.main.wrongId = true;
-                return false;
-            }
-            else {
-                return true;
-                userInfo.name = $scope.main.user.name;
-                $http({
-                    method: 'POST',
-                    url: '/about',
-                    data: {name: $scope.main.user.name},
-                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                    transformRequest: function(obj) {
-                        var str = [];
-                        for(var p in obj)
-                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-                        return str.join("&");
-                    },
-
-                }).then(function successCallback(response) {
-                }, function errorCallback(response) {
-                });
-            }
-        }
 
         $scope.validateForm = function(e) {
             console.log(e);
