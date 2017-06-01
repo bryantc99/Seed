@@ -107,9 +107,9 @@ function connect() {
         if (type === ACTIVATE_MSG) {
             console.log("Client - activated");
             var list = document.getElementById('sessionList');
-            var entry = document.createElement('li');
-            entry.appendChild(document.createTextNode("session created"));
-            list.appendChild(entry);
+            //var entry = document.createElement('li');
+            //entry.appendChild(document.createTextNode("session created"));
+            list.appendChild("<li>" + "Session created" + "</li>");
 
         }
         else if (type === DEACTIVATE_MSG) {
