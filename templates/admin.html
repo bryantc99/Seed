@@ -36,7 +36,7 @@
 <b>Sessions:</b>
 <ol id="sessionList">
 {% for session in sessions %}
-<li>{{escape(session)}}</li>
+<li>{{escape(session.participants[0])}}</li>
 {% end %}
 </ol>
 
