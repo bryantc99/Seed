@@ -100,17 +100,20 @@ function connect() {
         }
     };
 
+    var updateList = function() {
+        var list = document.getElementById('sessionList');
+        //var entry = document.createElement('li');
+        //entry.appendChild(document.createTextNode("session created"));
+        list.appendChild("<li>" + "Session created" + "</li>");
+    }
+
     conn.onmessage = function(e) {
         var msg = JSON.parse(e.data);
         var type = parseInt(msg.type);
 
         if (type === ACTIVATE_MSG) {
             console.log("Client - activated");
-            var list = document.getElementById('sessionList');
-            //var entry = document.createElement('li');
-            //entry.appendChild(document.createTextNode("session created"));
-            list.appendChild("<li>" + "Session created" + "</li>");
-
+            updateList();
         }
         else if (type === DEACTIVATE_MSG) {
             console.log("Client - deactivated");
