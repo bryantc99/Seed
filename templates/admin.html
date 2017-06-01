@@ -35,8 +35,9 @@
 <br>
 <b>Sessions:</b>
 <ol id="sessionList">
-<li>Water</li>
-<li>Air</li>
+{% for session in sessions %}
+<li>{{escape(session)}}</li>
+{% end %}
 </ol>
 
 </div>

@@ -152,6 +152,8 @@ class SessionConnection(SockJSConnection):
     # sessions_available: list
     available_sessions = defaultdict(lambda: list())
 
+    active_sessions = ["asdf", "fdsa"]
+
 
     # game_id:status
     # game_id: string
@@ -764,9 +766,8 @@ class AdminHandler(tornado.web.RequestHandler):
     def post(self):
         if self.get_argument('usAllNum'):
             createSession("US-only", self.get_argument('usAllNum'))
-        
 
-        self.render("admin.html",usp=SessionConnection.US_Players,ip=SessionConnection.India_Players)
+        self.render("admin.html",usp=SessionConnection.US_Players,ip=SessionConnection.India_Players,sessions=SessionConnection.active_sessions)
 
 
 def createSession(sessionType, num):
