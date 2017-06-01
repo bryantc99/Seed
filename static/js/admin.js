@@ -101,7 +101,7 @@ function connect() {
     };
 
     var updateList = function() {
-        var list = document.getElementById('sessionList');
+        var list = $('#sessionList');
         //var entry = document.createElement('li');
         //entry.appendChild(document.createTextNode("session created"));
         list.appendChild("<li>" + "Session created" + "</li>");
