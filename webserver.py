@@ -150,7 +150,7 @@ class SessionConnection(SockJSConnection):
     # sessions_available: list
     available_sessions = defaultdict(lambda: list())
 
-    active_sessions = ["asdf", "fdas"]
+    active_sessions = [{'participants':["asdf","fdsa"]}]
 
 
     # game_id:status
@@ -759,13 +759,13 @@ class GameConnection(SockJSConnection):
 
 class AdminHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render("admin.html",usp=SessionConnection.US_Players,ip=SessionConnection.India_Players)
+        self.render("admin.html",usp=SessionConnection.US_Players,ip=SessionConnection.India_Players,sessions=SessionConnection.active_sessions)
 
     def post(self):
         if self.get_argument('usAllNum'):
             createSession("US-only", self.get_argument('usAllNum'))
 
-        self.render("admin.html",usp=SessionConnection.US_Players,ip=SessionConnection.India_Players, sessions=SessionConnection.active_sessions)
+        self.render("admin.html",usp=SessionConnection.US_Players,ip=SessionConnection.India_Players,sessions=SessionConnection.active_sessions)
 
 
 def createSession(sessionType, num):
