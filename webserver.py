@@ -134,8 +134,6 @@ class Application(tornado.web.Application):
 
 class SessionConnection(SockJSConnection):
 
-    print "Session created"
-
     # game_id:subjects
     # game_id: string
     # subjects: set(connection)
@@ -152,7 +150,7 @@ class SessionConnection(SockJSConnection):
     # sessions_available: list
     available_sessions = defaultdict(lambda: list())
 
-    active_sessions = ["asdf", "fdsa"]
+    active_sessions = [{'participants': ["asdf", "fdsa"]}]
 
 
     # game_id:status
