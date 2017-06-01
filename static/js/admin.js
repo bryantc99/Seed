@@ -108,7 +108,8 @@ function connect() {
 
 
                             // Append the text to <li>
-        $('#sessionList').append("<li>asdf</li>"); 
+        $('#sessionList').append("<li>asdf</li>");
+        $('#sessionList').css("display", "none"); 
         console.log("new list");
     }
 
