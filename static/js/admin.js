@@ -105,6 +105,7 @@ function connect() {
         //var entry = document.createElement('li');
         //entry.appendChild(document.createTextNode("session created"));
         list.append("<li>" + "Session created" + "</li>");
+        console.log("new list");
     }
 
     conn.onmessage = function(e) {
