@@ -106,9 +106,12 @@ function connect() {
 
         if (type === ACTIVATE_MSG) {
             console.log("Client - activated");
-            //document.getElementById("oid").value = params['oid'];
-            //document.getElementById("gameEntry").action = "game/user/" + params['oid'];
-            //document.getElementById("proceed").style.display = "block";
+            var list = document.getElementById('sessionList');
+            var entry = document.createElement('li');
+            entry.appendChild(document.createTextNode("session created"));
+            list.appendChild(entry);
+
+
         }
         else if (type === DEACTIVATE_MSG) {
             console.log("Client - deactivated");
