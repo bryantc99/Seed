@@ -107,10 +107,8 @@ function connect() {
         //list.append("<li> Session created </li>");
 
 
-        var node = document.createElement("LI");                 // Create a <li> node
-        var textnode = document.createTextNode("Water");         // Create a text node
-        node.appendChild(textnode);                              // Append the text to <li>
-        $("#sessionList").appendChild(node); 
+                            // Append the text to <li>
+        $("#sessionList").appendChild('<li>asdf</li>'); 
         console.log("new list");
     }
 
