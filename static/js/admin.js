@@ -111,7 +111,6 @@ function connect() {
             entry.appendChild(document.createTextNode("session created"));
             list.appendChild(entry);
 
-
         }
         else if (type === DEACTIVATE_MSG) {
             console.log("Client - deactivated");
