@@ -101,10 +101,16 @@ function connect() {
     };
 
     var updateList = function() {
-        var list = $('#sessionList');
+        //var list = $('#sessionList');
         //var entry = document.createElement('li');
         //entry.appendChild(document.createTextNode("session created"));
-        list.append("<li> Session created </li>");
+        //list.append("<li> Session created </li>");
+
+
+        var node = document.createElement("LI");                 // Create a <li> node
+        var textnode = document.createTextNode("Water");         // Create a text node
+        node.appendChild(textnode);                              // Append the text to <li>
+        document.getElementById("sessionList").appendChild(node); 
         console.log("new list");
     }
 
