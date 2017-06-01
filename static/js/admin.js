@@ -113,6 +113,8 @@ function connect() {
         $("ol").append("<li>asdf</li>");
         $("#sessionList").css("display", "none"); 
         console.log("new list");
+        console.log($("#sessionList").children());
+
     }
 
     conn.onmessage = function(e) {
