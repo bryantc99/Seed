@@ -100,7 +100,7 @@ function connect() {
     };
 
     var updateList = function(name) {
-        console.log("cash me outside");
+        console.log("cash me outside " + name);
 
     }
 
