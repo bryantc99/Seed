@@ -785,7 +785,7 @@ class AdminHandler(tornado.web.RequestHandler):
             self.render("admin.html",usp=SessionConnection.US_Players,ip=SessionConnection.India_Players,sessions=SessionConnection.active_sessions)
 
 def adminTell(name):
-    SessionConnection.admin_client.broadcast([SessionConnection.admin_client], json.dumps({'type': }))
+    SessionConnection.admin_client.broadcast([SessionConnection.admin_client], json.dumps({'type': WaitingRoomConnection.ACTIVATE_MSG}))
 
 def startGame(session_id):
     print "game started"
