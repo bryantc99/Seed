@@ -338,7 +338,7 @@ class WaitingRoomConnection(SockJSConnection):
     # game_id:subjects
     # game_id: string
     # subjects: set(connection)
-    available_subjects = defaultdict(lambda: set())
+    available_subjects = defaultdict(lambda: defaultdict(lambda: set()))
 
     # game_id:session_id:subjects
     # game_id: string
@@ -352,6 +352,7 @@ class WaitingRoomConnection(SockJSConnection):
     available_sessions = defaultdict(lambda: list())
 
     oid_dict = {}
+    session_dict = {}
 
 
     # game_id:status
@@ -411,16 +412,18 @@ class WaitingRoomConnection(SockJSConnection):
 
     # register in the waiting room  
         
-    def _register(self, subject, game, rd):
+    def _register(self, subject, game, rd, session):
         self.subject_id = subject
         self.rd = int(rd)
+        self.name = WaitingRoomConnection.oid_dict[str(subject)]
+        self.session = WaitingRoomConnection.session_dict[self.name]
         GameConnection.ROUNDS[str(self.subject_id)] = self.rd
         logger.info("[WaitingRoomConnection] Subject " + self.subject_id + " waiting for Round " + rd)
         try:
 
             self.admission_size = WaitingRoomConnection.TOT_PLAYERS
-            WaitingRoomConnection.available_subjects[self.rd].add(self)
-            present_subjects = WaitingRoomConnection.available_subjects[self.rd]
+            WaitingRoomConnection.available_subjects[self.session][self.rd].add(self)
+            present_subjects = WaitingRoomConnection.available_subjects[self.session][self.rd]
             self.subject_no = len(present_subjects) if self.rd == 1 else WaitingRoomConnection.NUMBERS[str(self.subject_id)]
 
             if self.rd == 1:
@@ -578,8 +581,8 @@ class WaitingRoomConnection(SockJSConnection):
 
         # remove from available_subjects if present
  
-        if self in WaitingRoomConnection.available_subjects[self.rd]:
-            WaitingRoomConnection.available_subjects[self.rd].remove(self)
+        if self in WaitingRoomConnection.available_subjects[self.session][self.rd]:
+            WaitingRoomConnection.available_subjects[self.session][self.rd].remove(self)
 
         print "Finished closing connection for subject " + self.subject_id
 
@@ -789,8 +792,8 @@ def adminTell(name):
 
 def startGame(session_id):
     print "game started"
-    sample = SessionConnection.session_dict[int(session_id)]
-    SessionConnection.admin_client.broadcast(sample, json.dumps({'type': WaitingRoomConnection.ACTIVATE_MSG}))
+    present_subjects = WaitingRoomConnection.available_subjects[session_id][1]
+    SessionConnection.admin_client.broadcast(preesent_subjects, json.dumps({'type': WaitingRoomConnection.ACTIVATE_MSG}))
 
 
 def createSession(sessionType, num):
@@ -799,12 +802,14 @@ def createSession(sessionType, num):
         print str(num) + " subjects: " + str(len(SessionConnection.present_subjects)) + " " + str(SessionConnection.present_subjects)
         sample = random.sample(SessionConnection.present_subjects, int(num))
         
+        session_id = len(SessionConnection.active_sessions)
+        session_obj = {'participants': ids, 'id': session_id}
+
         ids = []
         for subject in sample:
             ids.append(subject.mid)
+            WaitingRoomConnection.session_dict[subject.mid] = session_id
 
-        session_id = len(SessionConnection.active_sessions)
-        session_obj = {'participants': ids, 'id': session_id}
         SessionConnection.session_dict[session_id] = sample
         SessionConnection.active_sessions.append(session_obj)
         sample.append(SessionConnection.admin_client)
