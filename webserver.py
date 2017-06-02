@@ -507,11 +507,11 @@ class WaitingRoomConnection(SockJSConnection):
             logger.info('[WaitingRoomConnection] WAIT_MSG from subject: %s of game: %s', self.subject_id, self.game_id)
             print "[WaitingRoomConnection] Number of waiting subjects:" + str(len(present_subjects)) + "/" + str(self.admission_size)
 
-            if len(present_subjects) >= self.admission_size:
-                WaitingRoomConnection.room_statuses[self.game_id] = WaitingRoomConnection.ENTRY_OPEN
-                logger.info('[WaitingRoomConnection] ENTRY OPEN for games')
-                logger.info('[WaitingRoomConnection] Subjects: %d', len(present_subjects))
-                self.broadcast(present_subjects, json.dumps({'type': WaitingRoomConnection.ACTIVATE_MSG}))
+            #if len(present_subjects) >= self.admission_size:
+                #WaitingRoomConnection.room_statuses[self.game_id] = WaitingRoomConnection.ENTRY_OPEN
+                #logger.info('[WaitingRoomConnection] ENTRY OPEN for games')
+                #logger.info('[WaitingRoomConnection] Subjects: %d', len(present_subjects))
+                #self.broadcast(present_subjects, json.dumps({'type': WaitingRoomConnection.ACTIVATE_MSG}))
    
         except Exception as e:
             logger.exception('[WaitingRoomConnection] When registering: %s', e.args[0])
