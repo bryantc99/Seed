@@ -101,9 +101,6 @@ function connect() {
 
     var updateList = function(name) {
 
-        console.log("cash me outside " + name);
-        console.log($(' .'+name))
-
         $(' .'+name)[0].innerText = $(' .'+name)[0].innerText + " - READY"
 
 
