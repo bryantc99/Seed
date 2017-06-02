@@ -105,6 +105,10 @@ function connect() {
         console.log($(' .'+name))
 
         console.log($(' .'+name)[0].innerText)
+        $(' .'+name)[0].innerText = $(' .'+name)[0].innerText + " - READY"
+        console.log($(' .'+name)[0].innerText)
+
+
         //.style.color = "green";
 
     }
