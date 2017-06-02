@@ -773,7 +773,11 @@ def createSession(sessionType, num):
     if(SessionConnection.present_subjects and len(SessionConnection.present_subjects) >= 0):
         print str(num) + " subjects: " + str(len(SessionConnection.present_subjects)) + " " + str(SessionConnection.present_subjects)
         sample = random.sample(SessionConnection.present_subjects, int(num))
-        session_obj = {'participants': sample}
+        
+        ids = []
+        for subject in sample:
+            ids.append(subject.subject_id)
+        session_obj = {'participants': ids}
         SessionConnection.active_sessions.append(session_obj)
         sample.append(SessionConnection.admin_client)
         SessionConnection.admin_client.broadcast(sample, json.dumps({'type': SessionConnection.ACTIVATE_MSG}))
