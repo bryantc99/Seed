@@ -768,14 +768,14 @@ class AdminHandler(tornado.web.RequestHandler):
             self.render("admin.html",usp=SessionConnection.US_Players,ip=SessionConnection.India_Players,sessions=SessionConnection.active_sessions)
         elif self.get_argument('action') == "gameStart":
             startGame(self.get_argument('session'))
-            print self.get_argument('session')
             self.render("admin.html",usp=SessionConnection.US_Players,ip=SessionConnection.India_Players,sessions=SessionConnection.active_sessions)
 
 
 
 
-def startGame(session):
+def startGame(session_id):
     print "game started"
+    print SessionConnection.active_sessions[session_id]
     #print "starting game " + str(session["id"])
 
 def createSession(sessionType, num):
