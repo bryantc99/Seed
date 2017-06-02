@@ -777,7 +777,7 @@ def createSession(sessionType, num):
         
         ids = []
         for subject in sample:
-            ids.append(subject.subject_id)
+            ids.append(subject.mid)
         session_obj = {'participants': ids}
         SessionConnection.active_sessions.append(session_obj)
         sample.append(SessionConnection.admin_client)
