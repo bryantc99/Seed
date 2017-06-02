@@ -418,15 +418,14 @@ class WaitingRoomConnection(SockJSConnection):
         self.subject_id = subject
         self.rd = int(rd)
         self.name = WaitingRoomConnection.oid_dict[str(subject)]
-        self.session = WaitingRoomConnection.session_dict[self.name]
+        self.session_id = WaitingRoomConnection.session_dict[self.name]
         GameConnection.ROUNDS[str(self.subject_id)] = self.rd
         logger.info("[WaitingRoomConnection] Subject " + self.subject_id + " waiting for Round " + rd)
         try:
 
             self.admission_size = WaitingRoomConnection.TOT_PLAYERS
-            WaitingRoomConnection.available_subjects[self.session][self.rd].add(self)
-            print "putting in session " + str(self.session) + " and round " + str(self.rd)
-            present_subjects = WaitingRoomConnection.available_subjects[self.session][self.rd]
+            WaitingRoomConnection.available_subjects[self.session_id][self.rd].add(self)
+            present_subjects = WaitingRoomConnection.available_subjects[self.session_id][self.rd]
             self.subject_no = len(present_subjects) if self.rd == 1 else WaitingRoomConnection.NUMBERS[str(self.subject_id)]
 
             if self.rd == 1:
@@ -584,8 +583,8 @@ class WaitingRoomConnection(SockJSConnection):
 
         # remove from available_subjects if present
  
-        if self in WaitingRoomConnection.available_subjects[self.session][self.rd]:
-            WaitingRoomConnection.available_subjects[self.session][self.rd].remove(self)
+        if self in WaitingRoomConnection.available_subjects[self.session_id][self.rd]:
+            WaitingRoomConnection.available_subjects[self.session_id][self.rd].remove(self)
 
         print "Finished closing connection for subject " + self.subject_id
 
@@ -799,7 +798,7 @@ def startGame(session_id):
     print session_id
     print present_subjects
     print WaitingRoomConnection.admin_client
-    #WaitingRoomConnection.admin_client.broadcast(present_subjects, json.dumps({'type': WaitingRoomConnection.ACTIVATE_MSG}))
+    WaitingRoomConnection.admin_client.broadcast(present_subjects, json.dumps({'type': WaitingRoomConnection.ACTIVATE_MSG}))
     
 
 
