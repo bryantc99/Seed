@@ -564,7 +564,7 @@ class WaitingRoomConnection(SockJSConnection):
             if msg_type == WaitingRoomConnection.WAIT_MSG:
                 logger.info("[WaitingRoomConnection] gameid %s", msg['game_id'])
                 name = WaitingRoomConnection.oid_dict[str(msg['subject_id'])]
-                adminTell(name);
+                adminTell(name)
                 self._register(msg['subject_id'], msg['game_id'], msg['rd'])
             elif msg_type == WaitingRoomConnection.ENTRY_MSG:
                 self._entry()
@@ -572,7 +572,6 @@ class WaitingRoomConnection(SockJSConnection):
     def on_close(self):
         logger.info('[WaitingRoomConnection] DISCONNECTION of subject: %s from game %s waiting room in round %d', self.subject_id, self.game_id, self.rd)
         # stop heartbeat if enabled
-
 
         if tornado.options.options.heartbeat:
             self._stop_heartbeat()
@@ -785,8 +784,8 @@ class AdminHandler(tornado.web.RequestHandler):
             startGame(self.get_argument('session'))
             self.render("admin.html",usp=SessionConnection.US_Players,ip=SessionConnection.India_Players,sessions=SessionConnection.active_sessions)
 
-
-
+def adminTell(name):
+    SessionConnection.admin_client.broadcast([SessionConnection.admin_client], json.dumps({'type': }))
 
 def startGame(session_id):
     print "game started"
