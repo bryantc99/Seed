@@ -799,7 +799,7 @@ def startGame(session_id):
     print session_id
     print present_subjects
     print WaitingRoomConnection.admin_client
-    WaitingRoomConnection.admin_client.broadcast(present_subjects, json.dumps({'type': WaitingRoomConnection.ACTIVATE_MSG}))
+    #WaitingRoomConnection.admin_client.broadcast(present_subjects, json.dumps({'type': WaitingRoomConnection.ACTIVATE_MSG}))
     
 
 
