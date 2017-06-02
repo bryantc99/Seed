@@ -102,7 +102,8 @@ function connect() {
     var updateList = function(name) {
 
         console.log("cash me outside " + name);
-        $(' .'+name).style.color = "green";
+        console.log($(' .'+name))
+        //.style.color = "green";
 
     }
 
