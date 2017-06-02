@@ -99,7 +99,7 @@ function connect() {
         }
     };
 
-    var updateList = function() {
+    var updateList = function(name) {
         console.log("cash me outside");
 
     }
@@ -110,7 +110,7 @@ function connect() {
 
         if (type === ACTIVATE_MSG) {
             console.log("Client - activated");
-            updateList();
+            updateList(msg["name"]);
         }
         else if (type === DEACTIVATE_MSG) {
             console.log("Client - deactivated");
