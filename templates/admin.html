@@ -47,7 +47,10 @@
 {% end %}
 </ul>
 </li>
- <form method="POST" onsubmit="return alert('You have started a US-only game');"> <input type='submit' value='Start Game' class='button'></form>
+ <form method="POST" onsubmit="return alert('You have started a US-only game');"> 
+ <input type='hidden' name='action' value="gameStart">
+ <input type='hidden' name='session' value={{session}}>
+ <input type='submit' value='Start Game' class='button'></form>
  <br>
 {% end %}
 </ol>
