@@ -55,6 +55,7 @@ function getUrlVars() {
 function connect() {
     disconnect();
     var params = getUrlVars();
+    console.log(params["mid"]);
 
     var protocols = ["websocket", "xdr-streaming", "xhr-streaming", "xdr-polling", "xhr-polling", "iframe-eventsource"];
     var options = {protocols_whitelist: protocols, debug: true, jsessionid: false};
@@ -66,7 +67,7 @@ function connect() {
         console.log("Client - connected");
         console.log("Client - protocol used: " + conn.protocol);
         // send WAIT_MSG
-        var wait_msg = JSON.stringify({"type": WAIT_MSG});
+        var wait_msg = JSON.stringify({"type": WAIT_MSG, "mid": params["mid"]});
         conn.send(wait_msg);
         console.log("Client - WAIT_MSG sent");
     };

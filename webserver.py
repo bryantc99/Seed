@@ -217,8 +217,9 @@ class SessionConnection(SockJSConnection):
 
     # register in the waiting room  
         
-    def _register(self):    
+    def _register(self, mid):    
         try:
+            self.mid = mid
             SessionConnection.US_Players = SessionConnection.US_Players + 1
             SessionConnection.present_subjects = SessionConnection.available_subjects
             SessionConnection.present_subjects.add(self)
@@ -277,7 +278,7 @@ class SessionConnection(SockJSConnection):
             msg_type = msg['type']
 
             if msg_type == SessionConnection.WAIT_MSG:
-                self._register()
+                self._register(msg["mid"])
             elif msg_type == SessionConnection.ENTRY_MSG:
                 self._entry()
             elif msg_type == SessionConnection.ADMIN_MSG:
