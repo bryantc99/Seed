@@ -100,7 +100,9 @@ function connect() {
     };
 
     var updateList = function(name) {
+
         console.log("cash me outside " + name);
+        document.getElementById("name").style.color = "green";
 
     }
 

@@ -41,7 +41,7 @@
 <li>
 <ul>
 {% for i in range(len(session['participants'])) %}
-<li>
+<li id={{session['participants'][i]}}>
 {{session['participants'][i]}}
 </li>
 {% end %}
