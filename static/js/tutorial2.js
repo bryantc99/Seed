@@ -78,11 +78,11 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
         $scope.game.continue = dataModel.continue;
 
         $scope.game.newPage = function(page){
-            $window.location.assign("/tutorial2/user/" + oid + "#/" + page + "&rd=1");
+            $window.location.assign("/tutorial2/user/" + oid + "#/" + page );
         }
 
         $scope.game.finishGame = function(){
-            $window.location.assign("/welcome?oid=" + oid + );
+            $window.location.assign("/welcome?oid=" + oid + "&rd=1");
         }
 
         $scope.game.setContract = function(offer) {
