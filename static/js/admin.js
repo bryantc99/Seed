@@ -104,7 +104,7 @@ function connect() {
         console.log("cash me outside " + name);
         console.log($(' .'+name))
 
-        console.log($(' .'+name)[0])
+        console.log($(' .'+name)[0].innerText)
         //.style.color = "green";
 
     }
