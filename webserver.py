@@ -150,7 +150,7 @@ class SessionConnection(SockJSConnection):
     # sessions_available: list
     available_sessions = defaultdict(lambda: list())
 
-    active_sessions = [{'participants':["asdf","fdsa"]}]
+    active_sessions = []
 
 
     # game_id:status
