@@ -21,7 +21,7 @@ if(document.getElementById("tutorial2Entry")) {
 
 mainApp.service("userInfo", function() {
     this.name = "default";
-    this.us_ids = ['us1', 'us2', 'us3', 'us4']
+    this.us_ids = ['us1', 'us2', 'us3', 'us4', 'us5', 'us6', 'us7', 'us8', 'us9', 'us10', 'us11', 'us12']
     this.india_ids = ['india1', 'india2']
 })
 
