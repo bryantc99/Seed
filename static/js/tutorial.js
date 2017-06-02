@@ -74,6 +74,7 @@ tutorialApp.controller('TutorialController', ['$scope', '$window', 'dataModel', 
         $scope.game = {};
 
         $scope.game.continue = dataModel.continue;
+        $scope.game.hasRole = true;
 
         $scope.game.newPage = function(page){
             $window.location.assign("/tutorial1/user/" + oid + "#/" + page);
