@@ -794,7 +794,7 @@ def adminTell(name):
 
 def startGame(session_id):
     print "game started"
-    present_subjects = WaitingRoomConnection.available_subjects[int(session_id)][1]
+    present_subjects = WaitingRoomConnection.available_subjects[int(session_id)][2]
     WaitingRoomConnection.admin_client.broadcast(present_subjects, json.dumps({'type': WaitingRoomConnection.ACTIVATE_MSG}))
     
 
