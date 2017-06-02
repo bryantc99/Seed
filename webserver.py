@@ -351,6 +351,8 @@ class WaitingRoomConnection(SockJSConnection):
     # sessions_available: list
     available_sessions = defaultdict(lambda: list())
 
+    oid_dict = {}
+
 
     # game_id:status
     # game_id: string
@@ -561,6 +563,7 @@ class WaitingRoomConnection(SockJSConnection):
 
             if msg_type == WaitingRoomConnection.WAIT_MSG:
                 logger.info("[WaitingRoomConnection] gameid %s", msg['game_id'])
+                print "name is " + oid_dict[msg['subject_id']
                 self._register(msg['subject_id'], msg['game_id'], msg['rd'])
             elif msg_type == WaitingRoomConnection.ENTRY_MSG:
                 self._entry()
@@ -766,6 +769,7 @@ class RegisterHandler(tornado.web.RequestHandler):
             "name" : name
             })
 
+        WaitingRoomConnection.oid_dict[result.inserted_id] = name
         self.render("about.html", title="Oxford Experiments", oid = result.inserted_id)
 
 class AdminHandler(tornado.web.RequestHandler):
