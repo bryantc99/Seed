@@ -801,7 +801,7 @@ def startGame(session_id):
     sender = 0
     if len(present_subjects) > 0:
         sender = next(iter(present_subjects))
-    print WaitingRoomConnection.admin_client
+    print WaitingRoomConnection.admin_client.__dict__
     WaitingRoomConnection.admin_client.broadcast(present_subjects, json.dumps({'type': WaitingRoomConnection.ACTIVATE_MSG}))
     
 
