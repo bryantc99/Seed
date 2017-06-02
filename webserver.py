@@ -785,7 +785,7 @@ def createSession(sessionType, num):
         ids = []
         for subject in sample:
             ids.append(subject.mid)
-        session_obj = {'participants': ids}
+        session_obj = {'participants': ids, 'id': len(SessionConnection.active_sessions)}
         SessionConnection.active_sessions.append(session_obj)
         sample.append(SessionConnection.admin_client)
         SessionConnection.admin_client.broadcast(sample, json.dumps({'type': SessionConnection.ACTIVATE_MSG}))
