@@ -803,12 +803,14 @@ def createSession(sessionType, num):
         sample = random.sample(SessionConnection.present_subjects, int(num))
         
         session_id = len(SessionConnection.active_sessions)
-        session_obj = {'participants': ids, 'id': session_id}
+
 
         ids = []
         for subject in sample:
             ids.append(subject.mid)
             WaitingRoomConnection.session_dict[subject.mid] = session_id
+
+        session_obj = {'participants': ids, 'id': session_id}
 
         SessionConnection.session_dict[session_id] = sample
         SessionConnection.active_sessions.append(session_obj)
