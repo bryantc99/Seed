@@ -793,7 +793,7 @@ def adminTell(name):
 
 def startGame(session_id):
     print "game started"
-    present_subjects = WaitingRoomConnection.available_subjects[session_id][1]
+    present_subjects = WaitingRoomConnection.available_subjects[int(session_id)][1]
     print session_id
     print present_subjects
     sender = list(present_subjects)[0]
