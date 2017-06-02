@@ -29,7 +29,7 @@
 <p>{{usp}} US Players, {{ip}} India Players waiting for session</p>
 <p><b>Create Session</b></p>
 <p> US-US: </p> <form method="POST" onsubmit="return alert('You have created a US-only session with ' + document.getElementById('usAllNum').value + ' players.');"> 
-<input type='hidden' id='action' value="sessionStart">
+<input type='hidden' name='action' value="sessionStart">
 <input type='number' name='usAllNum' id='usAllNum' min='1' value='1'> <input type='submit' value='OK' class='button'></form>
 <p> India-India: </p> <form> <input type='number' name='num' id='usNum' min='1' value='1'> <input type='submit' value='OK' class='button'></form>
 <p> US-India: </p> <form> US: <input type='number' name='num' id='usNum' min='1' value='1'> India: <input type='number' name='num' id='usNum' min='1' value ='1'> <input type='submit' value='OK' class='button'></form>
