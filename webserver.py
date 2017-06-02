@@ -423,7 +423,7 @@ class WaitingRoomConnection(SockJSConnection):
 
             self.admission_size = WaitingRoomConnection.TOT_PLAYERS
             WaitingRoomConnection.available_subjects[self.session][self.rd].add(self)
-            print "putting in session " + self.session + " and round " + str(self.rd)
+            print "putting in session " + str(self.session) + " and round " + str(self.rd)
             present_subjects = WaitingRoomConnection.available_subjects[self.session][self.rd]
             self.subject_no = len(present_subjects) if self.rd == 1 else WaitingRoomConnection.NUMBERS[str(self.subject_id)]
 
