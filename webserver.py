@@ -792,9 +792,9 @@ class AdminHandler(tornado.web.RequestHandler):
 def adminTell(name):
     SessionConnection.admin_client.broadcast([SessionConnection.admin_client], json.dumps({'type': WaitingRoomConnection.ACTIVATE_MSG, 'name': name}))
 
-def startGame(session_id):
+def startGame(session_id, num):
     print "game started"
-    present_subjects = WaitingRoomConnection.available_subjects[int(session_id)][2]
+    present_subjects = WaitingRoomConnection.available_subjects[int(session_id)][int(WaitingRoomConnection.admin_client.rd)]
     WaitingRoomConnection.admin_client.broadcast(present_subjects, json.dumps({'type': WaitingRoomConnection.ACTIVATE_MSG}))
     
 
