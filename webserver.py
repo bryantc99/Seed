@@ -414,7 +414,7 @@ class WaitingRoomConnection(SockJSConnection):
     # register in the waiting room  
         
     def _register(self, subject, game, rd):
-        admin_client = self
+        WaitingRoomConnection.admin_client = self
         self.subject_id = subject
         self.rd = int(rd)
         self.name = WaitingRoomConnection.oid_dict[str(subject)]
