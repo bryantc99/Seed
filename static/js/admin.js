@@ -75,7 +75,6 @@ function connect() {
         conn.send(admin_msg);
         console.log("Client - ADMIN_MSG sent");
     };
-    
 
     conn.onclose = function() {
         console.log("Client - disconnected");

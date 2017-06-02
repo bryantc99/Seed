@@ -90,7 +90,7 @@ class Application(tornado.web.Application):
         urls = [
             (r'/', handlers.MainHandler),
             (r'/session', handlers.SessionHandler),
-            (r'/about', handlers.RegisterHandler),
+            (r'/about', RegisterHandler),
             (r'/quiz/user/([a-zA-Z0-9])*', handlers.QuizHandler),
             (r'/instructionsemployer([^/]*)', handlers.InstructionsHandler),
             (r'/instructionsemployee([^/]*)', handlers.Instructions2Handler),
@@ -151,6 +151,8 @@ class SessionConnection(SockJSConnection):
     available_sessions = defaultdict(lambda: list())
 
     active_sessions = []
+
+    session_dict = defaultdict(lambda: list())
 
 
     # game_id:status
@@ -757,6 +759,14 @@ class GameConnection(SockJSConnection):
             self._stop_heartbeat()
         client.close()
 
+class RegisterHandler(tornado.web.RequestHandler):
+    def post(self):
+        name = self.get_argument('name')
+        result = db.players.insert_one({
+            "name" : name
+            })
+
+        self.render("about.html", title="Oxford Experiments", oid = result.inserted_id)
 
 class AdminHandler(tornado.web.RequestHandler):
     def get(self):
@@ -775,8 +785,9 @@ class AdminHandler(tornado.web.RequestHandler):
 
 def startGame(session_id):
     print "game started"
-    print SessionConnection.active_sessions[int(session_id)]
-    #print "starting game " + str(session["id"])
+    sample = SessionConnection.session_dict[int(session_id)]
+    SessionConnection.admin_client.broadcast(sample, json.dumps({'type': WaitingRoomConnection.ACTIVATE_MSG}))
+
 
 def createSession(sessionType, num):
     print "Creating session of type " + sessionType + " with " + num + " players."
@@ -787,7 +798,10 @@ def createSession(sessionType, num):
         ids = []
         for subject in sample:
             ids.append(subject.mid)
-        session_obj = {'participants': ids, 'id': len(SessionConnection.active_sessions)}
+
+        session_id = len(SessionConnection.active_sessions)
+        session_obj = {'participants': ids, 'id': session_id}
+        SessionConnection.session_dict[session_id] = sample
         SessionConnection.active_sessions.append(session_obj)
         sample.append(SessionConnection.admin_client)
         SessionConnection.admin_client.broadcast(sample, json.dumps({'type': SessionConnection.ACTIVATE_MSG}))

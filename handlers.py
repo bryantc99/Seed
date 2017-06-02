@@ -55,15 +55,6 @@ class SessionHandler(BaseHandler):
         name = self.get_argument('name')
         self.render("session.html", title="Oxford Experiments", name = name)
 
-class RegisterHandler(BaseHandler):
-    def post(self):
-        name = self.get_argument('name')
-        result = db.players.insert_one({
-            "name" : name
-            })
-
-        self.render("about.html", title="Oxford Experiments", oid = result.inserted_id)
-
 class QuizHandler(BaseHandler):
     def post(self, submit):
         self.render("quiz.html", title="Oxford Experiments")
