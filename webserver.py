@@ -563,7 +563,7 @@ class WaitingRoomConnection(SockJSConnection):
 
             if msg_type == WaitingRoomConnection.WAIT_MSG:
                 logger.info("[WaitingRoomConnection] gameid %s", msg['game_id'])
-                print "name is " + WaitingRoomConnection.oid_dict[msg['subject_id']
+                print "name is " + WaitingRoomConnection.oid_dict[msg['subject_id']]
                 self._register(msg['subject_id'], msg['game_id'], msg['rd'])
             elif msg_type == WaitingRoomConnection.ENTRY_MSG:
                 self._entry()
