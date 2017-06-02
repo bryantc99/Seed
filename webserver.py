@@ -797,7 +797,7 @@ def startGame(session_id):
     print session_id
     print present_subjects
     sender = 0
-    if len(present_subjects > 0):
+    if len(present_subjects) > 0:
         sender = next(iter(present_subjects))
     print sender
     sender.broadcast(present_subjects, json.dumps({'type': WaitingRoomConnection.ACTIVATE_MSG}))
