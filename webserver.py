@@ -353,6 +353,7 @@ class WaitingRoomConnection(SockJSConnection):
 
     oid_dict = {}
     session_dict = {}
+    admin_client = 0
 
 
     # game_id:status
@@ -413,6 +414,7 @@ class WaitingRoomConnection(SockJSConnection):
     # register in the waiting room  
         
     def _register(self, subject, game, rd):
+        admin_client = self
         self.subject_id = subject
         self.rd = int(rd)
         self.name = WaitingRoomConnection.oid_dict[str(subject)]
@@ -800,7 +802,7 @@ def startGame(session_id):
     if len(present_subjects) > 0:
         sender = next(iter(present_subjects))
     print sender
-    sender.broadcast(present_subjects, json.dumps({'type': WaitingRoomConnection.ACTIVATE_MSG}))
+    WaitingRoomConnection.admin_client.broadcast(present_subjects, json.dumps({'type': WaitingRoomConnection.ACTIVATE_MSG}))
     
 
 
