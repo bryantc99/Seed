@@ -100,19 +100,7 @@ function connect() {
     };
 
     var updateList = function() {
-        //var list = $('#sessionList');
-        //var entry = document.createElement('li');
-        //entry.appendChild(document.createTextNode("session created"));
-        //list.append("<li> Session created </li>");
-
-
-                            // Append the text to <li>
-
-        console.log($("#sessionList").children());
-        $("ol").append("<li>asdf</li>");
-        $("#sessionList").css("display", "none"); 
-        console.log("new list");
-        console.log($("#sessionList").children());
+        console.log("cash me outside");
 
     }
 
