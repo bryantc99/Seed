@@ -775,7 +775,7 @@ class AdminHandler(tornado.web.RequestHandler):
 
 def startGame(session_id):
     print "game started"
-    print SessionConnection.active_sessions[session_id]
+    print SessionConnection.active_sessions[int(session_id)]
     #print "starting game " + str(session["id"])
 
 def createSession(sessionType, num):
