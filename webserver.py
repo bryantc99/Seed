@@ -437,7 +437,7 @@ class WaitingRoomConnection(SockJSConnection):
             repeat = True
             count = 0
             while (repeat):
-                WaitingRoomConnection.PAIRS[self.rd - 1] = [0] * self.admission_size
+                WaitingRoomConnection.PAIRS.append([0] * self.admission_size)
                 repeat = False
                 count = count + 1
                 if len(present_subjects) == 1:
