@@ -388,7 +388,7 @@ class WaitingRoomConnection(SockJSConnection):
 
     # constants
     NUM_ROUNDS = 2
-    PAIRS = []
+    PAIRS = defaultdict(lambda: list())
 
     EMPLOYER_FIRST = []
     EMPLOYEE_FIRST = []
@@ -461,7 +461,7 @@ class WaitingRoomConnection(SockJSConnection):
                             add = True
                             if k not in WaitingRoomConnection.MATCHED and k not in WaitingRoomConnection.DROPPED:
                                 for l in range(self.rd - 1):
-                                    if WaitingRoomConnection.PAIRS[l][j - 1] == k:
+                                    if WaitingRoomConnection.PAIRS[self.session_id][l][j - 1] == k:
                                         add = False
                                 if add:      
                                     available.append(k)
@@ -473,13 +473,13 @@ class WaitingRoomConnection(SockJSConnection):
                             partner = 0
                             if (len(available) != 0):
                                 partner = random.choice(available)
-                                WaitingRoomConnection.PAIRS[self.rd - 1][partner - 1] = j
+                                WaitingRoomConnection.PAIRS[self.session_id][self.rd - 1][partner - 1] = j
                                 WaitingRoomConnection.MATCHED.append(partner)
 
 
                             logger.info('[WaitingRoomConnection] partner for %d: %d', j, partner)
 
-                            WaitingRoomConnection.PAIRS[self.rd - 1][j - 1] = partner
+                            WaitingRoomConnection.PAIRS[self.session_id][self.rd - 1][j - 1] = partner
                             WaitingRoomConnection.MATCHED.append(j)
             
             if self.rd == 1 and self.subject_no == 1:
@@ -487,11 +487,11 @@ class WaitingRoomConnection(SockJSConnection):
                 logger.info('[WaitingRoomConnection] employee first: %s', str(WaitingRoomConnection.EMPLOYEE_FIRST))
 
 
-                print "[WaitingRoomConnection] Pairs: " + str(WaitingRoomConnection.PAIRS[self.rd-1]);
+                print "[WaitingRoomConnection] Pairs: " + str(WaitingRoomConnection.PAIRS[self.session_id][self.rd-1]);
             WaitingRoomConnection.MATCHED = [];
 
 
-            self.partner = WaitingRoomConnection.PAIRS[self.rd - 1][self.subject_no - 1]
+            self.partner = WaitingRoomConnection.PAIRS[self.session_id][self.rd - 1][self.subject_no - 1]
             self.game_id = "nogame"
             if (self.partner != 0):
                 self.game_id = "gm" + str(self.partner) + str(self.subject_no) if self.partner < self.subject_no else "gm" + str(self.subject_no)+ str(self.partner)
