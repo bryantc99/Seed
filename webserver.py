@@ -448,7 +448,7 @@ class WaitingRoomConnection(SockJSConnection):
                       WaitingRoomConnection.EMPLOYEE_FIRST[self.session_id] = []
                     WaitingRoomConnection.MATCHED[self.session_id] = []
                     for i in xrange(1, self.admission_size+1):
-                        if not i in WaitingRoomConnection.EMPLOYER_FIRST and not i in WaitingRoomConnection.EMPLOYEE_FIRST[self.session_id]:
+                        if not i in WaitingRoomConnection.EMPLOYER_FIRST[self.session_id] and not i in WaitingRoomConnection.EMPLOYEE_FIRST[self.session_id]:
                             WaitingRoomConnection.EMPLOYEE_FIRST[self.session_id].append(i)
                     for j in WaitingRoomConnection.EMPLOYER_FIRST[self.session_id]:
                         if j in WaitingRoomConnection.MATCHED[self.session_id]:
