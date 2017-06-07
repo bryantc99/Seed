@@ -84,8 +84,6 @@ class Application(tornado.web.Application):
 
         GameConnection.ready = 0
         GameConnection.size = 2
-        WaitingRoomConnection.MAX = 4
-        WaitingRoomConnection.TOT_PLAYERS = WaitingRoomConnection.MAX
 
         urls = [
             (r'/', handlers.MainHandler),
@@ -399,6 +397,8 @@ class WaitingRoomConnection(SockJSConnection):
 
     NUMBERS = {}
 
+    sizes = defaultdict()
+
     # if the subject has already been admitted or has already done this experiment
     
     def _duplicate(self):
@@ -423,7 +423,7 @@ class WaitingRoomConnection(SockJSConnection):
         logger.info("[WaitingRoomConnection] Subject " + self.subject_id + " waiting for Round " + rd)
         try:
 
-            self.admission_size = WaitingRoomConnection.TOT_PLAYERS
+            self.admission_size = sizes[self.session_id]
             WaitingRoomConnection.available_subjects[self.session_id][self.rd].add(self)
             present_subjects = WaitingRoomConnection.available_subjects[self.session_id][self.rd]
             self.subject_no = len(present_subjects) if self.rd == 1 else WaitingRoomConnection.NUMBERS[str(self.subject_id)]
@@ -433,7 +433,6 @@ class WaitingRoomConnection(SockJSConnection):
                 logger.info("[WaitingRoomConnection] Subject " + str(self.subject_id) + " assigned #" + str(self.subject_no))
 
                 GameConnection.NUMBERS[str(self.subject_id)] = self.subject_no
-                WaitingRoomConnection.TOT_PLAYERS = WaitingRoomConnection.MAX
             
             repeat = True
             count = 0
@@ -444,10 +443,10 @@ class WaitingRoomConnection(SockJSConnection):
                     GameConnection.PARTICIPANTS[self.rd] = defaultdict(lambda: set())
                     GameConnection.GAMES[self.rd] = {}
                     if self.rd == 1:
-                      WaitingRoomConnection.EMPLOYER_FIRST = random.sample(xrange(1, WaitingRoomConnection.TOT_PLAYERS+1), 2)
+                      WaitingRoomConnection.EMPLOYER_FIRST = random.sample(xrange(1, self.admission_size+1), 2)
                       WaitingRoomConnection.EMPLOYEE_FIRST = []
                     WaitingRoomConnection.MATCHED = []
-                    for i in xrange(1, WaitingRoomConnection.TOT_PLAYERS+1):
+                    for i in xrange(1, self.admission_size+1):
                         if not i in WaitingRoomConnection.EMPLOYER_FIRST and not i in WaitingRoomConnection.EMPLOYEE_FIRST:
                             WaitingRoomConnection.EMPLOYEE_FIRST.append(i)
                     for j in WaitingRoomConnection.EMPLOYER_FIRST:
@@ -733,7 +732,6 @@ class GameConnection(SockJSConnection):
                 self.broadcast(GameConnection.PARTICIPANTS[self.rd][game_id], message)
             elif msg_type == GameConnection.QUIT_MSG:
                 WaitingRoomConnection.DROPPED.append(msg['subject_no'])
-                WaitingRoomConnection.TOT_PLAYERS = WaitingRoomConnection.TOT_PLAYERS - 1
 
                 for u in GameConnection.GAMES[self.rd + 1]:
                     game_check = GameConnection.GAMES[self.rd + 1][u]
@@ -818,6 +816,7 @@ def createSession(sessionType, num):
         SessionConnection.session_dict[session_id] = sample
         SessionConnection.active_sessions.append(session_obj)
         sample.append(SessionConnection.admin_client)
+        WaitingRoomConnection.sizes[session_id] = int(num)
         SessionConnection.admin_client.broadcast(sample, json.dumps({'type': SessionConnection.ACTIVATE_MSG}))
         #SessionConnection.admin_client.broadcast(SessionConnection.admin_client, json.dumps({'type': SessionConnection.ACTIVATE_MSG}))
 
