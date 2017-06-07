@@ -356,6 +356,7 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
                 dataModel.lowBase = msg.lowBase;
                 dataModel.varWage = msg.varWage;
                 dataModel.game_id = msg.game_id;
+                console.log("Game is " + msg.game_id)
                 if (dataModel.game_id == "nogame")
                     $scope.game.newPage("skip");
                 dataModel.subject_no = msg.subject_no;
