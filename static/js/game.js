@@ -345,6 +345,8 @@ gameApp.controller('GameController', ['$scope', '$window', 'dataModel', '$locati
                 var role = msg.role;
                 console.log("Client has role:" + role);
                 dataModel.role = role;
+                if (role == "skip")
+                    $scope.game.newPage("skip");
                 dataModel.round = msg.round;
                 $scope.game.hasRole = true;
             }

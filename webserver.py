@@ -647,13 +647,6 @@ class GameConnection(SockJSConnection):
             self.rd = GameConnection.ROUNDS[str(oid)]
             game_id = GameConnection.GAMES[self.rd][str(oid)]
 
-
-            #To change treatment, edit following code
-            # if (self.rd == 2) {
-            #     lowBase = True
-            #     varWage = False
-            # }
-
             for k in WaitingRoomConnection.DROPPED:
                 print "The player " + str(k) + " has been dropped"
                 if str(k) in game_id:
@@ -667,8 +660,9 @@ class GameConnection(SockJSConnection):
             GameConnection.PARTICIPANTS[self.rd][game_id].add(self)
             present_subjects = GameConnection.PARTICIPANTS[self.rd][game_id]
             role = GameConnection.PLAYER_ROLES[str(oid)]
+            if game_id == "nogame":
+                role = "skip"
             self.send(json.dumps({'type': GameConnection.ROLE_MSG, 'role': role, 'round': len(GameConnection.PAST_PARTNERS[str(oid)])}))
-            print len(present_subjects)
             if len(present_subjects) >= GameConnection.size:
                 logger.info('[GameConnection] READY_MSG for game %s' + game_id)
                 self.broadcast(present_subjects, json.dumps({'type': GameConnection.READY_MSG,
