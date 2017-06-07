@@ -390,10 +390,10 @@ class WaitingRoomConnection(SockJSConnection):
     NUM_ROUNDS = 2
     PAIRS = defaultdict(lambda: list())
 
-    EMPLOYER_FIRST = []
-    EMPLOYEE_FIRST = []
-    MATCHED = []
-    DROPPED = []
+    EMPLOYER_FIRST = defaultdict(lambda: list())
+    EMPLOYEE_FIRST = defaultdict(lambda: list())
+    MATCHED = defaultdict(lambda: list())
+    DROPPED = defaultdict(lambda: list())
 
     NUMBERS = {}
 
@@ -444,22 +444,22 @@ class WaitingRoomConnection(SockJSConnection):
                     GameConnection.PARTICIPANTS[self.rd] = defaultdict(lambda: set())
                     GameConnection.GAMES[self.rd] = {}
                     if self.rd == 1:
-                      WaitingRoomConnection.EMPLOYER_FIRST = random.sample(xrange(1, self.admission_size+1), self.admission_size / 2)
-                      WaitingRoomConnection.EMPLOYEE_FIRST = []
-                    WaitingRoomConnection.MATCHED = []
+                      WaitingRoomConnection.EMPLOYER_FIRST[self.session_id] = random.sample(xrange(1, self.admission_size+1), self.admission_size / 2)
+                      WaitingRoomConnection.EMPLOYEE_FIRST[self.session_id] = []
+                    WaitingRoomConnection.MATCHED[self.session_id] = []
                     for i in xrange(1, self.admission_size+1):
-                        if not i in WaitingRoomConnection.EMPLOYER_FIRST and not i in WaitingRoomConnection.EMPLOYEE_FIRST:
-                            WaitingRoomConnection.EMPLOYEE_FIRST.append(i)
-                    for j in WaitingRoomConnection.EMPLOYER_FIRST:
-                        if j in WaitingRoomConnection.MATCHED:
+                        if not i in WaitingRoomConnection.EMPLOYER_FIRST and not i in WaitingRoomConnection.EMPLOYEE_FIRST[self.session_id]:
+                            WaitingRoomConnection.EMPLOYEE_FIRST[self.session_id].append(i)
+                    for j in WaitingRoomConnection.EMPLOYER_FIRST[self.session_id]:
+                        if j in WaitingRoomConnection.MATCHED[self.session_id]:
                             continue
                         available = []
                         #logger.info('[WaitingRoomConnection] employee first for %d: %s', j, str(WaitingRoomConnection.EMPLOYEE_FIRST))
                         #logger.info('[WaitingRoomConnection] matched for %d: %s', j, str(WaitingRoomConnection.MATCHED))
 
-                        for k in WaitingRoomConnection.EMPLOYEE_FIRST:
+                        for k in WaitingRoomConnection.EMPLOYEE_FIRST[self.session_id]:
                             add = True
-                            if k not in WaitingRoomConnection.MATCHED and k not in WaitingRoomConnection.DROPPED:
+                            if k not in WaitingRoomConnection.MATCHED[self.session_id] and k not in WaitingRoomConnection.DROPPED[self.session_id]:
                                 for l in range(self.rd - 1):
                                     if WaitingRoomConnection.PAIRS[self.session_id][l][j - 1] == k:
                                         add = False
@@ -474,21 +474,21 @@ class WaitingRoomConnection(SockJSConnection):
                             if (len(available) != 0):
                                 partner = random.choice(available)
                                 WaitingRoomConnection.PAIRS[self.session_id][self.rd - 1][partner - 1] = j
-                                WaitingRoomConnection.MATCHED.append(partner)
+                                WaitingRoomConnection.MATCHED[self.session_id].append(partner)
 
 
                             logger.info('[WaitingRoomConnection] partner for %d: %d', j, partner)
 
                             WaitingRoomConnection.PAIRS[self.session_id][self.rd - 1][j - 1] = partner
-                            WaitingRoomConnection.MATCHED.append(j)
+                            WaitingRoomConnection.MATCHED[self.session_id].append(j)
             
             if self.rd == 1 and self.subject_no == 1:
-                logger.info('[WaitingRoomConnection] employer first: %s', str(WaitingRoomConnection.EMPLOYER_FIRST))
-                logger.info('[WaitingRoomConnection] employee first: %s', str(WaitingRoomConnection.EMPLOYEE_FIRST))
+                logger.info('[WaitingRoomConnection] employer first: %s', str(WaitingRoomConnection.EMPLOYER_FIRST[self.session_id]))
+                logger.info('[WaitingRoomConnection] employee first: %s', str(WaitingRoomConnection.EMPLOYEE_FIRST[self.session_id]))
 
 
                 print "[WaitingRoomConnection] Pairs: " + str(WaitingRoomConnection.PAIRS[self.session_id][self.rd-1]);
-            WaitingRoomConnection.MATCHED = [];
+            WaitingRoomConnection.MATCHED[self.session_id] = [];
 
 
             self.partner = WaitingRoomConnection.PAIRS[self.session_id][self.rd - 1][self.subject_no - 1]
@@ -500,7 +500,7 @@ class WaitingRoomConnection(SockJSConnection):
             GameConnection.PAST_PARTNERS[str(self.subject_id)].append(self.partner)
 
             #roles are assigned and roles are switched at round 2 currently
-            GameConnection.PLAYER_ROLES[str(self.subject_id)] = "employer" if ((self.subject_no in WaitingRoomConnection.EMPLOYER_FIRST and int(self.rd) < 2) or (self.subject_no in WaitingRoomConnection.EMPLOYEE_FIRST and int(self.rd) >= 2)) else "worker"
+            GameConnection.PLAYER_ROLES[str(self.subject_id)] = "employer" if ((self.subject_no in WaitingRoomConnection.EMPLOYER_FIRST[self.session_id] and int(self.rd) < 2) or (self.subject_no in WaitingRoomConnection.EMPLOYEE_FIRST[self.session_id] and int(self.rd) >= 2)) else "worker"
             print "[WaitingRoomConnection] Subject " + self.subject_id + " assigned to role " + GameConnection.PLAYER_ROLES[str(self.subject_id)]
             print "[WaitingRoomConnection] Subject " + self.subject_id + "assigned to game " + self.game_id
             db.players.update_one({'_id': ObjectId(self.subject_id)},{'$set': {'subject_no': self.subject_no, 'game_id': self.game_id}})
@@ -646,8 +646,10 @@ class GameConnection(SockJSConnection):
         try:
             self.rd = GameConnection.ROUNDS[str(oid)]
             game_id = GameConnection.GAMES[self.rd][str(oid)]
+            self.name = WaitingRoomConnection.oid_dict[str(oid)]
+            self.session_id = WaitingRoomConnection.session_dict[self.name]
 
-            for k in WaitingRoomConnection.DROPPED:
+            for k in WaitingRoomConnection.DROPPED[self.session_id]:
                 print "The player " + str(k) + " has been dropped"
                 if str(k) in game_id:
                     game_id = "nogame"
@@ -726,7 +728,7 @@ class GameConnection(SockJSConnection):
                 game_id = msg['game_id']
                 self.broadcast(GameConnection.PARTICIPANTS[self.rd][game_id], message)
             elif msg_type == GameConnection.QUIT_MSG:
-                WaitingRoomConnection.DROPPED.append(msg['subject_no'])
+                WaitingRoomConnection.DROPPED[self.session_id].append(msg['subject_no'])
 
                 for u in GameConnection.GAMES[self.rd + 1]:
                     game_check = GameConnection.GAMES[self.rd + 1][u]
