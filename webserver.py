@@ -388,7 +388,7 @@ class WaitingRoomConnection(SockJSConnection):
 
     # constants
     NUM_ROUNDS = 2
-    PAIRS = [[4, 3, 2, 1],[4,3,2,1]]
+    PAIRS = []
 
     EMPLOYER_FIRST = []
     EMPLOYEE_FIRST = []
@@ -437,6 +437,7 @@ class WaitingRoomConnection(SockJSConnection):
             repeat = True
             count = 0
             while (repeat):
+                WaitingRoomConnection.PAIRS[self.rd - 1] = [0] * self.admission_size
                 repeat = False
                 count = count + 1
                 if len(present_subjects) == 1:
