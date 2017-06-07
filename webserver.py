@@ -423,7 +423,7 @@ class WaitingRoomConnection(SockJSConnection):
         logger.info("[WaitingRoomConnection] Subject " + self.subject_id + " waiting for Round " + rd)
         try:
 
-            self.admission_size = sizes[self.session_id]
+            self.admission_size = WaitingRoomConnection.sizes[self.session_id]
             WaitingRoomConnection.available_subjects[self.session_id][self.rd].add(self)
             present_subjects = WaitingRoomConnection.available_subjects[self.session_id][self.rd]
             self.subject_no = len(present_subjects) if self.rd == 1 else WaitingRoomConnection.NUMBERS[str(self.subject_id)]
